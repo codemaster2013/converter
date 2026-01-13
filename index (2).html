@@ -1,267 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback – MediaGrabber</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #a855f7;
-            --accent: #6366f1;
-            --bg: #05070f;
-            --card-bg: rgba(12, 19, 38, 0.8);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback – MediaGrabber</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-        body {
-            min-height: 100vh;
-            background: radial-gradient(circle at top, #0b0f1a, var(--bg));
-            color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .skip-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #374151;
-            color: #9ca3af;
-            padding: 8px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .skip-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 28px;
-            padding: 40px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-            text-align: center;
-        }
-
-        h1 { font-size: 24px; margin-bottom: 8px; font-weight: 700; }
-        .subtitle { font-size: 14px; color: #9ca3af; margin-bottom: 25px; }
-
-        .stars {
-            display: flex;
-            justify-content: center;
-            flex-direction: row-reverse;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        .stars input { display: none; }
-        .stars label {
-            font-size: 35px;
-            color: #1f2937;
-            cursor: pointer;
-            transition: color 0.2s, transform 0.2s;
-        }
-        .stars label:hover, .stars label:hover ~ label,
-        .stars input:checked ~ label {
-            color: #fbbf24;
-            transform: scale(1.1);
-        }
-
-        .form-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-            text-align: left;
-        }
-        .form-content.active { max-height: 500px; }
-
-        label.field-label {
-            display: block;
-            font-size: 13px;
-            margin: 10px 0 5px 5px;
-            color: #a855f7;
-            font-weight: 600;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 12px;
-            background: rgba(5, 7, 15, 0.5);
-            border: 1px solid #1f2937;
-            border-radius: 14px;
-            color: white;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        input:focus, textarea:focus { border-color: var(--primary); }
-        textarea { resize: none; height: 110px; }
-
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            margin-top: 10px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: none;
-            border-radius: 14px;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button.submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
-        }
-        button.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .note { font-size: 11px; color: #6b7280; margin-top: -5px; margin-bottom: 15px; padding-left: 5px; }
-
-        #success-state { display: none; }
-        .checkmark { font-size: 60px; color: #22c55e; margin-bottom: 15px; }
-    </style>
+<style>
+:root{
+  --primary:#a855f7;
+  --accent:#6366f1;
+  --bg:#05070f;
+  --card-bg:rgba(12,19,38,.85);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
+body{
+  min-height:100vh;
+  background:radial-gradient(circle at top,#0b0f1a,var(--bg));
+  color:#e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+.card{
+  background:var(--card-bg);
+  border-radius:28px;
+  padding:40px;
+  width:100%;
+  max-width:440px;
+  box-shadow:0 25px 60px rgba(0,0,0,.6);
+  text-align:center
+}
+h1{margin-bottom:8px;font-weight:700}
+.subtitle{font-size:14px;color:#9ca3af;margin-bottom:20px}
+.stars{
+  display:flex;
+  justify-content:center;
+  flex-direction:row-reverse;
+  gap:10px;
+  margin-bottom:25px
+}
+.stars input{display:none}
+.stars label{
+  font-size:35px;
+  color:#1f2937;
+  cursor:pointer;
+  transition:.2s
+}
+.stars label:hover,
+.stars label:hover~label,
+.stars input:checked~label{
+  color:#fbbf24;
+  transform:scale(1.1)
+}
+.form-content{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .5s ease;
+  text-align:left
+}
+.form-content.active{max-height:500px}
+label{
+  display:block;
+  font-size:13px;
+  margin:10px 0 5px;
+  color:#a855f7;
+  font-weight:600
+}
+input,textarea{
+  width:100%;
+  padding:14px;
+  background:rgba(5,7,15,.5);
+  border:1px solid #1f2937;
+  border-radius:14px;
+  color:white;
+  outline:none
+}
+textarea{height:110px;resize:none}
+button{
+  width:100%;
+  padding:15px;
+  margin-top:10px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  border:none;
+  border-radius:14px;
+  color:white;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer
+}
+button:disabled{opacity:.5}
+#success-state{display:none}
+.checkmark{font-size:60px;color:#22c55e}
+</style>
 </head>
 
 <body>
 
-<button class="skip-btn" onclick="skipFeedback()">Skip Feedback ✕</button>
+<div class="card">
+  <div id="form-state">
+    <h1>How did we do?</h1>
+    <p class="subtitle">Your rating helps us grow</p>
 
-<div class="card" id="feedbackCard">
-    <div id="form-state">
-        <h1>How did we do?</h1>
-        <p class="subtitle">Your rating helps us grow</p>
-        <p class="subtitle">(This feedback information is forwarded to the creator of the website)</p>
-
-        <div class="stars">
-            <input type="radio" name="rating" id="star5" value="5" onclick="updateUI(5)"><label for="star5">★</label>
-            <input type="radio" name="rating" id="star4" value="4" onclick="updateUI(4)"><label for="star4">★</label>
-            <input type="radio" name="rating" id="star3" value="3" onclick="updateUI(3)"><label for="star3">★</label>
-            <input type="radio" name="rating" id="star2" value="2" onclick="updateUI(2)"><label for="star2">★</label>
-            <input type="radio" name="rating" id="star1" value="1" onclick="updateUI(1)"><label for="star1">★</label>
-        </div>
-
-        <div id="formFields" class="form-content">
-            <label class="field-label">EMAIL ADDRESS</label>
-            <input type="email" id="email" placeholder="name@gmail.com">
-            
-            <label class="field-label" id="commentLabel">YOUR COMMENTS</label>
-            <textarea id="improvement" placeholder="Type letters, numbers, or symbols..."></textarea>
-            
-            <div id="note" class="note">Email and message are optional for 5-star reviews.</div>
-
-            <button class="submit-btn" id="submitBtn" onclick="submitFeedback()">Send Feedback</button>
-        </div>
+    <div class="stars">
+      <input type="radio" name="rating" id="s5" value="5"><label for="s5">★</label>
+      <input type="radio" name="rating" id="s4" value="4"><label for="s4">★</label>
+      <input type="radio" name="rating" id="s3" value="3"><label for="s3">★</label>
+      <input type="radio" name="rating" id="s2" value="2"><label for="s2">★</label>
+      <input type="radio" name="rating" id="s1" value="1"><label for="s1">★</label>
     </div>
 
-    <div id="success-state">
-        <div class="checkmark">✓</div>
-        <h2>Thank You!</h2>
-        <p class="subtitle">Your feedback has been received. Redirecting you now...</p>
+    <div id="formFields" class="form-content">
+      <label>Email address</label>
+      <input type="email" id="email" placeholder="name@domain.com">
+
+      <label>Your message</label>
+      <textarea id="message" placeholder="Write your feedback..."></textarea>
+
+      <button id="submitBtn" onclick="submitFeedback()">Send Feedback</button>
     </div>
+  </div>
+
+  <div id="success-state">
+    <div class="checkmark">✓</div>
+    <h2>Thank You!</h2>
+    <p class="subtitle">Feedback submitted successfully</p>
+  </div>
 </div>
 
 <script>
-let currentRating = 0;
+let rating = 0;
 
-function updateUI(rating) {
-    currentRating = rating;
-    const fields = document.getElementById("formFields");
-    const label = document.getElementById("commentLabel");
-    const textarea = document.getElementById("improvement");
-    
-    fields.classList.add("active");
+document.querySelectorAll('input[name=rating]').forEach(r=>{
+  r.onclick=()=>{
+    rating=r.value;
+    document.getElementById("formFields").classList.add("active");
+  }
+});
 
-    // Dynamic label and placeholder based on rating
-    if (rating === 5) {
-        label.innerText = "ANY SUGGESTION OR COMMENTS";
-        textarea.placeholder = "We'd love to hear your thoughts...";
-    } else {
-        label.innerText = "HOW WE CAN IMPROVE";
-        textarea.placeholder = "Tell us what went wrong or how we can do better...";
-    }
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function isValidEmail(email) {
-    if (!email.includes("@")) return false;
-    const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com"];
-    const domainPart = email.split("@")[1];
-    if (!domainPart) return false;
-    return allowedDomains.includes(domainPart.toLowerCase());
-}
+function submitFeedback(){
+  const email=document.getElementById("email").value.trim();
+  const message=document.getElementById("message").value.trim();
+  const btn=document.getElementById("submitBtn");
 
-function submitFeedback() {
-    const emailInput = document.getElementById("email").value.trim();
-    const messageInput = document.getElementById("improvement").value.trim();
-    const btn = document.getElementById("submitBtn");
+  if(!rating){
+    alert("Please select rating");
+    return;
+  }
+  if(!isValidEmail(email)){
+    alert("Enter a valid email address");
+    return;
+  }
+  if(!message){
+    alert("Message required");
+    return;
+  }
 
-    // 1. First, check if a star has even been selected
-    if (currentRating === 0) {
-        alert("Please select a star rating first");
-        return;
-    }
+  btn.disabled=true;
+  btn.innerText="Sending...";
 
-    // 2. Strict Email Check (Now required for ALL ratings)
-    if (!isValidEmail(emailInput)) {
-        alert("Please enter email properly");
-        return;
-    }
-
-    // 3. Strict Message Check (Now required for ALL ratings)
-    if (!messageInput) {
-        alert("Please enter message");
-        return;
-    }
-
-    // --- If it passes the checks above, then it sends ---
-    btn.disabled = true;
-    btn.innerText = "Sending...";
-
-    const feedbackData = {
-        rating: currentRating,
-        email: emailInput,
-        message: messageInput,
-        timestamp: new Date().toLocaleString()
-    };
-
-    fetch("https://convertor-11437-default-rtdb.firebaseio.com/feedback.json", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(feedbackData)
+  fetch("https://convertor-11437-default-rtdb.firebaseio.com/feedback.json",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      rating,
+      email,
+      message,
+      time:new Date().toISOString()
     })
-    .then(res => {
-        if(!res.ok) throw new Error();
-        localStorage.setItem("feedbackDone", "true");
-        showSuccess();
-    })
-    .catch(() => {
-        alert("Submission failed. Check your connection.");
-        btn.disabled = false;
-        btn.innerText = "Send Feedback";
-    });
-}
-
-function showSuccess() {
-    document.getElementById("form-state").style.display = "none";
-    document.getElementById("success-state").style.display = "block";
-    setTimeout(() => {
-        window.location.href = "index.html"; 
-    }, 2500);
-}
-
-function skipFeedback() {
-    localStorage.setItem("feedbackDone", "true");
-    window.location.href = "index.html"; 
+  })
+  .then(res=>{
+    if(!res.ok) throw new Error();
+    document.getElementById("form-state").style.display="none";
+    document.getElementById("success-state").style.display="block";
+  })
+  .catch(err=>{
+    alert("Submission failed. Firebase rejected request.");
+    btn.disabled=false;
+    btn.innerText="Send Feedback";
+  });
 }
 </script>
+
 </body>
 </html>
