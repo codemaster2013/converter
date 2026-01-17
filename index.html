@@ -10,6 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/plugins/encryption.min.js"></script>
+
 
     <style>
 
@@ -183,7 +186,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 <body>
 
 <div class="container">
-    <div class="badge">PRO v1.2.0 • Browser-Only</div>
+    <div class="badge">PRO v1.2.0 • Browser & PC-Only  </div>
 
     <h1>One Tool.<br><span>Master Your Media.</span></h1>
     <p class="subtitle">Convert, combine, and extract. Professional-grade media tools that never leave your browser.</p>
@@ -274,7 +277,14 @@ input:checked + .slider:before { transform: translateX(22px); }
 <script>
 // --- GLOBAL UTILS ---
 const redirectToFeedback = () => {
-    setTimeout(() => { window.location.href = "index (2).html"; }, 1500);
+    // Block feedback ONLY for the current session
+    if (sessionStorage.getItem("feedbackDone") === "true") {
+        return;
+    }
+
+    setTimeout(() => {
+        window.location.href = "index (2).html";
+    }, 1500);
 };
 
 // --- IMAGE PREVIEW LOGIC ---
@@ -391,25 +401,44 @@ function saveAs(blob, filename) {
     btn.disabled = false;
     btn.innerText = "Convert & Download";
 }
-// --- PDF LOGIC ---
 async function makePDF() {
     const files = document.getElementById("pdfImgs").files;
-    if(!files.length) return alert("Upload images");
+    const pdfName = document.getElementById("pdfName").value || "merged-doc";
+    const password = document.getElementById("pdfPass").value;
+
+    if (!files.length) {
+        alert("Upload images first");
+        return;
+    }
 
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
-    
-    for(let i=0; i<files.length; i++) {
-        const imgData = await new Promise(r => {
-            const fr = new FileReader();
-            fr.onload = () => r(fr.result);
-            fr.readAsDataURL(files[i]);
+
+    const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        encryption: password
+            ? {
+                userPassword: password,
+                ownerPassword: password,
+                userPermissions: ["print", "modify", "copy", "annot-forms"]
+            }
+            : undefined
+    });
+
+    for (let i = 0; i < files.length; i++) {
+        const imgData = await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(files[i]);
         });
-        if(i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 10, 10, 190, 250);
+
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 10, 10, 190, 270);
     }
-    
-    pdf.save((document.getElementById("pdfName").value || "merged-doc") + ".pdf");
+
+    pdf.save(`${pdfName}.pdf`);
+
     redirectToFeedback();
 }
 
