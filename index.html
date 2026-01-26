@@ -23,6 +23,28 @@
 
 <style>
 
+/* --- THE BRIGHTER PURPLE NEON GLOW --- */
+input:focus, select:focus, textarea:focus {
+    /* Brighter solid border */
+    border-color: #a78bfa !important; 
+    
+    /* Layered box-shadow for a "Neon" effect */
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.7), 
+                0 0 5px rgba(167, 139, 250, 0.9); 
+    
+    /* Slightly more visible background tint */
+    background: rgba(124, 58, 237, 0.1) !important; 
+    
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Updated variable for a more electric purple */
+:root {
+    --purple: #8b5cf6; 
+}
+
+
 /* Styling the parent select box */
 select#format {
     background-color: var(--card);
@@ -643,4 +665,5 @@ function downloadOCRPDF() {
 </body>
 
 </html>
+
 
