@@ -1,26 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="https://codemaster2013.github.io/converter/sitemap.xml" />
-    <meta name="google-site-verification" content="KbFDykQbzWuFYw1MOPvcTvgaYO6rS5zBdLwHbdtZpB0" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="MediaGrabber Pro">
     <meta name="description" content="MediaGrabber Pro: The all-in-one browser tool for secure image conversion, PDF password removal, and Smart OCR text extraction. Fast, free, and 100% private.">
     <title>MediaGrabber Pro | Secure Image Converter, OCR & PDF Tools</title>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "MediaGrabber Pro",
-  "url": "https://codemaster2013.github.io/converter/"
-}
-</script>
-
-
-    
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -35,7 +20,6 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
 <link rel="manifest" href="site.webmanifest">
 
 
@@ -202,8 +186,55 @@ body.light-mode select#format option {
             margin-bottom: 20px;
         }
 
-        h1 { font-size: 52px; margin: 10px 0; font-weight: 800; letter-spacing: -2px; }
-        h1 span { color: var(--purple); }
+      /* ===== NEON SHIMMER HERO TITLE ===== */
+
+.hero-title {
+    font-size: 52px;
+    margin: 10px 0;
+    font-weight: 800;
+    letter-spacing: -2px;
+    text-align: center;
+    text-transform: uppercase;
+
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #a78bfa,
+        #7c3aed,
+        #c084fc,
+        #ffffff
+    );
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation:
+        shimmer 4s linear infinite,
+        glow 2s ease-in-out infinite alternate;
+}
+
+/* Gradient movement */
+@keyframes shimmer {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Purple glow pulse */
+@keyframes glow {
+    from {
+        text-shadow:
+            0 0 10px rgba(124, 58, 237, 0.3),
+            0 0 20px rgba(124, 58, 237, 0.2);
+    }
+    to {
+        text-shadow:
+            0 0 20px rgba(167, 139, 250, 0.8),
+            0 0 40px rgba(124, 58, 237, 0.6);
+    }
+}
         
         .subtitle { font-size: 18px; color: #9ca3af; max-width: 650px; margin: auto; }
         .section-title { margin-top: 60px; font-size: 32px; font-weight: 700; color: var(--text); }
@@ -378,10 +409,135 @@ body.light-mode .neon-select:hover {
 }
 
 
+/* ===============================
+   ULTRA PREMIUM INTRO
+=================================*/
+
+#introOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    /* Purple + Blue Animated Gradient */
+    background: linear-gradient(
+        -45deg,
+        #0f0024,
+        #240046,
+        #3a0ca3,
+        #4361ee,
+        #7209b7,
+        #4cc9f0
+    );
+    background-size: 400% 400%;
+    animation: bgMove 10s ease infinite;
+}
+
+/* Background movement */
+@keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Premium Glowing Text */
+#introOverlay h1 {
+    font-size: 5.5rem;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    font-family: 'Arial Black', sans-serif;
+    text-align: center;
+
+    background: linear-gradient(
+        to right,
+        #ffffff,
+        #c77dff,
+        #4361ee,
+        #4cc9f0,
+        #ffffff
+    );
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation:
+        shimmer 3s linear infinite,
+        ultraGlow 2s ease-in-out infinite alternate;
+}
+
+/* Text shimmer */
+@keyframes shimmer {
+    to { background-position: 200% center; }
+}
+
+/* Strong premium glow */
+@keyframes ultraGlow {
+    from {
+        text-shadow:
+            0 0 15px rgba(114, 9, 183, 0.5),
+            0 0 30px rgba(67, 97, 238, 0.4);
+    }
+    to {
+        text-shadow:
+            0 0 25px rgba(199, 125, 255, 0.9),
+            0 0 45px rgba(67, 97, 238, 0.8),
+            0 0 65px rgba(76, 201, 240, 0.6);
+    }
+}
+
+/* ===============================
+   PREMIUM LOADING CIRCLE
+=================================*/
+
+.loader {
+    margin-top: 40px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 5px solid rgba(255,255,255,0.1);
+    border-top: 5px solid #c77dff;
+    border-right: 5px solid #4361ee;
+    animation: spin 1s linear infinite;
+    box-shadow:
+        0 0 20px rgba(114, 9, 183, 0.6),
+        0 0 40px rgba(67, 97, 238, 0.5);
+}
+
+/* Spin animation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Fade Out */
+.intro-hide {
+    animation: fadeOutIntro 1.2s ease forwards;
+}
+
+@keyframes fadeOutIntro {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
     </style>
 </head>
 
 <body>
+
+
+
+
+
+<div id="introOverlay">
+    <h1>MediaGrabber Pro</h1>
+    <div class="loader"></div>
+</div>
 
 <nav>
     <div class="logo-group">
@@ -407,7 +563,9 @@ body.light-mode .neon-select:hover {
 <div class="container">
     <div class="badge">PRO v1.2.0 • Browser & PC-Only</div>
 
-    <h1>One Tool.<br><span>Master Your Media.</span></h1>
+    <h1 class="hero-title">
+    One Tool.<br>Master Your Media.
+</h1>
     <p class="subtitle">Convert, combine, and extract. Professional-grade media tools that never leave your browser.</p>
 
  <h2 id="converter" class="section-title">Image Converter</h2>
@@ -1343,12 +1501,29 @@ document.getElementById('ocrInput').addEventListener('change', function() {
 });
 
 
+
+
+
+window.addEventListener("load", () => {
+    const intro = document.getElementById("introOverlay");
+
+    // Show for exactly 3 seconds (3000ms)
+    setTimeout(() => {
+        intro.classList.add("intro-hide");
+
+        // Remove after animation completes (1.5s)
+        setTimeout(() => {
+            intro.style.display = "none";
+        }, 1500);
+
+    }, 1000);
+});
+
+
+
+
 </script>
 </body>
 
 </html>
-
-
-
-
 
