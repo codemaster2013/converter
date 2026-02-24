@@ -5,153 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback – MediaGrabber</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-<!-- Favicons -->
-<link rel="icon" href="favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="manifest" href="site.webmanifest">
-
-
+<link rel="icon" href="favicon/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="fevicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fevicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fevicon/favicon-16x16.png">
+<link rel="manifest" href="fevicon/site.webmanifest">
     <style>
-        :root {
-            --primary: #a855f7;
-            --accent: #6366f1;
-            --bg: #05070f;
-            --card-bg: rgba(12, 19, 38, 0.8);
-        }
+        :root { --primary:#a855f7; --accent:#6366f1; --bg:#05070f; --card-bg:rgba(12,19,38,0.8); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body { min-height:100vh; background:radial-gradient(circle at top,#0b0f1a,var(--bg)); color:#e5e7eb; display:flex; align-items:center; justify-content:center; padding:20px; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        /* Skip button */
+        .skip-btn { position:fixed; top:20px; left:20px; background:rgba(255,255,255,0.05); border:1px solid #374151; color:#9ca3af; padding:8px 20px; border-radius:30px; cursor:pointer; transition:all 0.3s; text-decoration:none; font-size:14px; font-family:'Poppins',sans-serif; }
+        .skip-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+        .skip-btn.highlight { background:rgba(168,85,247,0.12); border-color:#a855f7; color:#d8b4fe; animation:skipPulse 2s ease-in-out infinite; }
+        .skip-btn.highlight:hover { background:rgba(168,85,247,0.25); color:#fff; }
+        @keyframes skipPulse { 0%,100%{box-shadow:0 0 10px rgba(168,85,247,0.3)} 50%{box-shadow:0 0 26px rgba(168,85,247,0.75)} }
 
-        body {
-            min-height: 100vh;
-            background: radial-gradient(circle at top, #0b0f1a, var(--bg));
-            color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+        .card { background:var(--card-bg); backdrop-filter:blur(15px); border:1px solid rgba(255,255,255,0.1); border-radius:28px; padding:40px; width:100%; max-width:440px; box-shadow:0 25px 60px rgba(0,0,0,0.6); text-align:center; }
+        h1 { font-size:24px; margin-bottom:8px; font-weight:700; }
+        .subtitle { font-size:14px; color:#9ca3af; margin-bottom:20px; }
 
-        .skip-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #374151;
-            color: #9ca3af;
-            padding: 8px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .skip-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        /* Stars */
+        .stars { display:flex; justify-content:center; flex-direction:row-reverse; gap:10px; margin-bottom:20px; }
+        .stars input { display:none; }
+        .stars label { font-size:35px; color:#1f2937; cursor:pointer; transition:color 0.2s,transform 0.2s; }
+        .stars label:hover,.stars label:hover~label,.stars input:checked~label { color:#fbbf24; transform:scale(1.1); }
+        .stars.shake { animation:starShake 0.45s ease; }
+        @keyframes starShake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
 
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 28px;
-            padding: 40px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-            text-align: center;
-        }
+        /* Star-missing warning (shown above stars when no rating) */
+        .star-warning { display:none; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:13px; color:#fca5a5; line-height:1.6; }
+        .star-warning.show { display:block; }
+        .star-warning .skip-hint { color:#d8b4fe; font-weight:700; cursor:pointer; text-decoration:underline; }
 
-        h1 { font-size: 24px; margin-bottom: 8px; font-weight: 700; }
-        .subtitle { font-size: 14px; color: #9ca3af; margin-bottom: 25px; }
+        /* Form fields */
+        .form-content { max-height:0; overflow:hidden; transition:max-height 0.5s ease; text-align:left; }
+        .form-content.active { max-height:600px; }
+        label.field-label { display:block; font-size:13px; margin:10px 0 5px 5px; color:#a855f7; font-weight:600; }
+        input,textarea { width:100%; padding:14px; margin-bottom:12px; background:rgba(5,7,15,0.5); border:1px solid #1f2937; border-radius:14px; color:white; outline:none; transition:border-color 0.3s,box-shadow 0.3s; font-family:'Poppins',sans-serif; }
+        input:focus,textarea:focus { border-color:var(--primary); }
+        textarea { resize:none; height:110px; }
+        input.field-error,textarea.field-error { border-color:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,0.15); }
 
-        .stars {
-            display: flex;
-            justify-content: center;
-            flex-direction: row-reverse;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        .stars input { display: none; }
-        .stars label {
-            font-size: 35px;
-            color: #1f2937;
-            cursor: pointer;
-            transition: color 0.2s, transform 0.2s;
-        }
-        .stars label:hover, .stars label:hover ~ label,
-        .stars input:checked ~ label {
-            color: #fbbf24;
-            transform: scale(1.1);
-        }
+        /* Inline error inside form */
+        .inline-error { display:none; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:14px; padding:13px 16px; margin-bottom:14px; font-size:13px; color:#fca5a5; line-height:1.7; }
+        .inline-error.show { display:block; }
+        .inline-error .skip-hint { color:#d8b4fe; font-weight:700; cursor:pointer; text-decoration:underline; }
 
-        .form-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-            text-align: left;
-        }
-        .form-content.active { max-height: 500px; }
+        .note { font-size:11px; color:#6b7280; margin-top:-5px; margin-bottom:15px; padding-left:5px; }
 
-        label.field-label {
-            display: block;
-            font-size: 13px;
-            margin: 10px 0 5px 5px;
-            color: #a855f7;
-            font-weight: 600;
-        }
+        button.submit-btn { width:100%; padding:15px; margin-top:10px; background:linear-gradient(135deg,var(--primary),var(--accent)); border:none; border-radius:14px; color:white; font-weight:700; font-size:16px; cursor:pointer; transition:0.3s; font-family:'Poppins',sans-serif; }
+        button.submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(168,85,247,0.4); }
+        button.submit-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
-        input, textarea {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 12px;
-            background: rgba(5, 7, 15, 0.5);
-            border: 1px solid #1f2937;
-            border-radius: 14px;
-            color: white;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        input:focus, textarea:focus { border-color: var(--primary); }
-        textarea { resize: none; height: 110px; }
-
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            margin-top: 10px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: none;
-            border-radius: 14px;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button.submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
-        }
-        button.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .note { font-size: 11px; color: #6b7280; margin-top: -5px; margin-bottom: 15px; padding-left: 5px; }
-
-        #success-state { display: none; }
-        .checkmark { font-size: 60px; color: #22c55e; margin-bottom: 15px; }
+        #success-state { display:none; }
+        .checkmark { font-size:60px; color:#22c55e; margin-bottom:15px; }
     </style>
 </head>
-
 <body>
 
-<button class="skip-btn" onclick="skipFeedback()">Skip Feedback ✕</button>
+<button class="skip-btn highlight" id="skipBtn" onclick="skipFeedback()">Skip Feedback ✕</button>
 
-<div class="card" id="feedbackCard">
+<div class="card">
     <div id="form-state">
         <h1>How did we do?</h1>
         <p class="subtitle">Your rating helps us grow</p>
-        <p class="subtitle">(This feedback information is forwarded to the creator of the website)</p>
+        <p class="subtitle">(This feedback is forwarded to the creator of the website)</p>
 
-        <div class="stars">
+        <!-- Star-missing warning shown ABOVE stars -->
+        <div class="star-warning" id="starWarning">
+            ⭐ <strong>Please select a star rating</strong> — or <span class="skip-hint" onclick="skipFeedback()">Skip Feedback</span> if you'd prefer not to.
+        </div>
+
+        <div class="stars" id="starsRow">
             <input type="radio" name="rating" id="star5" value="5" onclick="updateUI(5)"><label for="star5">★</label>
             <input type="radio" name="rating" id="star4" value="4" onclick="updateUI(4)"><label for="star4">★</label>
             <input type="radio" name="rating" id="star3" value="3" onclick="updateUI(3)"><label for="star3">★</label>
@@ -160,13 +87,16 @@
         </div>
 
         <div id="formFields" class="form-content">
+            <!-- Inline error for field validation -->
+            <div class="inline-error" id="inlineError"></div>
+
             <label class="field-label">EMAIL ADDRESS</label>
-            <input type="email" id="email" placeholder="name@gmail.com">
-            
+            <input type="email" id="email" placeholder="name@gmail.com" oninput="clearFieldError(this)">
+
             <label class="field-label" id="commentLabel">YOUR COMMENTS</label>
-            <textarea id="improvement" placeholder="Type letters, numbers, or symbols..."></textarea>
-            
-            <div id="note" class="note">Email and message are optional for 5-star reviews.</div>
+            <textarea id="improvement" placeholder="Type letters, numbers, or symbols..." oninput="clearFieldError(this)"></textarea>
+
+            <div class="note" id="note">Email and message are optional for 5-star reviews.</div>
 
             <button class="submit-btn" id="submitBtn" onclick="submitFeedback()">Send Feedback</button>
         </div>
@@ -181,135 +111,159 @@
 
 <script>
 let currentRating = 0;
+let submitting = false;
 
 function updateUI(rating) {
     currentRating = rating;
-    const fields = document.getElementById("formFields");
-    const label = document.getElementById("commentLabel");
-    const textarea = document.getElementById("improvement");
-    
-    fields.classList.add("active");
-
-    // Dynamic label and placeholder based on rating
+    // Hide star warning, open form
+    document.getElementById('starWarning').classList.remove('show');
+    document.getElementById('starsRow').classList.remove('shake');
+    document.getElementById('formFields').classList.add('active');
+    clearInlineError();
+    const label = document.getElementById('commentLabel');
+    const textarea = document.getElementById('improvement');
     if (rating === 5) {
-        label.innerText = "ANY SUGGESTION OR COMMENTS";
+        label.innerText = 'ANY SUGGESTION OR COMMENTS';
         textarea.placeholder = "We'd love to hear your thoughts...";
+        document.getElementById('note').style.display = 'block';
     } else {
-        label.innerText = "HOW WE CAN IMPROVE";
-        textarea.placeholder = "Tell us what went wrong or how we can do better...";
+        label.innerText = 'HOW WE CAN IMPROVE';
+        textarea.placeholder = 'Tell us what went wrong or how we can do better...';
+        document.getElementById('note').style.display = 'none';
     }
 }
 
+// ── Error helpers ──────────────────────────────────────
+function showInlineError(html) {
+    const el = document.getElementById('inlineError');
+    el.innerHTML = html;
+    el.classList.add('show');
+}
+function clearInlineError() {
+    document.getElementById('inlineError').classList.remove('show');
+}
+function markFieldError(el) { el.classList.add('field-error'); }
+function clearFieldError(el) { el.classList.remove('field-error'); clearInlineError(); }
+
+function shakeStars() {
+    const row = document.getElementById('starsRow');
+    row.classList.remove('shake');
+    void row.offsetWidth; // reflow to restart animation
+    row.classList.add('shake');
+}
+
+function markDone() {
+    // Mark permanently in localStorage so main site never redirects again
+    localStorage.setItem('mg_feedback_done', 'true');
+    sessionStorage.setItem('feedbackDone', 'true');
+    document.getElementById('skipBtn').classList.remove('highlight');
+}
+
+// ── Validation ─────────────────────────────────────────
 function isValidEmail(email) {
-    if (!email.includes("@")) return false;
-    const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com"];
-    const domainPart = email.split("@")[1];
-    if (!domainPart) return false;
-    return allowedDomains.includes(domainPart.toLowerCase());
+    if (!email.includes('@')) return false;
+    const allowed = ['gmail.com','yahoo.com','outlook.com','hotmail.com','icloud.com','aol.com','protonmail.com','zoho.com'];
+    const domain = email.split('@')[1];
+    return domain && allowed.includes(domain.toLowerCase());
 }
 
 async function emailAlreadyExists(email) {
     if (!email) return false;
     try {
-        const res = await fetch("https://convertor-11437-default-rtdb.firebaseio.com/feedback.json");
+        const res = await fetch('https://convertor-11437-default-rtdb.firebaseio.com/feedback.json');
         if (!res.ok) return false;
         const data = await res.json();
         if (!data) return false;
-        return Object.values(data).some(entry => entry.email && entry.email.toLowerCase() === email.toLowerCase());
-    } catch {
-        return false;
-    }
+        return Object.values(data).some(e => e.email && e.email.toLowerCase() === email.toLowerCase());
+    } catch { return false; }
 }
 
-function showSuccess() {
-    document.getElementById("form-state").style.display = "none";
-    document.getElementById("success-state").style.display = "block";
-    setTimeout(() => {
-        window.location.href = "/";
-    }, 2200);
-}
-
+// ── Submit ─────────────────────────────────────────────
 async function submitFeedback() {
-    const emailInput = document.getElementById("email").value.trim();
-    const messageInput = document.getElementById("improvement").value.trim();
-    const btn = document.getElementById("submitBtn");
+    // HARD GUARD — prevent double submit
+    if (submitting) return;
 
+    clearInlineError();
+    const emailEl = document.getElementById('email');
+    const msgEl   = document.getElementById('improvement');
+    const btn     = document.getElementById('submitBtn');
+    const email   = emailEl.value.trim();
+    const message = msgEl.value.trim();
+
+    // ① No star rating — STOP, show warning above stars
     if (currentRating === 0) {
-        alert("Please select a star rating first");
-        return;
+        shakeStars();
+        document.getElementById('starWarning').classList.add('show');
+        return; // Hard stop — do NOT proceed
     }
 
-    // For 5-star reviews, email and message are optional
+    // ② Field validation
     if (currentRating !== 5) {
-        if (!isValidEmail(emailInput)) {
-            alert("Please enter email properly");
+        if (!email && !message) {
+            markFieldError(emailEl); markFieldError(msgEl);
+            showInlineError('📝 <strong>Please fill in your email and message</strong> — or <span class="skip-hint" onclick="skipFeedback()">Skip Feedback</span> to go back.');
             return;
         }
-
-        if (!messageInput) {
-            alert("Please enter message");
+        if (!email || !isValidEmail(email)) {
+            markFieldError(emailEl);
+            showInlineError('📧 <strong>Please enter a valid email</strong> (e.g. name@gmail.com) — or <span class="skip-hint" onclick="skipFeedback()">Skip Feedback</span> to go back.');
+            return;
+        }
+        if (!message) {
+            markFieldError(msgEl);
+            showInlineError('💬 <strong>Please write your feedback</strong> — or <span class="skip-hint" onclick="skipFeedback()">Skip Feedback</span> to go back.');
             return;
         }
     } else {
-        if (emailInput && !isValidEmail(emailInput)) {
-            alert("Please enter email properly");
+        if (email && !isValidEmail(email)) {
+            markFieldError(emailEl);
+            showInlineError('📧 <strong>Please enter a valid email</strong> (e.g. name@gmail.com) — or leave it blank.');
             return;
         }
     }
 
+    // ③ All good — submit
+    submitting = true;
     btn.disabled = true;
-    btn.innerText = "Checking...";
+    btn.innerText = 'Checking...';
 
     try {
-        // 🔒 Check if email already submitted feedback
-        const exists = await emailAlreadyExists(emailInput);
+        const exists = await emailAlreadyExists(email);
         if (exists) {
-            alert("Feedback already submitted with this email.");
+            showInlineError('⚠️ <strong>Feedback already submitted</strong> with this email address.');
             btn.disabled = false;
-            btn.innerText = "Send Feedback";
+            btn.innerText = 'Send Feedback';
+            submitting = false;
             return;
         }
 
-        btn.innerText = "Sending...";
+        btn.innerText = 'Sending...';
 
-        const feedbackData = {
-            rating: currentRating,
-            email: emailInput,
-            message: messageInput,
-            timestamp: new Date().toLocaleString()
-        };
-
-        const res = await fetch(
-            "https://convertor-11437-default-rtdb.firebaseio.com/feedback.json",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(feedbackData)
-            }
-        );
+        const res = await fetch('https://convertor-11437-default-rtdb.firebaseio.com/feedback.json', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: currentRating, email, message, timestamp: new Date().toLocaleString() })
+        });
 
         if (!res.ok) throw new Error();
 
-        sessionStorage.setItem("feedbackDone", "true");
-        showSuccess();
+        markDone();
+        document.getElementById('form-state').style.display = 'none';
+        document.getElementById('success-state').style.display = 'block';
+        setTimeout(() => { window.location.href = 'index.html'; }, 2200);
 
-    } catch (err) {
-        alert("Submission failed. Please try again.");
+    } catch {
+        showInlineError('❌ <strong>Submission failed.</strong> Please check your connection and try again.');
         btn.disabled = false;
-        btn.innerText = "Send Feedback";
+        btn.innerText = 'Send Feedback';
+        submitting = false;
     }
 }
 
 function skipFeedback() {
-    // Mark feedback as completed for this session
-    sessionStorage.setItem("feedbackDone", "true");
-
-    // Go back to main app
-    window.location.href ="index.html"
-} 
-
+    markDone();
+    window.location.href = 'index.html';
+}
 </script>
 </body>
-
 </html>
-
