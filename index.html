@@ -143,14 +143,13 @@ body.light-mode select#format option {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 5%;
+            padding: 10px 5% 10px 1%;
             background: var(--nav-bg);
             backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid var(--border);
-            
         }
 
         .logo-group {
@@ -165,26 +164,28 @@ body.light-mode select#format option {
             object-fit: contain;
         }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
         .nav-links {
             display: flex;
-            gap: 25px;
+            align-items: center;
+            gap: 4px;
         }
 
         .nav-links a {
             color: #9ca3af;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 999px;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
-
         body.light-mode .nav-links a { color: #4b5563; }
-        .nav-links a:hover { color: var(--purple); }
+        .nav-links a:hover {
+            color: #fff;
+            background: rgba(124,58,237,0.2);
+        }
+        body.light-mode .nav-links a:hover { color: #7c3aed; background: rgba(124,58,237,0.1); }
 
         .theme-toggle {
             cursor: pointer;
@@ -546,6 +547,835 @@ body.light-mode .neon-select:hover {
         visibility: hidden;
     }
 }
+
+/* ===========================
+   SETTINGS BUTTON
+=========================== */
+.settings-btn {
+    cursor: pointer;
+    background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(167,139,250,0.1));
+    border: 1px solid rgba(124,58,237,0.4);
+    padding: 8px 16px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(124,58,237,0.15);
+}
+.settings-btn:hover {
+    background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(167,139,250,0.2));
+    box-shadow: 0 0 20px rgba(124,58,237,0.5);
+    border-color: #a78bfa;
+    transform: translateY(-1px);
+}
+
+/* ===========================
+   SETTINGS MODAL
+=========================== */
+#settingsOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+}
+#settingsOverlay.open {
+    display: flex;
+}
+
+#settingsModal {
+    background: linear-gradient(145deg, #0d0626, #1a1033, #0b1020);
+    border: 1px solid rgba(124,58,237,0.4);
+    border-radius: 28px;
+    padding: 40px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow:
+        0 0 60px rgba(124,58,237,0.3),
+        0 0 120px rgba(67,97,238,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    position: relative;
+    animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+body.light-mode #settingsModal {
+    background: linear-gradient(145deg, #f9fafb, #ffffff, #f0f0ff);
+    border-color: rgba(124,58,237,0.3);
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.settings-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.settings-modal-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #fff, #a78bfa, #7c3aed);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 4s linear infinite;
+}
+
+body.light-mode .settings-modal-title {
+    background: linear-gradient(90deg, #111, #7c3aed, #4361ee);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.settings-close-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: #9ca3af;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+.settings-close-btn:hover { background: rgba(239,68,68,0.2); color: #ef4444; border-color: #ef4444; }
+
+.settings-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 14px;
+}
+
+/* ULTRA PREMIUM THEME BUTTONS */
+.theme-cards {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-card {
+    flex: 1;
+    border-radius: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.theme-card.dark-card {
+    background: linear-gradient(135deg, #0b1020, #1a1033);
+    border-color: rgba(124,58,237,0.3);
+    color: #e5e7eb;
+}
+.theme-card.dark-card:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 0 16px rgba(124,58,237,0.5);
+    transform: translateY(-2px);
+}
+.theme-card.dark-card.active {
+    border-color: #a78bfa;
+    box-shadow: 0 0 20px rgba(124,58,237,0.6);
+}
+
+.theme-card.light-card {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    border-color: rgba(0,0,0,0.12);
+    color: #111827;
+}
+.theme-card.light-card:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 0 14px rgba(124,58,237,0.3);
+    transform: translateY(-2px);
+}
+.theme-card.light-card.active {
+    border-color: #7c3aed;
+    box-shadow: 0 0 18px rgba(124,58,237,0.4);
+}
+
+.theme-card-icon { font-size: 16px; }
+.theme-card-name { font-size: 13px; font-weight: 700; }
+
+.theme-card .active-badge {
+    display: none;
+    margin-left: auto;
+    background: linear-gradient(135deg, #7c3aed, #4361ee);
+    color: white;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 99px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(124,58,237,0.5);
+}
+.theme-card.active .active-badge { display: block; }
+
+.settings-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent);
+    margin: 24px 0;
+}
+
+.premium-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(135deg, #7c3aed, #4361ee);
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(124,58,237,0.4);
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* ===========================
+   PDF READER AUTH OVERLAY
+=========================== */
+.pr-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99990;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(18px) saturate(1.3);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.pr-overlay.open { display: flex; }
+
+.pr-modal {
+    background: linear-gradient(145deg, #0f0826 0%, #1a1033 50%, #0d0f2a 100%);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 28px;
+    padding: 38px 36px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 25px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(124,58,237,0.25),
+        0 0 120px rgba(67,97,238,0.12);
+    animation: modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    max-height: 92vh;
+    overflow-y: auto;
+    position: relative;
+}
+body.light-mode .pr-modal {
+    background: linear-gradient(145deg, #ffffff 0%, #f5f0ff 50%, #eff6ff 100%);
+    border-color: rgba(124,58,237,0.25);
+    box-shadow: 0 25px 80px rgba(0,0,0,0.15), 0 0 40px rgba(124,58,237,0.12);
+}
+.pr-modal::-webkit-scrollbar { width: 4px; }
+.pr-modal::-webkit-scrollbar-track { background: transparent; }
+.pr-modal::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 4px; }
+
+.pr-modal h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+    background: linear-gradient(90deg, #fff 0%, #c4b5fd 40%, #7c3aed 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 4s linear infinite;
+    letter-spacing: -0.3px;
+}
+body.light-mode .pr-modal h2 {
+    background: linear-gradient(90deg, #1e1b4b, #7c3aed, #4361ee);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.pr-modal p.pr-sub {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 0 0 22px 0;
+    line-height: 1.5;
+}
+body.light-mode .pr-modal p.pr-sub { color: #6b7280; }
+
+.pr-tab-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    background: rgba(0,0,0,0.2);
+    padding: 5px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+body.light-mode .pr-tab-row {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.08);
+}
+.pr-tab {
+    flex: 1;
+    padding: 9px 6px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+}
+.pr-tab:hover { color: #a78bfa; }
+.pr-tab.active {
+    background: linear-gradient(135deg, #7c3aed, #4361ee);
+    color: white;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.5);
+}
+body.light-mode .pr-tab { color: #9ca3af; }
+body.light-mode .pr-tab.active { color: white; }
+
+.pr-input {
+    width: 100%;
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    border-radius: 13px;
+    border: 1px solid rgba(167,139,250,0.2);
+    background: rgba(255,255,255,0.04);
+    color: #e5e7eb;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.25s;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+body.light-mode .pr-input {
+    background: rgba(0,0,0,0.04);
+    color: #111827;
+    border-color: rgba(124,58,237,0.2);
+}
+.pr-input::placeholder { color: #4b5563; font-size: 13px; }
+body.light-mode .pr-input::placeholder { color: #9ca3af; }
+.pr-input:focus {
+    border-color: #a78bfa;
+    background: rgba(124,58,237,0.08);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.15), 0 0 20px rgba(124,58,237,0.2);
+}
+body.light-mode .pr-input:focus { background: #faf5ff; box-shadow: 0 0 0 3px rgba(124,58,237,0.12); }
+
+.pr-select {
+    width: 100%;
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    border-radius: 13px;
+    border: 1px solid rgba(167,139,250,0.2);
+    background: rgba(255,255,255,0.04);
+    color: #e5e7eb;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s;
+}
+body.light-mode .pr-select { background: rgba(0,0,0,0.04); color: #111827; }
+.pr-select:focus { border-color: #a78bfa; outline: none; }
+
+.pr-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #4338ca 100%);
+    color: white;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 4px 24px rgba(124,58,237,0.5), 0 0 0 1px rgba(255,255,255,0.08) inset;
+    transition: all 0.25s;
+    letter-spacing: 0.3px;
+    font-family: 'Inter', sans-serif;
+}
+.pr-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(124,58,237,0.65), 0 0 0 1px rgba(255,255,255,0.1) inset;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4f46e5 100%);
+}
+.pr-btn:active { transform: translateY(0); }
+.pr-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.pr-link {
+    background: none;
+    border: none;
+    color: #a78bfa;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0;
+    margin-top: 12px;
+    display: block;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    transition: color 0.2s;
+    font-weight: 600;
+}
+.pr-link:hover { color: #c4b5fd; }
+
+.pr-msg {
+    font-size: 13px;
+    padding: 11px 14px;
+    border-radius: 11px;
+    margin-bottom: 14px;
+    display: none;
+    font-weight: 500;
+    line-height: 1.4;
+}
+.pr-msg.error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; display: block; }
+.pr-msg.success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; display: block; }
+.pr-msg.info { background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.3); color: #c4b5fd; display: block; }
+
+.pr-close {
+    position: absolute;
+    top: 18px; right: 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    color: #6b7280;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+}
+.pr-close:hover { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); }
+
+.pr-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 8px;
+    display: block;
+    margin-top: 6px;
+}
+
+.pr-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent);
+    margin: 18px 0;
+}
+
+/* ===========================
+   PDF READER GLASSMORPHISM OVERLAY
+=========================== */
+#pdfReaderView {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99985;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(22px) saturate(1.4);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: prFadeIn 0.3s ease forwards;
+}
+#pdfReaderView.open { display: flex; }
+
+@keyframes prFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* The glass panel itself */
+.pr-glass-panel {
+    width: 100%;
+    max-width: 1100px;
+    height: 88vh;
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+
+    /* Glass effect */
+    background: rgba(13, 6, 38, 0.55);
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 8px 60px rgba(0,0,0,0.6),
+        0 0 80px rgba(124,58,237,0.18),
+        0 0 140px rgba(67,97,238,0.08);
+    backdrop-filter: blur(30px) saturate(1.6);
+    -webkit-backdrop-filter: blur(30px) saturate(1.6);
+
+    animation: prPanelIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+body.light-mode .pr-glass-panel {
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(124,58,237,0.2);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.6) inset,
+        0 8px 60px rgba(0,0,0,0.15),
+        0 0 60px rgba(124,58,237,0.1);
+}
+
+@keyframes prPanelIn {
+    from { opacity: 0; transform: scale(0.93) translateY(24px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Ambient glow orbs behind the panel */
+#pdfReaderView::before,
+#pdfReaderView::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+    z-index: -1;
+}
+#pdfReaderView::before {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,58,237,0.35), transparent 70%);
+    top: 5%; left: 10%;
+}
+#pdfReaderView::after {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(67,97,238,0.25), transparent 70%);
+    bottom: 10%; right: 10%;
+}
+
+.pr-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(167,139,250,0.18);
+    gap: 12px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+body.light-mode .pr-header {
+    background: rgba(255,255,255,0.5);
+    border-bottom-color: rgba(124,58,237,0.15);
+}
+
+.pr-header-title {
+    font-size: 17px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #fff, #a78bfa, #7c3aed);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 4s linear infinite;
+    letter-spacing: -0.3px;
+}
+body.light-mode .pr-header-title {
+    background: linear-gradient(90deg, #111, #7c3aed, #4361ee);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.pr-header-user {
+    font-size: 12px;
+    color: rgba(167,139,250,0.7);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(124,58,237,0.1);
+    padding: 5px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba(124,58,237,0.2);
+}
+
+.pr-header-btns { display: flex; gap: 8px; align-items: center; }
+
+.pr-icon-btn {
+    padding: 7px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(167,139,250,0.25);
+    background: rgba(124,58,237,0.12);
+    color: #a78bfa;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+}
+.pr-icon-btn:hover {
+    background: rgba(124,58,237,0.28);
+    box-shadow: 0 0 14px rgba(124,58,237,0.4);
+    border-color: rgba(167,139,250,0.5);
+    transform: translateY(-1px);
+}
+.pr-icon-btn.danger { border-color: rgba(239,68,68,0.25); background: rgba(239,68,68,0.1); color: #f87171; }
+.pr-icon-btn.danger:hover { background: rgba(239,68,68,0.25); box-shadow: 0 0 14px rgba(239,68,68,0.3); border-color: rgba(239,68,68,0.5); }
+
+.pr-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.pr-sidebar {
+    width: 260px;
+    min-width: 200px;
+    background: rgba(255,255,255,0.03);
+    border-right: 1px solid rgba(167,139,250,0.15);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 10px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+body.light-mode .pr-sidebar {
+    background: rgba(255,255,255,0.35);
+    border-color: rgba(124,58,237,0.1);
+}
+.pr-sidebar::-webkit-scrollbar { width: 4px; }
+.pr-sidebar::-webkit-scrollbar-track { background: transparent; }
+.pr-sidebar::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 4px; }
+
+.pr-sidebar-section {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(124,58,237,0.6);
+    margin-bottom: 2px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(124,58,237,0.12);
+}
+
+.pr-upload-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    border: 2px dashed rgba(124,58,237,0.35);
+    background: rgba(124,58,237,0.06);
+    color: #a78bfa;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: center;
+    backdrop-filter: blur(4px);
+}
+.pr-upload-btn:hover {
+    border-color: #7c3aed;
+    background: rgba(124,58,237,0.14);
+    box-shadow: 0 0 14px rgba(124,58,237,0.25);
+}
+
+.pr-history-item {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(124,58,237,0.12);
+    background: rgba(124,58,237,0.05);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    backdrop-filter: blur(6px);
+}
+.pr-history-item:hover {
+    border-color: rgba(124,58,237,0.4);
+    background: rgba(124,58,237,0.12);
+    box-shadow: 0 0 12px rgba(124,58,237,0.2);
+    transform: translateX(2px);
+}
+.pr-history-item .hi-name { font-size: 12px; font-weight: 700; color: #e5e7eb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.light-mode .pr-history-item .hi-name { color: #111827; }
+.pr-history-item .hi-progress { font-size: 10px; color: #6b7280; margin-top: 2px; }
+.pr-history-item .hi-bar { height: 3px; background: rgba(124,58,237,0.12); border-radius: 99px; margin-top: 6px; overflow: hidden; }
+.pr-history-item .hi-bar-fill { height: 100%; background: linear-gradient(90deg, #7c3aed, #4361ee); border-radius: 99px; transition: width 0.4s; }
+.pr-history-del { position: absolute; top: 8px; right: 8px; background: none; border: none; color: #ef4444; font-size: 13px; cursor: pointer; opacity: 0; transition: opacity 0.2s; line-height: 1; padding: 2px; }
+.pr-history-item:hover .pr-history-del { opacity: 1; }
+
+/* Canvas area */
+.pr-canvas-area {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px;
+    background: rgba(0,0,0,0.2);
+    gap: 16px;
+}
+body.light-mode .pr-canvas-area { background: rgba(0,0,0,0.04); }
+.pr-canvas-area::-webkit-scrollbar { width: 5px; }
+.pr-canvas-area::-webkit-scrollbar-track { background: transparent; }
+.pr-canvas-area::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 5px; }
+
+#pdfPageCanvas {
+    border-radius: 10px;
+    box-shadow:
+        0 4px 40px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(167,139,250,0.1);
+    max-width: 100%;
+}
+
+.pr-nav-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.04);
+    border-top: 1px solid rgba(167,139,250,0.15);
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+body.light-mode .pr-nav-bar {
+    background: rgba(255,255,255,0.5);
+    border-top-color: rgba(124,58,237,0.12);
+}
+
+.pr-page-info { font-size: 13px; color: #9ca3af; font-weight: 600; }
+.pr-nav-input {
+    width: 54px;
+    padding: 6px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid rgba(124,58,237,0.3);
+    background: rgba(0,0,0,0.25);
+    color: #e5e7eb;
+    font-size: 13px;
+    font-weight: 700;
+    backdrop-filter: blur(6px);
+}
+body.light-mode .pr-nav-input { background: rgba(255,255,255,0.6); color: #111; }
+
+.pr-zoom { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 6px; margin-left: 8px; }
+
+.pr-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: #4b5563;
+}
+.pr-placeholder svg { opacity: 0.25; }
+.pr-placeholder p { font-size: 14px; font-weight: 600; color: #6b7280; text-align: center; max-width: 260px; line-height: 1.6; }
+
+/* ── localStorage toggle ── */
+.pr-toggle-track {
+    width: 42px;
+    height: 24px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    flex-shrink: 0;
+}
+.pr-toggle-track.on {
+    background: linear-gradient(135deg, #7c3aed, #4361ee);
+    border-color: #a78bfa;
+    box-shadow: 0 0 12px rgba(124,58,237,0.5);
+}
+.pr-toggle-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4b5563;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.pr-toggle-track.on .pr-toggle-thumb {
+    transform: translateX(18px);
+    background: #fff;
+}
+/* ── Settings Feedback ── */
+.fb-stars {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+.fb-star {
+    font-size: 26px;
+    color: #374151;
+    cursor: pointer;
+    transition: color 0.15s, transform 0.15s;
+    user-select: none;
+}
+.fb-star.active { color: #fbbf24; transform: scale(1.15); }
+.fb-star:hover { color: #fbbf24; }
+
+.fb-input {
+    width: 100%;
+    padding: 10px 13px;
+    margin-bottom: 8px;
+    border-radius: 11px;
+    border: 1px solid rgba(124,58,237,0.2);
+    background: rgba(0,0,0,0.25);
+    color: #e5e7eb;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    font-family: inherit;
+    display: block;
+}
+body.light-mode .fb-input { background: rgba(0,0,0,0.05); color: #111; }
+.fb-input:focus { border-color: #a78bfa; }
+.fb-input::placeholder { color: #4b5563; font-size: 12px; }
+
+.fb-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #7c3aed, #4361ee);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.fb-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.45); }
+.fb-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     </style>
 </head>
 
@@ -557,25 +1387,175 @@ body.light-mode .neon-select:hover {
 
 
 
+<!-- ====== SETTINGS MODAL ====== -->
+<div id="settingsOverlay" onclick="closeSettingsOutside(event)">
+    <div id="settingsModal">
+        <div class="settings-modal-header">
+            <span class="settings-modal-title">⚙️ Settings <span class="premium-tag">✦ Ultra Premium</span></span>
+            <button class="settings-close-btn" onclick="closeSettings()">✕</button>
+        </div>
+        <div class="settings-section-label">🎨 Appearance — Theme</div>
+        <div class="theme-cards">
+            <div class="theme-card dark-card active" id="darkCard" onclick="setTheme('dark')">
+                <span class="theme-card-icon">🌑</span>
+                <span class="theme-card-name">Dark Mode</span>
+                <span class="active-badge">✦ On</span>
+            </div>
+            <div class="theme-card light-card" id="lightCard" onclick="setTheme('light')">
+                <span class="theme-card-icon">☀️</span>
+                <span class="theme-card-name">Light Mode</span>
+                <span class="active-badge">✦ On</span>
+            </div>
+        </div>
+        <div class="settings-divider"></div>
+        <div class="settings-section-label">ℹ️ About</div>
+        <p style="font-size:13px; color:#6b7280; margin:0 0 16px 0;">MediaGrabber Pro v1.2.0 — All processing happens locally in your browser. No data is ever uploaded or stored.</p>
+
+        <div class="settings-divider"></div>
+        <div class="settings-section-label">💬 Feedback</div>
+        <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Help us improve MediaGrabber Pro by sharing your thoughts.</p>
+        <button onclick="window.location.href='index (2).html'" style="
+            width:100%;
+            padding:12px;
+            border-radius:12px;
+            border:1px solid rgba(124,58,237,0.3);
+            background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1));
+            color:#a78bfa;
+            font-size:14px;
+            font-weight:700;
+            cursor:pointer;
+            transition:all 0.2s;
+            font-family:inherit;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+        " onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.3),rgba(67,97,238,0.2))';this.style.boxShadow='0 0 16px rgba(124,58,237,0.35)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1))';this.style.boxShadow='none'">
+            💬 Give Feedback
+        </button>
+    </div>
+</div>
+
+<!-- ====== PDF READER AUTH GATE ====== -->
+<div class="pr-overlay" id="prAuthOverlay">
+    <div class="pr-modal" id="prAuthModal">
+        <button class="pr-close" onclick="closePRAuth()">✕</button>
+        <div style="text-align:center; margin-bottom:24px;">
+            <div style="font-size:48px; margin-bottom:12px;"><svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <h2 style="text-align:center;">PDF Reader</h2>
+            <p class="pr-sub" style="text-align:center;">Your personal reading space</p>
+        </div>
+        <div id="prMsg" class="pr-msg"></div>
+        <div id="prNamePanel">
+            <span class="pr-label">What's your name?</span>
+            <input class="pr-input" id="prNameInput" type="text" placeholder="Enter your name to get started" autocomplete="off" onkeydown="if(event.key==='Enter') doEnterName()">
+            <button class="pr-btn" onclick="doEnterName()" style="margin-top:14px;">
+                ✨ Enter PDF Reader
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== PDF READER MAIN VIEW ====== -->
+<div id="pdfReaderView">
+  <div class="pr-glass-panel">
+    <div class="pr-header">
+        <span class="pr-header-title" style="display:inline-flex;align-items:center;gap:7px;"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> PDF Reader</span>
+        <div class="pr-header-user">
+            <span>👤</span><span id="prUserName">Reader</span>
+        </div>
+        <div class="pr-header-btns">
+            <button class="pr-icon-btn" onclick="document.getElementById('prFileInput').click()">➕ Open PDF</button>
+            <input type="file" id="prFileInput" accept="application/pdf" hidden onchange="loadPDFFile(this)">
+            <!-- Close current PDF — only shown when a PDF is loaded -->
+            <button class="pr-icon-btn" id="prClosePdfBtn" onclick="closePDF()" style="display:none; border-color:rgba(251,191,36,0.3); background:rgba(251,191,36,0.08); color:#fbbf24;" title="Close this PDF">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Close PDF
+            </button>
+            <button class="pr-icon-btn danger" onclick="doLogout()" title="Leave PDF Reader">⏏ Logout</button>
+            <button class="pr-icon-btn" onclick="closePDFReader()" style="border-color:rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#9ca3af;" title="Close PDF Reader">✕ Close Reader</button>
+        </div>
+    </div>
+
+    <div class="pr-body">
+        <!-- SIDEBAR: Continue Reading -->
+        <div class="pr-sidebar">
+            <div class="pr-sidebar-section">📚 Continue Reading</div>
+            <div id="prHistoryList"><p style="font-size:12px;color:#4b5563;line-height:1.6;">No history yet.<br>Open a PDF to start.</p></div>
+            <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,0.2),transparent);margin:4px 0;"></div>
+            <div class="pr-sidebar-section">Open New</div>
+            <button class="pr-upload-btn" onclick="document.getElementById('prFileInput').click()">📂 Upload PDF</button>
+
+            <!-- spacer pushes toggle to bottom -->
+            <div style="flex:1;"></div>
+
+            <!-- localStorage toggle -->
+            <div id="prStorageToggleWrap" style="
+                margin-top:12px;
+                padding:12px;
+                border-radius:14px;
+                border:1px solid rgba(124,58,237,0.2);
+                background:rgba(124,58,237,0.05);
+            ">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <div>
+                        <div style="font-size:11px;font-weight:800;color:#a78bfa;letter-spacing:0.5px;">💾 Save History</div>
+                        <div style="font-size:10px;color:#4b5563;margin-top:2px;line-height:1.4;" id="prStorageDesc">Stores reading progress locally</div>
+                    </div>
+                    <div class="pr-toggle-track" id="prStorageTrack" onclick="toggleStorage()">
+                        <div class="pr-toggle-thumb" id="prStorageThumb"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CANVAS -->
+        <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+            <div class="pr-canvas-area" id="prCanvasArea">
+                <div class="pr-placeholder" id="prPlaceholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <p>Open a PDF to start reading</p>
+                </div>
+                <canvas id="pdfPageCanvas" style="display:none;"></canvas>
+            </div>
+
+            <div class="pr-nav-bar" id="prNavBar" style="display:none;">
+                <button class="pr-icon-btn" onclick="prChangePage(-1)">← Prev</button>
+                <span class="pr-page-info">Page</span>
+                <input class="pr-nav-input" id="prPageInput" type="number" min="1" value="1" onchange="prGoToPage(this.value)">
+                <span class="pr-page-info" id="prTotalPages">of 1</span>
+                <button class="pr-icon-btn" onclick="prChangePage(1)">Next →</button>
+                <div class="pr-zoom">
+                    <button class="pr-icon-btn" onclick="prZoom(-0.15)">−</button>
+                    <span id="prZoomLabel">100%</span>
+                    <button class="pr-icon-btn" onclick="prZoom(0.15)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
 <nav>
     <div class="logo-group">
         <img id="logoImg" src="dark mode.png" alt="Media Grabber" class="main-logo">
     </div>
-    
-    <div class="nav-right">
-        <div class="nav-links">
-            <a href="#converter">Converter</a>
-            <a href="#pdf">PDF Tool</a>
-            <a href="#ocr">Smart OCR</a>
-            <a href="#unlocker">PDF Unlocker</a>
-        </div>
 
-        <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
-            <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-        </button>
+    <div class="nav-links">
+        <a href="#converter">Converter</a>
+        <a href="#pdf">PDF Tool</a>
+        <a href="#ocr">Smart OCR</a>
+        <a href="#unlocker">PDF Unlocker</a>
+        <a href="#" onclick="openPDFReaderGate(); return false;" style= "font-weight:700; display:inline-flex; align-items:center; gap:5px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> PDF Reader</a>
     </div>
+
+    <button class="settings-btn" id="settingsBtn" title="Settings" onclick="openSettings()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span style="font-size:13px; font-weight:600;">Settings</span>
+    </button>
 </nav>
 
 <div class="container">
@@ -690,30 +1670,121 @@ body.light-mode .neon-select:hover {
     <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no data is transmitted, monitored, or stored on external servers.</footer>
 </div>
 
-<script>
-// --- THEME & LOGO TOGGLE ---
-const themeToggle = document.getElementById('themeToggle');
-const themeIcon = document.getElementById('themeIcon');
-const logoImg = document.getElementById('logoImg');
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// --- SETTINGS MODAL ---
+// --- SETTINGS FEEDBACK ---
+var _fbRating = 0;
 
-// Assets
-const darkLogo = "dark mode.png"; 
-const lightLogo = "light mode.png";
-
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
-    const isLight = document.body.classList.contains('light-mode');
-    logoImg.src = isLight ? lightLogo : darkLogo;
-    if(isLight) {
-        themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+function setFbRating(val) {
+    _fbRating = val;
+    document.querySelectorAll('.fb-star').forEach(function(s) {
+        s.classList.toggle('active', parseInt(s.dataset.v) <= val);
+    });
+    document.getElementById('fbFields').style.display = 'block';
+    var msg = document.getElementById('fbMsg');
+    var email = document.getElementById('fbEmail');
+    if (val === 5) {
+        msg.placeholder = "Any suggestions or comments? (optional)";
+        email.placeholder = "Your email (optional)";
     } else {
-        themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        msg.placeholder = "How can we improve? (required)";
+        email.placeholder = "Your email (required)";
     }
+}
+
+async function submitSettingsFeedback() {
+    var email = document.getElementById('fbEmail').value.trim();
+    var message = document.getElementById('fbMsg').value.trim();
+    var btn = document.getElementById('fbSubmitBtn');
+
+    if (_fbRating === 0) { alert('Please select a star rating.'); return; }
+
+    if (_fbRating !== 5) {
+        if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+        if (!message) { alert('Please enter your feedback message.'); return; }
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+        var payload = {
+            rating: _fbRating,
+            email: email || '',
+            message: message || '',
+            sentTo: 'singh.darshil2013@gmail.com',
+            timestamp: new Date().toLocaleString()
+        };
+        var res = await fetch(
+            'https://convertor-11437-default-rtdb.firebaseio.com/feedback.json',
+            { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+        );
+        if (!res.ok) throw new Error();
+        document.getElementById('feedbackForm').style.display = 'none';
+        document.getElementById('fbSuccess').style.display = 'block';
+        // Reset after 4s
+        setTimeout(function() {
+            _fbRating = 0;
+            document.getElementById('fbEmail').value = '';
+            document.getElementById('fbMsg').value = '';
+            document.getElementById('fbFields').style.display = 'none';
+            document.querySelectorAll('.fb-star').forEach(function(s) { s.classList.remove('active'); });
+            btn.disabled = false;
+            btn.textContent = 'Send Feedback ✉️';
+            document.getElementById('feedbackForm').style.display = 'block';
+            document.getElementById('fbSuccess').style.display = 'none';
+        }, 4000);
+    } catch(e) {
+        alert('Submission failed. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Send Feedback ✉️';
+    }
+}
+
+function openSettings() {
+    document.getElementById('settingsOverlay').classList.add('open');
+    updateThemeCards();
+}
+function closeSettings() {
+    document.getElementById('settingsOverlay').classList.remove('open');
+}
+function closeSettingsOutside(e) {
+    if (e.target === document.getElementById('settingsOverlay')) closeSettings();
+}
+
+function setTheme(mode) {
+    const logoImg = document.getElementById('logoImg');
+    const darkLogo = "dark mode.png";
+    const lightLogo = "light mode.png";
+    if (mode === 'light') {
+        document.body.classList.add('light-mode');
+        logoImg.src = lightLogo;
+    } else {
+        document.body.classList.remove('light-mode');
+        logoImg.src = darkLogo;
+    }
+    updateThemeCards();
+}
+
+function updateThemeCards() {
+    const isLight = document.body.classList.contains('light-mode');
+    document.getElementById('darkCard').classList.toggle('active', !isLight);
+    document.getElementById('lightCard').classList.toggle('active', isLight);
+}
+
+// Keyboard ESC to close settings
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSettings();
 });
 
 // --- GLOBAL UTILS ---
 const redirectToFeedback = () => {
+    // Only redirect once ever — stored in localStorage (survives tab close/refresh)
+    if (localStorage.getItem("mg_feedback_done") === "true") return;
     if (sessionStorage.getItem("feedbackDone") === "true") return;
+    // Mark as done immediately so multiple tool uses don't stack redirects
+    localStorage.setItem("mg_feedback_done", "true");
+    sessionStorage.setItem("feedbackDone", "true");
     setTimeout(() => { window.location.href = "index (2).html"; }, 1500);
 };
 
@@ -1549,8 +2620,414 @@ window.addEventListener("load", () => {
 
 
 </script>
+
+<!-- Bridge: allows inline HTML onclick to call module-scoped functions -->
+<script>
+function openPDFReaderGate() {
+    if (window._prGate) { window._prGate(); return; }
+    // Check localStorage for saved name
+    const saved = localStorage.getItem('pr_user_name');
+    if (saved) { openPDFReaderDirect(saved); return; }
+    document.getElementById('prAuthOverlay').classList.add('open');
+    setTimeout(() => { const el = document.getElementById('prNameInput'); if(el) el.focus(); }, 200);
+}
+function openPDFReaderDirect(name) {
+    document.getElementById('prAuthOverlay').classList.remove('open');
+    document.getElementById('prUserName').textContent = name;
+    document.getElementById('pdfReaderView').classList.add('open');
+    if (window._loadHistory) window._loadHistory();
+}
+function closePRAuth() { document.getElementById('prAuthOverlay').classList.remove('open'); }
+function doEnterName() { if (window._doEnterName) window._doEnterName(); }
+function toggleStorage() { if (window._toggleStorage) window._toggleStorage(); }
+function closePDF() { if (window._closePDF) window._closePDF(); }
+function doLogout() { if (window._doLogout) window._doLogout(); }
+function closePDFReader() { document.getElementById('pdfReaderView').classList.remove('open'); }
+function loadPDFFile(input) { if (window._loadPDFFile) window._loadPDFFile(input); }
+function prChangePage(d) { if (window._prChangePage) window._prChangePage(d); }
+function prGoToPage(v) { if (window._prGoToPage) window._prGoToPage(v); }
+function prZoom(d) { if (window._prZoom) window._prZoom(d); }
+function deleteHistory(i) { if (window._deleteHistory) window._deleteHistory(i); }
+function resumeReading(i) { if (window._resumeReading) window._resumeReading(i); }
+</script>
+
+
+<!-- PDF Reader: name-only, with localStorage toggle -->
+<script>
+(function() {
+
+    // ═══════════════════════════════════════════
+    // 1. INDEXEDDB — defined first so everything can use it
+    // ═══════════════════════════════════════════
+    var _db = null;
+
+    function openDB() {
+        return new Promise(function(resolve, reject) {
+            if (_db) { resolve(_db); return; }
+            var req = indexedDB.open('PDFReaderDB', 2);
+            req.onupgradeneeded = function(e) {
+                var db = e.target.result;
+                if (!db.objectStoreNames.contains('pdfs')) {
+                    db.createObjectStore('pdfs', { keyPath: 'name' });
+                }
+            };
+            req.onsuccess = function(e) { _db = e.target.result; resolve(_db); };
+            req.onerror = function() { reject(req.error); };
+        });
+    }
+
+    function savePDFData(name, arrayBuffer) {
+        if (!storageEnabled()) return Promise.resolve();
+        // Copy bytes into Uint8Array before storing
+        var bytes = new Uint8Array(arrayBuffer.slice(0));
+        return openDB().then(function(db) {
+            return new Promise(function(resolve, reject) {
+                var tx = db.transaction('pdfs', 'readwrite');
+                var req = tx.objectStore('pdfs').put({ name: name, data: bytes });
+                req.onsuccess = function() { resolve(); };
+                req.onerror = function() { reject(req.error); };
+            });
+        }).catch(function(e) { console.warn('savePDF failed', e); });
+    }
+
+    function getPDFData(name) {
+        return openDB().then(function(db) {
+            return new Promise(function(resolve) {
+                var tx = db.transaction('pdfs', 'readonly');
+                var req = tx.objectStore('pdfs').get(name);
+                req.onsuccess = function() {
+                    if (req.result && req.result.data) {
+                        // Convert Uint8Array back to ArrayBuffer
+                        var u8 = req.result.data;
+                        var buf = u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
+                        resolve(buf);
+                    } else {
+                        resolve(null);
+                    }
+                };
+                req.onerror = function() { resolve(null); };
+            });
+        }).catch(function() { return null; });
+    }
+
+    function deletePDFData(name) {
+        openDB().then(function(db) {
+            var tx = db.transaction('pdfs', 'readwrite');
+            tx.objectStore('pdfs').delete(name);
+        }).catch(function() {});
+    }
+
+    function clearAllPDFData() {
+        openDB().then(function(db) {
+            var tx = db.transaction('pdfs', 'readwrite');
+            tx.objectStore('pdfs').clear();
+        }).catch(function() {});
+    }
+
+    // ═══════════════════════════════════════════
+    // 2. STORAGE TOGGLE
+    // ═══════════════════════════════════════════
+    function storageEnabled() {
+        return localStorage.getItem('pr_storage_off') !== '1';
+    }
+
+    function applyToggleUI() {
+        var on = storageEnabled();
+        var track = document.getElementById('prStorageTrack');
+        var desc  = document.getElementById('prStorageDesc');
+        if (!track) return;
+        if (on) { track.classList.add('on'); } else { track.classList.remove('on'); }
+        desc.textContent = on ? 'History saved to this device' : 'Off — history not saved';
+        if (!prPDFDoc) {
+            var ph = document.getElementById('prPlaceholder');
+            if (ph) {
+                ph.style.display = 'flex';
+                ph.querySelector('p').textContent = 'Open a PDF to start reading';
+            }
+        }
+        renderHistory();
+    }
+
+    window._toggleStorage = window.toggleStorage = function() {
+        if (storageEnabled()) {
+            localStorage.setItem('pr_storage_off', '1');
+            localStorage.removeItem('pr_history');
+            clearAllPDFData();
+        } else {
+            localStorage.removeItem('pr_storage_off');
+        }
+        applyToggleUI();
+    };
+
+    // ═══════════════════════════════════════════
+    // 3. HELPERS
+    // ═══════════════════════════════════════════
+    function showMsg(text, type) {
+        var el = document.getElementById('prMsg');
+        if (!el) return;
+        el.className = 'pr-msg ' + type;
+        el.textContent = text;
+    }
+    function hideMsg() {
+        var el = document.getElementById('prMsg');
+        if (!el) return;
+        el.className = 'pr-msg';
+        el.textContent = '';
+    }
+
+    // ═══════════════════════════════════════════
+    // 4. READING HISTORY (localStorage)
+    // ═══════════════════════════════════════════
+    function getHistory() {
+        if (!storageEnabled()) return [];
+        try { return JSON.parse(localStorage.getItem('pr_history') || '[]'); } catch(e) { return []; }
+    }
+    function saveHistory(arr) {
+        if (!storageEnabled()) return;
+        localStorage.setItem('pr_history', JSON.stringify(arr));
+    }
+    function updateProgress(name, page, total) {
+        if (!storageEnabled()) return;
+        var hist = getHistory();
+        var i = hist.findIndex(function(h) { return h.name === name; });
+        if (i >= 0) hist[i] = { name: name, page: page, total: total };
+        else hist.push({ name: name, page: page, total: total });
+        saveHistory(hist);
+        renderHistory();
+    }
+
+    function renderHistory() {
+        var el = document.getElementById('prHistoryList');
+        if (!el) return;
+        var hist = getHistory();
+        if (!storageEnabled()) {
+            el.innerHTML = '<div style="font-size:11px;color:#6b7280;line-height:1.7;text-align:center;padding:8px 4px;"><div style="font-size:18px;margin-bottom:6px;">💾</div>Turn on <strong style="color:#a78bfa;">Save History</strong> below to track your reading progress.</div>';
+            return;
+        }
+        if (!hist.length) {
+            el.innerHTML = '<p style="font-size:12px;color:#4b5563;line-height:1.6;">No history yet.<br>Open a PDF to start.</p>';
+            return;
+        }
+        el.innerHTML = hist.slice().reverse().map(function(item, ri) {
+            var realIdx = hist.length - 1 - ri;
+            var pct = item.total ? Math.round((item.page / item.total) * 100) : 0;
+            return '<div class="pr-history-item" onclick="resumeReading(' + realIdx + ')">' +
+                '<button class="pr-history-del" onclick="event.stopPropagation();deleteHistory(' + realIdx + ')">✕</button>' +
+                '<div class="hi-name" title="' + item.name + '">' + item.name + '</div>' +
+                '<div class="hi-progress">Page ' + item.page + ' of ' + item.total + ' · ' + pct + '%</div>' +
+                '<div class="hi-bar"><div class="hi-bar-fill" style="width:' + pct + '%"></div></div>' +
+                '</div>';
+        }).join('');
+    }
+
+    window._loadHistory = function() {
+        applyToggleUI();
+        renderHistory();
+    };
+
+    window._deleteHistory = window.deleteHistory = function(idx) {
+        var hist = getHistory();
+        var item = hist[idx];
+        if (item) deletePDFData(item.name);
+        hist.splice(idx, 1);
+        saveHistory(hist);
+        renderHistory();
+    };
+
+    // ═══════════════════════════════════════════
+    // 5. PDF STATE
+    // ═══════════════════════════════════════════
+    var prPDFDoc = null;
+    var prCurrentPage = 1;
+    var prScale = 1.0;
+    var prCurrentFileName = null;
+
+    // ═══════════════════════════════════════════
+    // 6. RESUME READING
+    // ═══════════════════════════════════════════
+    window._resumeReading = window.resumeReading = function(idx) {
+        var hist = getHistory();
+        var item = hist[idx];
+        if (!item) return;
+
+        if (!storageEnabled()) {
+            var ph = document.getElementById('prPlaceholder');
+            ph.style.display = 'flex';
+            ph.querySelector('p').textContent = '💾 Turn on "Save History" below to use continue reading.';
+            document.getElementById('pdfPageCanvas').style.display = 'none';
+            document.getElementById('prNavBar').style.display = 'none';
+            document.getElementById('prClosePdfBtn').style.display = 'none';
+            return;
+        }
+
+        // Same file already open — jump to saved page
+        if (prCurrentFileName === item.name && prPDFDoc) {
+            prCurrentPage = item.page;
+            renderPage(prCurrentPage);
+            return;
+        }
+
+        // Try to load from IndexedDB automatically
+        getPDFData(item.name).then(function(buf) {
+            if (!buf) {
+                // Not in DB yet — open file picker once (will save for next time)
+                window._pendingResume = { name: item.name, page: item.page };
+                document.getElementById('prFileInput').click();
+                return;
+            }
+            var pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+            return pdfjsLib.getDocument({ data: buf }).promise.then(function(pdf) {
+                prPDFDoc = pdf;
+                prCurrentFileName = item.name;
+                prCurrentPage = Math.min(item.page, prPDFDoc.numPages);
+                prScale = 1.0;
+                document.getElementById('prPlaceholder').style.display = 'none';
+                document.getElementById('pdfPageCanvas').style.display = 'block';
+                document.getElementById('prNavBar').style.display = 'flex';
+                document.getElementById('prClosePdfBtn').style.display = 'flex';
+                document.getElementById('prTotalPages').textContent = 'of ' + prPDFDoc.numPages;
+                document.getElementById('prPageInput').max = prPDFDoc.numPages;
+                renderPage(prCurrentPage);
+            });
+        }).catch(function(e) { console.error('resumeReading error', e); });
+    };
+
+    // ═══════════════════════════════════════════
+    // 7. LOAD PDF FILE (from picker)
+    // ═══════════════════════════════════════════
+    window._loadPDFFile = window.loadPDFFile = function(input) {
+        var file = input.files[0];
+        if (!file) return;
+        prCurrentFileName = file.name;
+
+        file.arrayBuffer().then(function(arrayBuffer) {
+            // Save a copy to IndexedDB BEFORE pdf.js touches the buffer
+            var saveBuf = arrayBuffer.slice(0);
+            var loadBuf = arrayBuffer.slice(0);
+
+            savePDFData(file.name, saveBuf);
+
+            var pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+            return pdfjsLib.getDocument({ data: loadBuf }).promise;
+        }).then(function(pdf) {
+            prPDFDoc = pdf;
+            prScale = 1.0;
+
+            var pending = window._pendingResume;
+            if (pending && pending.name === prCurrentFileName && pending.page > 1) {
+                prCurrentPage = Math.min(pending.page, prPDFDoc.numPages);
+                window._pendingResume = null;
+            } else {
+                prCurrentPage = 1;
+                window._pendingResume = null;
+            }
+
+            document.getElementById('prPlaceholder').style.display = 'none';
+            document.getElementById('pdfPageCanvas').style.display = 'block';
+            document.getElementById('prNavBar').style.display = 'flex';
+            document.getElementById('prClosePdfBtn').style.display = 'flex';
+            document.getElementById('prTotalPages').textContent = 'of ' + prPDFDoc.numPages;
+            document.getElementById('prPageInput').max = prPDFDoc.numPages;
+            renderPage(prCurrentPage);
+            input.value = '';
+        }).catch(function(e) { console.error('loadPDFFile error', e); });
+    };
+
+    // ═══════════════════════════════════════════
+    // 8. RENDER PAGE
+    // ═══════════════════════════════════════════
+    function renderPage(pageNum) {
+        if (!prPDFDoc) return;
+        prPDFDoc.getPage(pageNum).then(function(page) {
+            var viewport = page.getViewport({ scale: prScale });
+            var canvas = document.getElementById('pdfPageCanvas');
+            var ctx = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            return page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        }).then(function() {
+            document.getElementById('prPageInput').value = pageNum;
+            document.getElementById('prZoomLabel').textContent = Math.round(prScale * 100) + '%';
+            if (prCurrentFileName) updateProgress(prCurrentFileName, pageNum, prPDFDoc.numPages);
+        }).catch(function(e) { console.error('renderPage error', e); });
+    }
+
+    window._prChangePage = window.prChangePage = function(delta) {
+        if (!prPDFDoc) return;
+        var next = prCurrentPage + delta;
+        if (next < 1 || next > prPDFDoc.numPages) return;
+        prCurrentPage = next;
+        renderPage(prCurrentPage);
+    };
+
+    window._prGoToPage = window.prGoToPage = function(val) {
+        if (!prPDFDoc) return;
+        var n = parseInt(val);
+        if (isNaN(n) || n < 1 || n > prPDFDoc.numPages) return;
+        prCurrentPage = n;
+        renderPage(prCurrentPage);
+    };
+
+    window._prZoom = window.prZoom = function(delta) {
+        prScale = Math.max(0.4, Math.min(3.0, prScale + delta));
+        renderPage(prCurrentPage);
+    };
+
+    // ═══════════════════════════════════════════
+    // 9. AUTH / GATE / LOGOUT / CLOSE
+    // ═══════════════════════════════════════════
+    window._doEnterName = window.doEnterName = function() {
+        var name = document.getElementById('prNameInput').value.trim();
+        if (!name) { showMsg('Please enter your name to continue.', 'error'); return; }
+        localStorage.setItem('pr_user_name', name);
+        hideMsg();
+        document.getElementById('prAuthOverlay').classList.remove('open');
+        document.getElementById('prUserName').textContent = name;
+        document.getElementById('pdfReaderView').classList.add('open');
+        applyToggleUI();
+        renderHistory();
+    };
+
+    window._prGate = function() {
+        var saved = localStorage.getItem('pr_user_name');
+        if (saved) {
+            document.getElementById('prUserName').textContent = saved;
+            document.getElementById('pdfReaderView').classList.add('open');
+            applyToggleUI();
+            renderHistory();
+        } else {
+            hideMsg();
+            document.getElementById('prNameInput').value = '';
+            document.getElementById('prAuthOverlay').classList.add('open');
+            setTimeout(function() {
+                var el = document.getElementById('prNameInput');
+                if (el) el.focus();
+            }, 150);
+        }
+    };
+
+    window._doLogout = window.doLogout = function() {
+        localStorage.removeItem('pr_user_name');
+        prPDFDoc = null; prCurrentPage = 1; prCurrentFileName = null;
+        document.getElementById('pdfReaderView').classList.remove('open');
+        document.getElementById('pdfPageCanvas').style.display = 'none';
+        document.getElementById('prNavBar').style.display = 'none';
+        document.getElementById('prClosePdfBtn').style.display = 'none';
+        document.getElementById('prPlaceholder').style.display = 'flex';
+        document.getElementById('prPlaceholder').querySelector('p').textContent = 'Open a PDF to start reading';
+    };
+
+    window._closePDF = window.closePDF = function() {
+        prPDFDoc = null; prCurrentPage = 1; prCurrentFileName = null;
+        document.getElementById('pdfPageCanvas').style.display = 'none';
+        document.getElementById('prNavBar').style.display = 'none';
+        document.getElementById('prClosePdfBtn').style.display = 'none';
+        var ph = document.getElementById('prPlaceholder');
+        ph.style.display = 'flex';
+        ph.querySelector('p').textContent = 'Open a PDF to start reading';
+    };
+
+})();
+</script>
 </body>
-
 </html>
-
-
