@@ -1376,6 +1376,16 @@ body.light-mode .fb-input { background: rgba(0,0,0,0.05); color: #111; }
 }
 .fb-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.45); }
 .fb-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+
+
+/* 🔒 Lock background scroll */
+body.modal-open {
+    overflow: hidden !important;
+}
+
+
+
     </style>
 </head>
 
@@ -1516,7 +1526,7 @@ body.light-mode .fb-input { background: rgba(0,0,0,0.05); color: #111; }
                     <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     <p>Open a PDF to start reading</p>
                 </div>
-                <canvas id="pdfPageCanvas" style="display:none;"></canvas>
+                <div id="pdfPagesContainer" style="display:none; width:100%; display:none; flex-direction:column; align-items:center; gap:16px;"></div>
             </div>
 
             <div class="pr-nav-bar" id="prNavBar" style="display:none;">
@@ -1742,11 +1752,13 @@ async function submitSettingsFeedback() {
 }
 
 function openSettings() {
-    document.getElementById('settingsOverlay').classList.add('open');
-    updateThemeCards();
+    document.getElementById("settingsOverlay").classList.add("open");
+    document.body.classList.add("modal-open"); // 🔒 lock
 }
+
 function closeSettings() {
-    document.getElementById('settingsOverlay').classList.remove('open');
+    document.getElementById("settingsOverlay").classList.remove("open");
+    document.body.classList.remove("modal-open"); // 🔓 unlock
 }
 function closeSettingsOutside(e) {
     if (e.target === document.getElementById('settingsOverlay')) closeSettings();
@@ -2623,36 +2635,121 @@ window.addEventListener("load", () => {
 
 <!-- Bridge: allows inline HTML onclick to call module-scoped functions -->
 <script>
-function openPDFReaderGate() {
-    if (window._prGate) { window._prGate(); return; }
-    // Check localStorage for saved name
-    const saved = localStorage.getItem('pr_user_name');
-    if (saved) { openPDFReaderDirect(saved); return; }
-    document.getElementById('prAuthOverlay').classList.add('open');
-    setTimeout(() => { const el = document.getElementById('prNameInput'); if(el) el.focus(); }, 200);
+
+/* ==============================
+   SIMPLE BODY SCROLL LOCK
+============================== */
+function lockBodyScroll() {
+    document.body.classList.add("modal-open");
 }
+
+function unlockBodyScroll() {
+    document.body.classList.remove("modal-open");
+}
+
+
+/* ==============================
+   PDF READER OPEN
+============================== */
+
+function openPDFReaderGate() {
+    if (window._prGate) { 
+        window._prGate(); 
+        lockBodyScroll();   // 🔒 LOCK
+        return; 
+    }
+
+    const saved = localStorage.getItem('pr_user_name');
+    if (saved) { 
+        openPDFReaderDirect(saved); 
+        return; 
+    }
+
+    document.getElementById('prAuthOverlay').classList.add('open');
+    lockBodyScroll();   // 🔒 LOCK
+
+    setTimeout(() => { 
+        const el = document.getElementById('prNameInput'); 
+        if(el) el.focus(); 
+    }, 200);
+}
+
+
+/* ==============================
+   DIRECT OPEN (After Name)
+============================== */
+
 function openPDFReaderDirect(name) {
     document.getElementById('prAuthOverlay').classList.remove('open');
     document.getElementById('prUserName').textContent = name;
     document.getElementById('pdfReaderView').classList.add('open');
+
+    lockBodyScroll();   // 🔒 LOCK
+
     if (window._loadHistory) window._loadHistory();
 }
-function closePRAuth() { document.getElementById('prAuthOverlay').classList.remove('open'); }
+
+
+/* ==============================
+   CLOSE AUTH
+============================== */
+
+function closePRAuth() {
+    document.getElementById('prAuthOverlay').classList.remove('open');
+    unlockBodyScroll();   // 🔓 UNLOCK
+}
+
+
+/* ==============================
+   CLOSE READER
+============================== */
+
+function closePDFReader() {
+    document.getElementById('pdfReaderView').classList.remove('open');
+    unlockBodyScroll();   // 🔓 UNLOCK
+}
+
+
+/* ==============================
+   LOGOUT
+============================== */
+
+
+
+function doLogout() {
+    if (window._doLogout) {
+        window._doLogout();
+    }
+
+    // Close both overlays just in case
+    const auth = document.getElementById('prAuthOverlay');
+    const reader = document.getElementById('pdfReaderView');
+
+    if (auth) auth.classList.remove('open');
+    if (reader) reader.classList.remove('open');
+
+    // 🔓 FORCE remove scroll lock completely
+    document.body.classList.remove("modal-open");
+    document.body.style.overflow = "";
+}
+
+
+
+/* ==============================
+   BRIDGE FUNCTIONS (UNCHANGED)
+============================== */
+
 function doEnterName() { if (window._doEnterName) window._doEnterName(); }
 function toggleStorage() { if (window._toggleStorage) window._toggleStorage(); }
 function closePDF() { if (window._closePDF) window._closePDF(); }
-function doLogout() { if (window._doLogout) window._doLogout(); }
-function closePDFReader() { document.getElementById('pdfReaderView').classList.remove('open'); }
 function loadPDFFile(input) { if (window._loadPDFFile) window._loadPDFFile(input); }
 function prChangePage(d) { if (window._prChangePage) window._prChangePage(d); }
 function prGoToPage(v) { if (window._prGoToPage) window._prGoToPage(v); }
 function prZoom(d) { if (window._prZoom) window._prZoom(d); }
 function deleteHistory(i) { if (window._deleteHistory) window._deleteHistory(i); }
 function resumeReading(i) { if (window._resumeReading) window._resumeReading(i); }
+
 </script>
-
-
-<!-- PDF Reader: name-only, with localStorage toggle -->
 <script>
 (function() {
 
@@ -2854,7 +2951,7 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
             var ph = document.getElementById('prPlaceholder');
             ph.style.display = 'flex';
             ph.querySelector('p').textContent = '💾 Turn on "Save History" below to use continue reading.';
-            document.getElementById('pdfPageCanvas').style.display = 'none';
+            document.getElementById('pdfPagesContainer').style.display = 'none';
             document.getElementById('prNavBar').style.display = 'none';
             document.getElementById('prClosePdfBtn').style.display = 'none';
             return;
@@ -2882,11 +2979,10 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
                 prCurrentPage = Math.min(item.page, prPDFDoc.numPages);
                 prScale = 1.0;
                 document.getElementById('prPlaceholder').style.display = 'none';
-                document.getElementById('pdfPageCanvas').style.display = 'block';
+                document.getElementById('pdfPagesContainer').style.display = 'flex';
                 document.getElementById('prNavBar').style.display = 'flex';
                 document.getElementById('prClosePdfBtn').style.display = 'flex';
                 document.getElementById('prTotalPages').textContent = 'of ' + prPDFDoc.numPages;
-                document.getElementById('prPageInput').max = prPDFDoc.numPages;
                 renderPage(prCurrentPage);
             });
         }).catch(function(e) { console.error('resumeReading error', e); });
@@ -2923,41 +3019,74 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
             }
 
             document.getElementById('prPlaceholder').style.display = 'none';
-            document.getElementById('pdfPageCanvas').style.display = 'block';
+            document.getElementById('pdfPagesContainer').style.display = 'flex';
             document.getElementById('prNavBar').style.display = 'flex';
             document.getElementById('prClosePdfBtn').style.display = 'flex';
             document.getElementById('prTotalPages').textContent = 'of ' + prPDFDoc.numPages;
-            document.getElementById('prPageInput').max = prPDFDoc.numPages;
             renderPage(prCurrentPage);
             input.value = '';
         }).catch(function(e) { console.error('loadPDFFile error', e); });
     };
 
     // ═══════════════════════════════════════════
-    // 8. RENDER PAGE
+    // 8. RENDER ALL PAGES VERTICALLY
     // ═══════════════════════════════════════════
-    function renderPage(pageNum) {
+    function renderAllPages() {
         if (!prPDFDoc) return;
-        prPDFDoc.getPage(pageNum).then(function(page) {
-            var viewport = page.getViewport({ scale: prScale });
-            var canvas = document.getElementById('pdfPageCanvas');
-            var ctx = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            return page.render({ canvasContext: ctx, viewport: viewport }).promise;
-        }).then(function() {
-            document.getElementById('prPageInput').value = pageNum;
-            document.getElementById('prZoomLabel').textContent = Math.round(prScale * 100) + '%';
-            if (prCurrentFileName) updateProgress(prCurrentFileName, pageNum, prPDFDoc.numPages);
-        }).catch(function(e) { console.error('renderPage error', e); });
+        var container = document.getElementById('pdfPagesContainer');
+        container.innerHTML = '';
+        container.style.display = 'flex';
+
+        document.getElementById('prZoomLabel').textContent = Math.round(prScale * 100) + '%';
+        document.getElementById('prTotalPages').textContent = 'of ' + prPDFDoc.numPages;
+        var pageInput = document.getElementById('prPageInput');
+        if (pageInput) { pageInput.max = prPDFDoc.numPages; pageInput.value = prCurrentPage; }
+
+        var renderQueue = [];
+        for (var i = 1; i <= prPDFDoc.numPages; i++) {
+            (function(pageNum) {
+                var wrapper = document.createElement('div');
+                wrapper.className = 'pr-page-wrapper';
+                wrapper.style.cssText = 'position:relative; display:flex; flex-direction:column; align-items:center;';
+
+                var label = document.createElement('div');
+                label.style.cssText = 'font-size:11px; color:#6b7280; margin-bottom:6px; font-weight:600;';
+                label.textContent = 'Page ' + pageNum;
+                wrapper.appendChild(label);
+
+                var canvas = document.createElement('canvas');
+                canvas.style.cssText = 'border-radius:10px; box-shadow:0 4px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(167,139,250,0.1); max-width:100%;';
+                wrapper.appendChild(canvas);
+                container.appendChild(wrapper);
+
+                prPDFDoc.getPage(pageNum).then(function(page) {
+                    var viewport = page.getViewport({ scale: prScale });
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    return page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+                }).then(function() {
+                    if (pageNum === 1 && prCurrentFileName) {
+                        updateProgress(prCurrentFileName, prCurrentPage, prPDFDoc.numPages);
+                    }
+                    if (pageNum === prPDFDoc.numPages) {
+                        setupScrollObserver();
+                    }
+                }).catch(function(e) { console.error('renderPage error p' + pageNum, e); });
+            })(i);
+        }
     }
+
+    // Keep backward compat aliases
+    function renderPage(pageNum) { renderAllPages(); }
 
     window._prChangePage = window.prChangePage = function(delta) {
         if (!prPDFDoc) return;
         var next = prCurrentPage + delta;
         if (next < 1 || next > prPDFDoc.numPages) return;
         prCurrentPage = next;
-        renderPage(prCurrentPage);
+        document.getElementById('prPageInput').value = prCurrentPage;
+        scrollToPage(prCurrentPage);
+        if (prCurrentFileName) updateProgress(prCurrentFileName, prCurrentPage, prPDFDoc.numPages);
     };
 
     window._prGoToPage = window.prGoToPage = function(val) {
@@ -2965,12 +3094,51 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
         var n = parseInt(val);
         if (isNaN(n) || n < 1 || n > prPDFDoc.numPages) return;
         prCurrentPage = n;
-        renderPage(prCurrentPage);
+        scrollToPage(prCurrentPage);
+        if (prCurrentFileName) updateProgress(prCurrentFileName, prCurrentPage, prPDFDoc.numPages);
     };
+
+    function scrollToPage(pageNum) {
+        var container = document.getElementById('prCanvasArea');
+        var pages = container.querySelectorAll('.pr-page-wrapper');
+        var target = pages[pageNum - 1];
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    // Auto-update page input + progress when scrolling
+    var _prObserver = null;
+    function setupScrollObserver() {
+        if (_prObserver) _prObserver.disconnect();
+        var container = document.getElementById('prCanvasArea');
+        var pages = container.querySelectorAll('.pr-page-wrapper');
+        _prObserver = new IntersectionObserver(function(entries) {
+            // Pick the entry with highest intersection ratio that is intersecting
+            var best = null;
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    if (!best || entry.intersectionRatio > best.intersectionRatio) best = entry;
+                }
+            });
+            if (!best) return;
+            var idx = Array.prototype.indexOf.call(pages, best.target) + 1;
+            if (idx > 0 && idx !== prCurrentPage) {
+                prCurrentPage = idx;
+                var inp = document.getElementById('prPageInput');
+                if (inp) inp.value = idx;
+                // Save reading progress
+                if (prCurrentFileName && prPDFDoc) {
+                    updateProgress(prCurrentFileName, prCurrentPage, prPDFDoc.numPages);
+                }
+            }
+        }, { root: container, threshold: [0.1, 0.4, 0.6, 1.0] });
+        pages.forEach(function(p) { _prObserver.observe(p); });
+    }
 
     window._prZoom = window.prZoom = function(delta) {
         prScale = Math.max(0.4, Math.min(3.0, prScale + delta));
-        renderPage(prCurrentPage);
+        renderAllPages();
     };
 
     // ═══════════════════════════════════════════
@@ -3006,11 +3174,20 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
         }
     };
 
-    window._doLogout = window.doLogout = function() {
+  window._doLogout = window.doLogout = function() {
+
+    // Your existing logout logic
+    document.getElementById('pdfReaderView').classList.remove('open');
+    document.getElementById('prAuthOverlay').classList.remove('open');
+
+    // 🔓 UNLOCK SCROLL HERE
+    document.body.classList.remove("modal-open");
+    document.body.style.overflow = "";
+
         localStorage.removeItem('pr_user_name');
         prPDFDoc = null; prCurrentPage = 1; prCurrentFileName = null;
         document.getElementById('pdfReaderView').classList.remove('open');
-        document.getElementById('pdfPageCanvas').style.display = 'none';
+        document.getElementById('pdfPagesContainer').style.display = 'none';
         document.getElementById('prNavBar').style.display = 'none';
         document.getElementById('prClosePdfBtn').style.display = 'none';
         document.getElementById('prPlaceholder').style.display = 'flex';
@@ -3019,7 +3196,7 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
 
     window._closePDF = window.closePDF = function() {
         prPDFDoc = null; prCurrentPage = 1; prCurrentFileName = null;
-        document.getElementById('pdfPageCanvas').style.display = 'none';
+        document.getElementById('pdfPagesContainer').style.display = 'none';
         document.getElementById('prNavBar').style.display = 'none';
         document.getElementById('prClosePdfBtn').style.display = 'none';
         var ph = document.getElementById('prPlaceholder');
@@ -3028,6 +3205,7 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
     };
 
 })();
+
 </script>
 </body>
 </html>
