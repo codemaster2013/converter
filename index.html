@@ -1384,6 +1384,78 @@ body.modal-open {
     overflow: hidden !important;
 }
 
+/* --- ADVANCED HOLI GLASSMORPHISM --- */
+.holi-container {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(5, 7, 15, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    animation: fadeIn 0.5s ease;
+}
+
+.holi-glass-card.advanced-border {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    
+    /* Advanced Purple Neon Border */
+    border: 2px solid #8b5cf6;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 
+                inset 0 0 15px rgba(139, 92, 246, 0.2);
+    
+    border-radius: 32px;
+    padding: 60px 40px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    overflow: hidden;
+}
+
+.holi-header {
+    margin-bottom: 20px;
+}
+
+.holi-glass-card h1 {
+    font-size: 3.5rem;
+    margin: 15px 0;
+    background: linear-gradient(90deg, #ff0080, #ffd700, #39ff14, #00f2ff, #ff0080);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 900;
+    animation: shimmer 3s linear infinite;
+}
+
+.holi-glass-card p {
+    color: #e5e7eb;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+
+/* Confetti Particle Styling */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall 3s ease-out forwards;
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes shimmer {
+    to { background-position: 200% center; }
+}
 
 
     </style>
@@ -1392,7 +1464,23 @@ body.modal-open {
 <body>
 
 
-
+<div id="holiOverlay" class="holi-container">
+    <div id="confetti-wrapper"></div>
+    <div class="holi-glass-card advanced-border">
+        <div class="holi-header">
+            <span class="premium-tag">Festival Special</span>
+        </div>
+        <div class="holi-colors">
+            <span class="dot yellow"></span>
+            <span class="dot pink"></span>
+            <span class="dot green"></span>
+            <span class="dot blue"></span>
+        </div>
+        <h1>Happy Holi! 🎨</h1>
+        <p>Wishing you a vibrant and joyful festival of colors from <strong>MediaGrabber Pro</strong>.</p>
+        <button class="btn-primary" onclick="closeHoli()">Enter Website </button>
+    </div>
+</div>
 
 
 
@@ -3206,7 +3294,34 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
 
 })();
 
+function closeHoli() {
+    const wrapper = document.getElementById('confetti-wrapper');
+    const colors = ['#ff0080', '#ffd700', '#39ff14', '#00f2ff', '#8b5cf6'];
+    
+    // Create 50 confetti particles
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        confetti.style.opacity = Math.random();
+        wrapper.appendChild(confetti);
+    }
+
+    // Fade out the overlay
+    const overlay = document.getElementById('holiOverlay');
+    overlay.style.transition = 'opacity 1s ease';
+    overlay.style.opacity = '0';
+    
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 1000);
+}
+
+    
 </script>
 </body>
 </html>
+
 
