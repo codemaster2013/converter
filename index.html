@@ -1384,77 +1384,245 @@ body.modal-open {
     overflow: hidden !important;
 }
 
-/* --- ADVANCED HOLI GLASSMORPHISM --- */
-.holi-container {
-    position: fixed;
-    inset: 0;
-    z-index: 100000;
-    background: rgba(5, 7, 15, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(12px);
-    animation: fadeIn 0.5s ease;
+
+/* Updates Row */
+.updates-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 16px;
+    border-radius:14px;
+    background:rgba(124,58,237,0.08);
+    border:1px solid rgba(124,58,237,0.2);
+    cursor:pointer;
+    transition:all 0.3s;
+}
+.updates-row:hover{
+    box-shadow:0 0 20px rgba(124,58,237,0.4);
+    transform:translateY(-2px);
 }
 
-.holi-glass-card.advanced-border {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    
-    /* Advanced Purple Neon Border */
-    border: 2px solid #8b5cf6;
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 
-                inset 0 0 15px rgba(139, 92, 246, 0.2);
-    
-    border-radius: 32px;
-    padding: 60px 40px;
-    text-align: center;
-    max-width: 500px;
-    width: 90%;
-    position: relative;
-    overflow: hidden;
+/* Blue dot */
+.blue-dot{
+    width:10px;
+    height:10px;
+    background:#3b82f6;
+    border-radius:50%;
+    position:absolute;
+    top:-4px;
+    right:-4px;
+    display:none;
 }
 
-.holi-header {
-    margin-bottom: 20px;
+/* Pulse animation */
+.blue-dot.active{
+    display:block;
+    animation:pulse 1.5s infinite;
 }
 
-.holi-glass-card h1 {
-    font-size: 3.5rem;
-    margin: 15px 0;
-    background: linear-gradient(90deg, #ff0080, #ffd700, #39ff14, #00f2ff, #ff0080);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-weight: 900;
-    animation: shimmer 3s linear infinite;
+@keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(59,130,246,0.7); }
+    70%{ box-shadow:0 0 0 10px rgba(59,130,246,0); }
+    100%{ box-shadow:0 0 0 0 rgba(59,130,246,0); }
 }
 
-.holi-glass-card p {
-    color: #e5e7eb;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 35px;
+/* Bell shake */
+.bell-wrapper.shake{
+    animation:bellShake 0.6s;
+}
+@keyframes bellShake{
+    0%{ transform:rotate(0); }
+    25%{ transform:rotate(15deg); }
+    50%{ transform:rotate(-15deg); }
+    75%{ transform:rotate(10deg); }
+    100%{ transform:rotate(0); }
 }
 
-/* Confetti Particle Styling */
-.confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-    animation: confettiFall 3s ease-out forwards;
+/* Updates Modal Glass */
+#updatesOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(18px);
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+#updatesOverlay.open{
+    display:flex;
 }
 
-@keyframes confettiFall {
-    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+#updatesModal{
+    width:90%;
+    max-width:500px;
+    border-radius:28px;
+    padding:30px;
+    background:rgba(13,6,38,0.55);
+    backdrop-filter:blur(30px);
+    border:1px solid rgba(124,58,237,0.3);
+    box-shadow:0 0 60px rgba(124,58,237,0.3);
+}
+body.light-mode #updatesModal{
+    background:rgba(255,255,255,0.6);
 }
 
-@keyframes shimmer {
-    to { background-position: 200% center; }
+
+/* Header layout */
+.updates-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+}
+
+/* Settings-like glass button */
+.settings-style-btn{
+width:42px;
+height:42px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,0.18);
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(15px);
+-webkit-backdrop-filter:blur(15px);
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:all 0.3s ease;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.settings-style-btn:hover{
+background:rgba(255,255,255,0.12);
+box-shadow:0 0 18px rgba(124,58,237,0.5);
+transform:translateY(-2px);
+}
+
+.settings-style-btn:active{
+transform:scale(0.95);
+}
+
+.update-divider{
+height:1px;
+margin:18px 0;
+background:linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.15),
+    transparent
+);
+opacity:0.6;
+}
+
+/* NEW badge */
+.new-badge{
+display:inline-block;
+margin-left:8px;
+padding:4px 10px;
+font-size:11px;
+font-weight:600;
+border-radius:20px;
+background:#2563eb;
+color:white;
+box-shadow:0 0 12px rgba(37,99,235,0.8);
+animation:pulseGlow 1.5s infinite;
+}
+
+/* Card glow effect */
+.update-card.new-update{
+border:1px solid rgba(37,99,235,0.6);
+box-shadow:0 0 20px rgba(37,99,235,0.35);
+}
+
+/* Glow animation */
+@keyframes pulseGlow{
+0%{box-shadow:0 0 6px rgba(37,99,235,0.5);}
+50%{box-shadow:0 0 18px rgba(37,99,235,1);}
+100%{box-shadow:0 0 6px rgba(37,99,235,0.5);}
+}
+
+
+/* Container that holds all updates */
+.updates-list{
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+/* Each update card */
+.update-card{
+padding:18px 20px;
+border-radius:18px;
+background:rgba(18,20,45,0.85);
+border:1px solid rgba(168,85,247,0.5);
+color:white;
+transition:all 0.3s ease;
+box-shadow:
+0 0 8px rgba(168,85,247,0.4),
+0 0 18px rgba(168,85,247,0.25);
+}
+
+/* Glow effect on hover */
+.update-card:hover{
+box-shadow:
+0 0 12px rgba(168,85,247,0.7),
+0 0 30px rgba(168,85,247,0.45);
+transform:translateY(-2px);
+}
+
+/* Header row */
+.update-header{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+margin-bottom:6px;
+color:#cbd5f5;
+}
+
+/* Message */
+.update-message{
+font-size:14px;
+line-height:1.5;
+color:#e5e7ff;
+}
+
+
+
+
+/* Updates container */
+.updates-list{
+display:flex;
+flex-direction:column;
+gap:14px;
+width:100%;
+}
+
+/* Each update card */
+.update-card{
+padding:18px;
+border-radius:16px;
+background:rgba(20,22,50,0.9);
+border:1px solid rgba(168,85,247,0.6);
+box-shadow:
+0 0 10px rgba(168,85,247,0.5),
+0 0 25px rgba(168,85,247,0.25);
+color:white;
+}
+
+/* header row */
+.update-header{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+margin-bottom:6px;
+}
+
+/* message text */
+.update-message{
+font-size:14px;
+line-height:1.5;
 }
 
 
@@ -1464,25 +1632,113 @@ body.modal-open {
 <body>
 
 
-<div id="holiOverlay" class="holi-container">
-    <div id="confetti-wrapper"></div>
-    <div class="holi-glass-card advanced-border">
-        <div class="holi-header">
-            <span class="premium-tag">Festival Special</span>
-        </div>
-        <div class="holi-colors">
-            <span class="dot yellow"></span>
-            <span class="dot pink"></span>
-            <span class="dot green"></span>
-            <span class="dot blue"></span>
-        </div>
-        <h1>Happy Holi! 🎨</h1>
-        <p>Wishing you a vibrant and joyful festival of colors from <strong>MediaGrabber Pro</strong>.</p>
-        <button class="btn-primary" onclick="closeHoli()">Enter Website </button>
+<!-- Firebase v8 (compatible with your code style) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyC3YUoMC6_jckDdSl8WL0WpYQkV3BCDHQQ",
+  authDomain: "converter-updates1.firebaseapp.com",
+  databaseURL: "https://converter-updates1-default-rtdb.firebaseio.com",
+  projectId: "converter-updates1",
+  storageBucket: "converter-updates1.firebasestorage.app",
+  messagingSenderId: "807472151461",
+  appId: "1:807472151461:web:d4cc2b6c35d037594b464c"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    if(typeof db === "undefined"){
+        console.error("Firebase DB not initialized");
+        return;
+    }
+
+    const updatesContent = document.getElementById("updatesContent");
+
+    if(!updatesContent){
+        console.error("updatesContent element not found");
+        return;
+    }
+
+    db.ref("updates").on("value", snapshot => {
+
+        const data = snapshot.val();
+        updatesContent.innerHTML = "";
+
+        if(!data){
+            updatesContent.innerHTML = "No updates available.";
+            return;
+        }
+
+        let updatesArray = [];
+
+        Object.keys(data).forEach(key=>{
+            if(key !== "latest"){
+                updatesArray.push({...data[key], id:key});
+            }
+        });
+
+        if(updatesArray.length === 0){
+            updatesContent.innerHTML = "No updates available.";
+            return;
+        }
+
+        updatesArray.sort((a,b)=> b.time - a.time);
+
+        updatesArray.forEach(update=>{
+
+            const lastSeen = localStorage.getItem("lastSeenUpdateTime") || 0;
+const isNew = update.time > lastSeen;
+            const card = document.createElement("div");
+            card.className="update-card";
+
+          card.className = "update-card" + (isNew ? " new-update" : "");
+
+card.innerHTML = `
+    <div class="update-header">
+        <span>
+            ${update.label} • ${update.type}
+            ${isNew ? `<span class="new-badge">NEW</span>` : ""}
+        </span>
     </div>
-</div>
+    <div class="update-message">
+        ${update.message}
+    </div>
+`;
+
+            card.addEventListener("click",()=>{
+                card.classList.toggle("expanded");
+            });
+
+         
+
+            updatesContent.appendChild(card);
+            // Add divider except last item
+if(update !== updatesArray[updatesArray.length - 1]){
+    const divider = document.createElement("div");
+    divider.className = "update-divider";
+    updatesContent.appendChild(divider);
+}
+            // Add divider except for last item
+if(update !== updatesArray[updatesArray.length - 1]){
+    const divider = document.createElement("div");
+    divider.className = "update-divider";
+    updatesContent.appendChild(divider);
+}
+        });
+
+    });
+
+});
 
 
+</script>
 
 
 <!-- ====== SETTINGS MODAL ====== -->
@@ -1506,8 +1762,16 @@ body.modal-open {
             </div>
         </div>
         <div class="settings-divider"></div>
-        <div class="settings-section-label">ℹ️ About</div>
-        <p style="font-size:13px; color:#6b7280; margin:0 0 16px 0;">MediaGrabber Pro v1.2.0 — All processing happens locally in your browser. No data is ever uploaded or stored.</p>
+
+<div class="settings-section-label">🔔 Updates</div>
+
+<div class="updates-row" onclick="openUpdates()">
+    <span>App Updates</span>
+    <div class="bell-wrapper">
+        🔔
+        <span id="updateDot" class="blue-dot"></span>
+    </div>
+</div>
 
         <div class="settings-divider"></div>
         <div class="settings-section-label">💬 Feedback</div>
@@ -1532,6 +1796,20 @@ body.modal-open {
             💬 Give Feedback
         </button>
     </div>
+</div>
+
+<div id="updatesOverlay">
+  <div id="updatesModal">
+      <div class="updates-header">
+          <span>🔥 Latest Updates</span>
+          <button id="closeUpdatesBtn" class="settings-style-btn">
+    ✖
+  </button>
+      </div>
+      <div id="updatesContent">
+          Loading updates...
+      </div>
+  </div>
 </div>
 
 <!-- ====== PDF READER AUTH GATE ====== -->
@@ -1636,7 +1914,7 @@ body.modal-open {
 
 <nav>
     <div class="logo-group">
-        <img id="logoImg" src="logo holi.png" alt="Media Grabber" class="main-logo">
+        <img id="logoImg" src="dark mode.png" alt="Media Grabber" class="main-logo">
     </div>
 
     <div class="nav-links">
@@ -1854,8 +2132,8 @@ function closeSettingsOutside(e) {
 
 function setTheme(mode) {
     const logoImg = document.getElementById('logoImg');
-    const darkLogo = "logo holi.png";
-    const lightLogo = "logo holi.png";
+    const darkLogo = "dark mode.png";
+    const lightLogo = "light mode.png";
     if (mode === 'light') {
         document.body.classList.add('light-mode');
         logoImg.src = lightLogo;
@@ -3294,34 +3572,127 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
 
 })();
 
-function closeHoli() {
-    const wrapper = document.getElementById('confetti-wrapper');
-    const colors = ['#ff0080', '#ffd700', '#39ff14', '#00f2ff', '#8b5cf6'];
-    
-    // Create 50 confetti particles
-    for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
-        confetti.style.opacity = Math.random();
-        wrapper.appendChild(confetti);
+
+
+
+
+const updatesContent = document.getElementById("updatesContent");
+const updateDot = document.getElementById("updateDot") || null;
+const bell = document.querySelector(".bell-wrapper") || null;
+
+let lastSeen = localStorage.getItem("lastSeenUpdateTime") || 0;
+
+db.ref("updates").on("value", snapshot => {
+
+    const data = snapshot.val();
+
+    if(!data){
+        updatesContent.innerHTML = "No updates available.";
+        return;
     }
 
-    // Fade out the overlay
-    const overlay = document.getElementById('holiOverlay');
-    overlay.style.transition = 'opacity 1s ease';
-    overlay.style.opacity = '0';
-    
-    setTimeout(() => {
-        overlay.style.display = 'none';
-    }, 1000);
+    let updatesArray = [];
+
+    Object.keys(data).forEach(key => {
+        if(key !== "latest"){
+            updatesArray.push(data[key]);
+        }
+    });
+
+    if(updatesArray.length === 0){
+        updatesContent.innerHTML = "No updates available.";
+        return;
+    }
+
+    // Sort by time descending
+    updatesArray.sort((a,b)=> b.time - a.time);
+
+    const latestUpdate = updatesArray[0];
+
+    updatesContent.innerHTML = `
+        <div style="
+            padding:20px;
+            border-radius:18px;
+            background:rgba(124,58,237,0.08);
+            border:1px solid rgba(124,58,237,0.3);
+            margin-top:10px;
+        ">
+            <div style="font-size:12px;color:#a78bfa;margin-bottom:6px;">
+                ${latestUpdate.label} • ${latestUpdate.type}
+            </div>
+            <div style="font-size:15px;">
+                ${latestUpdate.message}
+            </div>
+        </div>
+    `;
+
+    if(latestUpdate.time > lastSeen){
+      if(updateDot) updateDot.classList.add("active");
+      if(bell) bell.classList.add("shake");
+        setTimeout(()=> bell.classList.remove("shake"), 800);
+    }
+
+});
+
+function openUpdates(){
+
+    const overlay = document.getElementById("updatesOverlay");
+    if(!overlay) return;
+
+    overlay.classList.add("open");
+    document.body.classList.add("modal-open");
+
+    db.ref("updates").once("value").then(snapshot=>{
+        const data = snapshot.val();
+        if(!data) return;
+
+        let updatesArray = [];
+
+        Object.keys(data).forEach(key => {
+            if(key !== "latest"){
+                updatesArray.push(data[key]);
+            }
+        });
+
+        updatesArray.sort((a,b)=> b.time - a.time);
+
+        if(updatesArray.length > 0){
+            document.querySelectorAll(".update-card").forEach(card=>{
+    card.classList.remove("new-update");
+});
+        }
+
+        if(updateDot){
+            updateDot.classList.remove("active");
+        }
+    });
 }
 
-    
+
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const overlay = document.getElementById("updatesOverlay");
+
+    // ESC key closes Updates
+    document.addEventListener("keydown", function(e){
+        if(e.key === "Escape"){
+            if(overlay && overlay.classList.contains("open")){
+                overlay.classList.remove("open");
+                document.body.classList.remove("modal-open");
+            }
+        }
+    });
+
+});
+
+
+document.getElementById("closeUpdatesBtn").addEventListener("click", function(){
+    document.getElementById("updatesOverlay").classList.remove("open");
+});
+
+
 </script>
 </body>
 </html>
-
 
