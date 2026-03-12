@@ -12,30 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-
-
-
-
-<!-- Favicons -->
-<link rel="icon" href="favicon1.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon1.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon1-16x16.png">
-<link rel="manifest" href="site1.webmanifest">
-
-
 <style>
-
-
-
-
-
-
-
-
-
-
 
 /* --- THE BRIGHTER PURPLE NEON GLOW --- */
 input:focus, select:focus, textarea:focus {
@@ -2537,6 +2514,84 @@ body{
   #scrollTopBtn { bottom: 20px; right: 16px; padding: 10px 16px; font-size: 12px; }
 }
 
+
+/* ============================
+   SWITCH MODE CARD (Settings)
+============================ */
+#switchModeOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  justify-content: center;
+  align-items: center;
+}
+#switchModeOverlay.open { display: flex; }
+
+#switchModeCard {
+  background: linear-gradient(145deg, rgba(8,4,20,0.97), rgba(16,8,35,0.98));
+  border: 1px solid rgba(255,215,0,0.35);
+  border-radius: 28px;
+  padding: 36px 28px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px rgba(255,215,0,0.08),
+    0 0 50px rgba(255,215,0,0.12),
+    0 0 100px rgba(114,9,183,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: smcPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes smcPop {
+  from { opacity:0; transform: scale(0.82) translateY(24px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.smc-icon { font-size: 42px; margin-bottom: 14px; display:block; }
+.smc-title {
+  font-family: 'Cinzel', serif;
+  font-size: 17px; font-weight: 900;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #fff8dc, #ffd700, #b8860b);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: goldShimmer 3s linear infinite;
+}
+.smc-sub {
+  font-size: 12px; color: #5a4a2a;
+  margin-bottom: 24px; line-height: 1.7;
+}
+.smc-btns { display: flex; flex-direction: column; gap: 10px; }
+.smc-btn {
+  padding: 15px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,215,0,0.22);
+  background: rgba(255,215,0,0.04);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: flex; align-items: center; gap: 12px;
+  text-align: left; width: 100%;
+}
+.smc-btn:hover {
+  background: rgba(255,215,0,0.11);
+  border-color: var(--vip-gold);
+  box-shadow: 0 4px 22px rgba(255,215,0,0.13);
+  transform: translateY(-2px);
+}
+.smc-btn-icon { font-size: 24px; flex-shrink: 0; }
+.smc-btn-label { font-size: 13px; font-weight: 700; color: var(--vip-gold); display: block; }
+.smc-btn-desc  { font-size: 11px; color: #5a4a2a; margin-top: 2px; display: block; line-height: 1.4; }
+.smc-cancel {
+  margin-top: 14px; background: none; border: none;
+  color: #4a3a1a; font-size: 12px; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: color 0.2s;
+}
+.smc-cancel:hover { color: #9ca3af; }
+
 </style>
 </head>
 <body>
@@ -2552,6 +2607,33 @@ body{
 </button>
 
 
+
+
+<!-- SWITCH MODE CARD -->
+<div id="switchModeOverlay" onclick="smcOutsideClick(event)">
+  <div id="switchModeCard">
+    <span class="smc-icon">🔄</span>
+    <div class="smc-title">How do you want to switch?</div>
+    <div class="smc-sub">You currently have VIP set as default.<br>Choose how you'd like to go back.</div>
+    <div class="smc-btns">
+      <button class="smc-btn" onclick="smcOnce()">
+        <span class="smc-btn-icon">👣</span>
+        <div>
+          <span class="smc-btn-label">Just this once</span>
+          <span class="smc-btn-desc">Go back now. VIP still opens next time you visit.</span>
+        </div>
+      </button>
+      <button class="smc-btn" onclick="smcForever()">
+        <span class="smc-btn-icon">🔓</span>
+        <div>
+          <span class="smc-btn-label">Switch forever</span>
+          <span class="smc-btn-desc">Remove VIP as default. Main site opens next time.</span>
+        </div>
+      </button>
+    </div>
+    <button class="smc-cancel" onclick="closeSwitchMode()">✕ Cancel</button>
+  </div>
+</div>
 
 <!-- BACK CHOICE CARD -->
 <div id="backChoiceOverlay" onclick="bcOutsideClick(event)">
@@ -2627,7 +2709,7 @@ var db = firebase.database();
 
         <div class="settings-divider"></div>
         <div class="settings-section-label">🔙 Navigation</div>
-        <button onclick="closeSettings(); launchBackLoader();" style="
+        <button onclick="closeSettings(); setTimeout(openSwitchModeOrLoader, 250);" style="
             width:100%;
             padding:13px;
             border-radius:12px;
@@ -3409,7 +3491,10 @@ function openSettings() {
 
 function closeSettings() {
     document.getElementById("settingsOverlay").classList.remove("open");
-    unlockScroll();
+    // Don't unlock if switch mode card is open or about to open
+    if (!document.getElementById('switchModeOverlay').classList.contains('open')) {
+        unlockScroll();
+    }
 }
 function closeSettingsOutside(e) {
     if (e.target === document.getElementById('settingsOverlay')) closeSettings();
@@ -5588,5 +5673,50 @@ function unlockScroll(){
 })();
 </script>
 
+<script>
+// ============================================================
+//  SWITCH MODE CARD
+// ============================================================
+function openSwitchModeOrLoader() {
+  // From settings: always show the card if VIP is default, else go straight to loader
+  if (localStorage.getItem('mgp_vip_default') === '1') {
+    var overlay = document.getElementById('switchModeOverlay');
+    overlay.classList.add('open');
+    overlay.style.display = 'flex';
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    launchBackLoader();
+  }
+}
+
+function closeSwitchMode() {
+  var overlay = document.getElementById('switchModeOverlay');
+  overlay.classList.remove('open');
+  overlay.style.display = '';
+  document.body.classList.remove('modal-open');
+  document.body.style.overflow = '';
+}
+
+function smcOutsideClick(e) {
+  if (e.target === document.getElementById('switchModeOverlay')) closeSwitchMode();
+}
+
+function smcOnce() {
+  // Go back this time only — keep VIP as default for next visit
+  closeSwitchMode();
+  setTimeout(launchBackLoader, 180);
+}
+
+function smcForever() {
+  // Clear default — main site will open next time
+  localStorage.removeItem('mgp_vip_default');
+  // Also restore the nav Back to App button
+  var backBtn = document.querySelector('.vip-back-btn');
+  if (backBtn) backBtn.style.display = '';
+  closeSwitchMode();
+  setTimeout(launchBackLoader, 180);
+}
+</script>
 </body>
 </html>
