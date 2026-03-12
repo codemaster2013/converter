@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-    <!-- VIP AUTO-REDIRECT: must run before anything renders -->
+<!-- VIP AUTO-REDIRECT: runs before anything renders -->
 <script>
 (function(){
-  if(localStorage.getItem('mgp_vip_default')==='1'){
+  // "Just once" from settings — skip redirect this one time, then VIP resumes
+  if(localStorage.getItem('mgp_skip_once')==='1'){
+    localStorage.removeItem('mgp_skip_once');
+  } else if(localStorage.getItem('mgp_vip_default')==='1'){
     window.location.replace('index (3).html');
   }
 })();

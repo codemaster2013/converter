@@ -5703,7 +5703,8 @@ function smcOutsideClick(e) {
 }
 
 function smcOnce() {
-  // Go back this time only — keep VIP as default for next visit
+  // Set a one-time flag so index.html skips the VIP redirect just this once
+  localStorage.setItem('mgp_skip_once', '1');
   closeSwitchMode();
   setTimeout(launchBackLoader, 180);
 }
