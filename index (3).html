@@ -1983,10 +1983,15 @@ body {
 .vip-section-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,215,0,0.2),transparent); }
 
 /* VIP Card */
+.vB64PickCard.active {
+  background: rgba(255,215,0,0.14) !important;
+  border-color: rgba(255,215,0,0.6) !important;
+  box-shadow: 0 0 14px rgba(255,215,0,0.18);
+}
 .vip-card {
   background:linear-gradient(145deg,rgba(255,215,0,0.04),rgba(180,110,0,0.05));
   border:1px solid var(--vip-gold-border); border-radius:22px; padding:28px 24px;
-  margin-bottom:20px; position:relative; overflow:hidden; transition:all 0.3s;
+  margin-bottom:20px; position:relative; overflow:visible; transition:all 0.3s;
   width:100%; box-sizing:border-box; word-break:break-word; max-width:860px; margin-left:auto; margin-right:auto;
 }
 .vip-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--vip-gold),transparent); opacity:0; transition:opacity 0.3s; }
@@ -2034,6 +2039,14 @@ body {
 }
 .g-sel:focus { border-color:var(--vip-gold); box-shadow:0 0 0 3px rgba(255,215,0,0.08); }
 .g-sel option { background:#0c0818; color:#f5f0dc; }
+.vB64PickCard { user-select:none; }
+.vB64PickCard.active {
+  background: linear-gradient(135deg,rgba(255,215,0,0.18),rgba(180,110,0,0.12)) !important;
+  border-color: rgba(255,215,0,0.7) !important;
+  box-shadow: 0 0 0 2px rgba(255,215,0,0.15), 0 4px 16px rgba(255,215,0,0.12);
+  transform: translateY(-2px);
+}
+.vB64PickCard.active div:first-child { filter: drop-shadow(0 0 6px rgba(255,215,0,0.5)); }
 .g-lbl { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#7a5a0a; margin-top:14px; display:block; }
 .g-upload {
   border:2px dashed rgba(255,215,0,0.25); background:rgba(255,215,0,0.02);
@@ -2592,6 +2605,66 @@ body{
 }
 .smc-cancel:hover { color: #9ca3af; }
 
+
+/* ── Base64 Styled Dropdown — Gold Theme ── */
+.vB64DD { position:relative; width:100%; margin-top:8px; }
+.vB64DD-btn {
+  width:100%; padding:13px 16px; border-radius:10px;
+  background:linear-gradient(135deg,#1a0f00,#2a1800);
+  border:1.5px solid rgba(255,215,0,0.5);
+  color:#ffd700; font-size:12px; font-weight:800;
+  letter-spacing:1px; text-transform:uppercase;
+  cursor:pointer; display:flex; align-items:center;
+  justify-content:space-between; gap:10px;
+  box-shadow:inset 0 1px 0 rgba(255,215,0,0.06), 0 3px 14px rgba(0,0,0,0.5);
+  transition:border-color 0.2s,box-shadow 0.2s;
+  font-family:inherit; box-sizing:border-box;
+}
+.vB64DD-btn:hover { border-color:rgba(255,215,0,0.9); box-shadow:inset 0 1px 0 rgba(255,215,0,0.08),0 0 20px rgba(255,215,0,0.15); }
+.vB64DD-arrow {
+  width:0; height:0; flex-shrink:0;
+  border-left:7px solid transparent;
+  border-right:7px solid transparent;
+  border-top:9px solid #b8860b;
+  transition:transform 0.2s;
+}
+.vB64DD.open .vB64DD-arrow { transform:rotate(180deg); }
+.vB64DD-list {
+  display:none;
+  background:linear-gradient(160deg,#1a0f00,#120a00);
+  border:1.5px solid rgba(255,215,0,0.4);
+  border-top:none; border-radius:0 0 10px 10px;
+  overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,0.7);
+  z-index:99999;
+}
+.vB64DD.open .vB64DD-list { display:block; }
+.vB64DD-item {
+  padding:11px 16px; cursor:pointer;
+  font-size:12px; font-weight:600; color:#c8a44a;
+  display:flex; align-items:center; gap:11px;
+  border-bottom:1px solid rgba(255,215,0,0.08);
+  transition:background 0.13s,color 0.13s;
+}
+.vB64DD-item:last-child { border-bottom:none; }
+.vB64DD-item:hover { background:rgba(255,215,0,0.1); color:#ffd700; }
+.vB64DD-item.selected { background:rgba(255,215,0,0.08); color:#ffd700; }
+.vB64DD-icon { font-size:16px; flex-shrink:0; }
+.vB64DD-sub { font-size:9px; color:#7a5a0a; font-weight:500; margin-top:1px; }
+/* CC pills */
+.vB64CCScroll { overflow-x:auto; margin-top:6px; padding-bottom:3px; }
+.vB64CCScroll::-webkit-scrollbar { height:3px; }
+.vB64CCScroll::-webkit-scrollbar-thumb { background:rgba(255,215,0,0.2); border-radius:3px; }
+.vB64CCPills { display:flex; gap:5px; padding:2px 0; }
+.vB64CCPill {
+  flex-shrink:0; padding:5px 10px; border-radius:7px;
+  border:1px solid rgba(255,215,0,0.2);
+  background:rgba(255,215,0,0.04);
+  cursor:pointer; font-size:11px; font-weight:700;
+  color:#a07820; font-family:monospace; white-space:nowrap;
+  transition:all 0.13s;
+}
+.vB64CCPill:hover { background:rgba(255,215,0,0.14); color:#ffd700; border-color:rgba(255,215,0,0.55); }
+.vB64CCPill.active { background:rgba(255,215,0,0.18); color:#ffd700; border-color:rgba(255,215,0,0.7); }
 </style>
 </head>
 <body>
@@ -3156,6 +3229,7 @@ var db = firebase.database();
       <input type="file" id="vMetaIn" accept="image/*" hidden onchange="vInspectMeta(this)">
     </label>
     <div id="vMetaResult" style="display:none;margin-top:14px;">
+      <button onclick="vCopyAllMeta()" style="width:100%;margin-bottom:10px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.35);background:rgba(255,215,0,0.08);color:var(--vip-gold);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,215,0,0.16)'" onmouseout="this.style.background='rgba(255,215,0,0.08)'">📋 Copy All</button>
       <div class="meta-grid" id="vMetaGrid"></div>
     </div>
   </div>
@@ -3199,24 +3273,86 @@ var db = firebase.database();
     <span class="vip-card-icon">💾</span>
     <div class="vip-card-title">Image ↔ Base64 Encoder</div>
     <div class="vip-card-desc">Convert images to Base64 strings for embedding in code — or decode Base64 back to a downloadable image.</div>
-    <span class="g-lbl" style="margin-top:0;">Encode: Image → Base64</span>
-    <label class="g-upload" for="vB64In" style="margin-top:8px;">
-      <span style="font-size:28px;">🖼️</span>
-      <p>Upload image to encode</p>
-      <input type="file" id="vB64In" accept="image/*" hidden onchange="vEncodeB64(this)">
-    </label>
-    <textarea class="g-result-box" id="vB64Out" style="display:none;min-height:70px;font-family:monospace;font-size:10px;margin-top:8px;" placeholder="Base64 string..."></textarea>
+    <span class="g-lbl" style="margin-top:0;">Encode: Select Type</span>
+    <!-- Encode type picker -->
+    <div class="vB64DD" id="vB64EncDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64EncDD')"><span id="vB64EncDD_label">&#128444;&#65039; Image</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64EncDD_item_image" onclick="vB64DDSelectEnc('image','vB64EncDD')"><span class="vB64DD-icon">&#128444;&#65039;</span><div><div>Image</div><div class="vB64DD-sub">JPG · PNG · WEBP · GIF</div></div></div><div class="vB64DD-item" id="vB64EncDD_item_text" onclick="vB64DDSelectEnc('text','vB64EncDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Text</div><div class="vB64DD-sub">Any plain text</div></div></div><div class="vB64DD-item" id="vB64EncDD_item_contact" onclick="vB64DDSelectEnc('contact','vB64EncDD')"><span class="vB64DD-icon">&#128100;</span><div><div>Contact</div><div class="vB64DD-sub">vCard · Phone · Email</div></div></div><div class="vB64DD-item" id="vB64EncDD_item_binary" onclick="vB64DDSelectEnc('binary','vB64EncDD')"><span class="vB64DD-icon">&#9881;&#65039;</span><div><div>Binary</div><div class="vB64DD-sub">010101 · Any file</div></div></div></div></div>
+
+    <!-- Image upload (default) -->
+    <div id="vB64PanelImage" style="margin-top:10px;">
+      <input type="file" id="vB64In" accept="image/*" style="display:none" onchange="vEncodeB64(this)">
+      <button class="btn-vip btn-vip-solid" style="width:100%;padding:14px;" onclick="document.getElementById('vB64In').click()">🖼️ Choose Image</button>
+    </div>
+
+    <!-- Text input -->
+    <div id="vB64PanelText" style="display:none;margin-top:10px;">
+      <textarea id="vB64TextIn" class="g-inp" placeholder="Type or paste your text here..." style="min-height:80px;resize:vertical;font-family:monospace;font-size:12px;"></textarea>
+      <button class="btn-vip btn-vip-solid" style="width:100%;margin-top:8px;" onclick="vEncodeText()">⚡ Encode Text</button>
+    </div>
+
+    <!-- Contact input -->
+    <div id="vB64PanelContact" style="display:none;margin-top:10px;">
+      <input class="g-inp" id="vB64ContactName" placeholder="Full Name" style="margin-top:0;">
+
+      <div class="vB64DD" id="vB64CFDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64CFDD')"><span id="vB64CFDD_label">&#128222; Phone only</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64CFDD_item_phone" onclick="vB64DDSelectCF('phone','vB64CFDD')"><span class="vB64DD-icon">&#128222;</span><div><div>Phone only</div><div class="vB64DD-sub">Phone number only</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_email" onclick="vB64DDSelectCF('email','vB64CFDD')"><span class="vB64DD-icon">&#128231;</span><div><div>Email only</div><div class="vB64DD-sub">Email address only</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_both" onclick="vB64DDSelectCF('both','vB64CFDD')"><span class="vB64DD-icon">&#128222;&#128231;</span><div><div>Phone &amp; Email</div><div class="vB64DD-sub">Both phone and email</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_trio" onclick="vB64DDSelectCF('trio','vB64CFDD')"><span class="vB64DD-icon">&#128222;&#128231;&#127962;</span><div><div>Trio</div><div class="vB64DD-sub">Phone, Email &amp; Organisation</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_all" onclick="vB64DDSelectCF('all','vB64CFDD')"><span class="vB64DD-icon">&#128100;</span><div><div>All fields</div><div class="vB64DD-sub">Full vCard</div></div></div></div></div>
+
+      <!-- Phone row -->
+      <div id="vB64ContactPhoneRow" style="margin-top:8px;">
+        <div style="display:block;">
+          <!-- Country code picker -->
+          <div class="vB64CCScroll"><div class="vB64CCPills" id="vB64CCPillsRow"><div class="vB64CCPill" onclick="vB64SetCC('custom')">&#9999;&#65039; Custom</div><div class="vB64CCPill" id="cc_p1" onclick="vB64SetCC('+1')">+1</div><div class="vB64CCPill" id="cc_p7" onclick="vB64SetCC('+7')">+7</div><div class="vB64CCPill" id="cc_p20" onclick="vB64SetCC('+20')">+20</div><div class="vB64CCPill" id="cc_p27" onclick="vB64SetCC('+27')">+27</div><div class="vB64CCPill" id="cc_p30" onclick="vB64SetCC('+30')">+30</div><div class="vB64CCPill" id="cc_p31" onclick="vB64SetCC('+31')">+31</div><div class="vB64CCPill" id="cc_p32" onclick="vB64SetCC('+32')">+32</div><div class="vB64CCPill" id="cc_p33" onclick="vB64SetCC('+33')">+33</div><div class="vB64CCPill" id="cc_p34" onclick="vB64SetCC('+34')">+34</div><div class="vB64CCPill" id="cc_p36" onclick="vB64SetCC('+36')">+36</div><div class="vB64CCPill" id="cc_p39" onclick="vB64SetCC('+39')">+39</div><div class="vB64CCPill" id="cc_p40" onclick="vB64SetCC('+40')">+40</div><div class="vB64CCPill" id="cc_p41" onclick="vB64SetCC('+41')">+41</div><div class="vB64CCPill" id="cc_p44" onclick="vB64SetCC('+44')">+44</div><div class="vB64CCPill" id="cc_p45" onclick="vB64SetCC('+45')">+45</div><div class="vB64CCPill" id="cc_p46" onclick="vB64SetCC('+46')">+46</div><div class="vB64CCPill" id="cc_p47" onclick="vB64SetCC('+47')">+47</div><div class="vB64CCPill" id="cc_p48" onclick="vB64SetCC('+48')">+48</div><div class="vB64CCPill" id="cc_p49" onclick="vB64SetCC('+49')">+49</div><div class="vB64CCPill" id="cc_p51" onclick="vB64SetCC('+51')">+51</div><div class="vB64CCPill" id="cc_p52" onclick="vB64SetCC('+52')">+52</div><div class="vB64CCPill" id="cc_p55" onclick="vB64SetCC('+55')">+55</div><div class="vB64CCPill" id="cc_p57" onclick="vB64SetCC('+57')">+57</div><div class="vB64CCPill" id="cc_p60" onclick="vB64SetCC('+60')">+60</div><div class="vB64CCPill" id="cc_p61" onclick="vB64SetCC('+61')">+61</div><div class="vB64CCPill" id="cc_p62" onclick="vB64SetCC('+62')">+62</div><div class="vB64CCPill" id="cc_p63" onclick="vB64SetCC('+63')">+63</div><div class="vB64CCPill" id="cc_p65" onclick="vB64SetCC('+65')">+65</div><div class="vB64CCPill" id="cc_p66" onclick="vB64SetCC('+66')">+66</div><div class="vB64CCPill" id="cc_p81" onclick="vB64SetCC('+81')">+81</div><div class="vB64CCPill" id="cc_p82" onclick="vB64SetCC('+82')">+82</div><div class="vB64CCPill" id="cc_p84" onclick="vB64SetCC('+84')">+84</div><div class="vB64CCPill" id="cc_p86" onclick="vB64SetCC('+86')">+86</div><div class="vB64CCPill" id="cc_p90" onclick="vB64SetCC('+90')">+90</div><div class="vB64CCPill" id="cc_p91" onclick="vB64SetCC('+91')">+91</div><div class="vB64CCPill" id="cc_p92" onclick="vB64SetCC('+92')">+92</div><div class="vB64CCPill" id="cc_p93" onclick="vB64SetCC('+93')">+93</div><div class="vB64CCPill" id="cc_p94" onclick="vB64SetCC('+94')">+94</div><div class="vB64CCPill" id="cc_p98" onclick="vB64SetCC('+98')">+98</div><div class="vB64CCPill" id="cc_p212" onclick="vB64SetCC('+212')">+212</div><div class="vB64CCPill" id="cc_p213" onclick="vB64SetCC('+213')">+213</div><div class="vB64CCPill" id="cc_p216" onclick="vB64SetCC('+216')">+216</div><div class="vB64CCPill" id="cc_p234" onclick="vB64SetCC('+234')">+234</div><div class="vB64CCPill" id="cc_p254" onclick="vB64SetCC('+254')">+254</div><div class="vB64CCPill" id="cc_p256" onclick="vB64SetCC('+256')">+256</div><div class="vB64CCPill" id="cc_p966" onclick="vB64SetCC('+966')">+966</div><div class="vB64CCPill" id="cc_p971" onclick="vB64SetCC('+971')">+971</div><div class="vB64CCPill" id="cc_p972" onclick="vB64SetCC('+972')">+972</div><div class="vB64CCPill" id="cc_p974" onclick="vB64SetCC('+974')">+974</div><div class="vB64CCPill" id="cc_p977" onclick="vB64SetCC('+977')">+977</div></div></div>
+          <input class="g-inp" id="vB64ContactPhone" placeholder="Phone number" style="width:100%;margin-top:8px;box-sizing:border-box;">
+        </div>
+        <div id="vB64CCCustomWrap" style="display:none;margin-top:6px;">
+          <input class="g-inp" id="vB64CCCustom" placeholder="Enter custom code e.g. +123" style="margin-top:0;" oninput="_vB64CC=this.value">
+        </div>
+      </div>
+
+      <!-- Email row -->
+      <div id="vB64ContactEmailRow" style="display:none;margin-top:6px;">
+        <input class="g-inp" id="vB64ContactEmail" placeholder="Email Address" style="margin-top:0;">
+      </div>
+
+      <!-- Org row -->
+      <div id="vB64ContactOrgRow" style="display:none;margin-top:6px;">
+        <input class="g-inp" id="vB64ContactOrg" placeholder="Organisation" style="margin-top:0;">
+      </div>
+
+      <button class="btn-vip btn-vip-solid" style="width:100%;margin-top:10px;" onclick="vEncodeContact()">⚡ Encode Contact</button>
+    </div>
+
+    <!-- Binary -->
+
+    <div id="vB64PanelBinary" style="display:none;margin-top:10px;">
+      <!-- Binary mode picker -->
+      <div class="vB64DD" id="vB64BMDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64BMDD')"><span id="vB64BMDD_label">&#128193; File</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64BMDD_item_file" onclick="vB64DDSelectBM('file','vB64BMDD')"><span class="vB64DD-icon">&#128193;</span><div><div>File</div><div class="vB64DD-sub">Upload any file</div></div></div><div class="vB64DD-item" id="vB64BMDD_item_text" onclick="vB64DDSelectBM('text','vB64BMDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Text → Bits</div><div class="vB64DD-sub">Type text → 10101010</div></div></div></div></div>
+      <!-- File mode -->
+      <div id="vB64BinFilePanel" style="margin-top:8px;">
+        <input type="file" id="vB64BinaryIn" style="display:none" onchange="vEncodeBinary(this)">
+        <button class="btn-vip btn-vip-solid" style="width:100%;padding:13px;" onclick="document.getElementById('vB64BinaryIn').click()">📁 Choose File</button>
+        <div id="vB64BinaryName" style="font-size:11px;color:#7a5a0a;margin-top:6px;text-align:center;"></div>
+      </div>
+      <!-- Text → binary mode -->
+      <div id="vB64BinTextPanel" style="display:none;margin-top:8px;">
+        <textarea id="vB64BinTextIn" class="g-inp" placeholder="Type text to convert to 10101010 binary bits…" style="min-height:70px;resize:vertical;font-family:monospace;font-size:12px;"></textarea>
+        <button class="btn-vip btn-vip-solid" style="width:100%;margin-top:8px;" onclick="vEncodeBinaryText()">⚡ Convert to 10101010 Binary</button>
+      </div>
+    </div>
+
+    <textarea class="g-result-box" id="vB64Out" style="display:none;min-height:70px;font-family:monospace;font-size:10px;margin-top:8px;" placeholder="Result..."></textarea>
     <div id="vB64Btns" style="display:none;gap:7px;margin-top:7px;flex-wrap:wrap;">
-      <button class="btn-vip" onclick="vCopyB64(event)">📋 Copy Base64</button>
+      <button class="btn-vip" id="vB64CopyBtn" onclick="vCopyB64(event)">📋 Copy Base64</button>
+      <button class="btn-vip" id="vB64SiteOnlyBtn" onclick="vCopySiteOnly(event)" style="display:none;">🔒 Copy for This Site Only</button>
       <button class="btn-vip" onclick="vDlB64Txt()">💾 Save .txt</button>
     </div>
-    <span class="g-lbl" style="margin-top:16px;">Decode: Base64 → Image</span>
-    <textarea class="g-inp" id="vB64DecIn" placeholder="Paste Base64 string here..." style="min-height:70px;margin-top:8px;resize:vertical;"></textarea>
-    <button class="btn-vip" style="margin-top:8px;" onclick="vDecodeB64()">🔄 Decode to Image</button>
-    <div id="vB64DecWrap" style="display:none;margin-top:10px;text-align:center;">
-      <img id="vB64DecImg" style="max-width:100%;max-height:180px;border-radius:11px;border:1px solid var(--vip-gold-border);" alt="Decoded">
-      <br><button class="btn-vip" style="margin-top:9px;max-width:180px;" onclick="vDlDecImg()">⬇ Download Image</button>
+    <div id="vB64SiteOnlyInfo" style="display:none;margin-top:8px;padding:10px 13px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.25);border-radius:10px;font-size:11px;color:#7a5a0a;line-height:1.6;">
+      🔒 <b style="color:var(--vip-gold);">Site-only string copied!</b> Paste it in the Decode box on <b style="color:var(--vip-gold);">this site only</b> — it won't work anywhere else.
     </div>
+    <span class="g-lbl" style="margin-top:18px;">Decode</span>
+    <div class="vB64DD" id="vB64DecDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64DecDD')"><span id="vB64DecDD_label">&#128444;&#65039; Decode to Image</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64DecDD_item_image" onclick="vB64DDSelectDec('image','vB64DecDD')"><span class="vB64DD-icon">&#128444;&#65039;</span><div><div>Decode to Image</div><div class="vB64DD-sub">View decoded image</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_text" onclick="vB64DDSelectDec('text','vB64DecDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Decode to Text</div><div class="vB64DD-sub">Read decoded text</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_contact" onclick="vB64DDSelectDec('contact','vB64DecDD')"><span class="vB64DD-icon">&#128100;</span><div><div>Decode to Contact</div><div class="vB64DD-sub">Parse vCard fields</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_binary" onclick="vB64DDSelectDec('binary','vB64DecDD')"><span class="vB64DD-icon">&#9881;&#65039;</span><div><div>Binary Bits to Text</div><div class="vB64DD-sub">Paste 01010101 → get text</div></div></div></div></div>
+
+    <textarea class="g-inp" id="vB64DecIn" placeholder="Paste Base64 string here…" style="min-height:70px;margin-top:8px;resize:vertical;font-family:monospace;font-size:11px;"></textarea>
+    <button class="btn-vip btn-vip-solid" style="margin-top:8px;width:100%;" id="vB64DecBtn" onclick="vDecodeB64()">🔄 Decode to Image</button>
+    <div id="vB64DecWrap" style="display:none;margin-top:10px;"></div>
   </div>
 
   <!-- COLOR PALETTE EXTRACTOR -->
@@ -4403,25 +4539,23 @@ function unlockBodyScroll() {
 ============================== */
 
 function openPDFReaderGate() {
-    if (window._prGate) { 
-        window._prGate(); 
-        lockBodyScroll();   // 🔒 LOCK
-        return; 
+    var saved = localStorage.getItem('pr_user_name');
+    if (saved) {
+        // Already has a name — open reader directly
+        document.getElementById('prUserName').textContent = saved;
+        document.getElementById('pdfReaderView').classList.add('open');
+        document.body.classList.add('modal-open');
+        if (window._loadHistory) window._loadHistory();
+        return;
     }
-
-    const saved = localStorage.getItem('pr_user_name');
-    if (saved) { 
-        openPDFReaderDirect(saved); 
-        return; 
-    }
-
+    // No name yet — show auth screen
+    document.getElementById('prNameInput').value = '';
     document.getElementById('prAuthOverlay').classList.add('open');
-    lockBodyScroll();   // 🔒 LOCK
-
-    setTimeout(() => { 
-        const el = document.getElementById('prNameInput'); 
-        if(el) el.focus(); 
-    }, 200);
+    document.body.classList.add('modal-open');
+    setTimeout(function() {
+        var el = document.getElementById('prNameInput');
+        if (el) el.focus();
+    }, 150);
 }
 
 
@@ -4446,7 +4580,8 @@ function openPDFReaderDirect(name) {
 
 function closePRAuth() {
     document.getElementById('prAuthOverlay').classList.remove('open');
-    unlockBodyScroll();   // 🔓 UNLOCK
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
 }
 
 
@@ -4456,7 +4591,8 @@ function closePRAuth() {
 
 function closePDFReader() {
     document.getElementById('pdfReaderView').classList.remove('open');
-    unlockBodyScroll();   // 🔓 UNLOCK
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
 }
 
 
@@ -4499,7 +4635,8 @@ function prZoom(d) { if (window._prZoom) window._prZoom(d); }
 function deleteHistory(i) { if (window._deleteHistory) window._deleteHistory(i); }
 function resumeReading(i) { if (window._resumeReading) window._resumeReading(i); }
 
-
+</script>
+<script>
 (function() {
 
     // ═══════════════════════════════════════════
@@ -5308,46 +5445,93 @@ async function vRunOcr(){
   }catch(e){stat.textContent='⚠ OCR failed: '+e.message;}
   btn.disabled=false;
 }
-function vCopyOcr(e){var t=document.getElementById('vOcrResult').value;if(!t)return;navigator.clipboard.writeText(t);e.currentTarget.textContent='✓ Copied!';setTimeout(function(){e.currentTarget.textContent='📋 Copy';},2000);vToast('✦ Copied!');}
+function vCopyOcr(e){var t=document.getElementById('vOcrResult').value;if(!t)return;_vCopyText(t,e.currentTarget,'📋 Copy');}
 function vDlOcrTxt(){var t=document.getElementById('vOcrResult').value;if(!t)return;var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='ocr_vip.txt';a.click();}
 function vDlOcrPdf(){var t=document.getElementById('vOcrResult').value;if(!t)return;var {jsPDF}=window.jspdf;var doc=new jsPDF();doc.setFontSize(12);var lines=doc.splitTextToSize(t,180);doc.text(lines,15,20);doc.save('ocr_vip.pdf');}
+
+// ============================================================
+//  UNIVERSAL COPY HELPER (HTTP + HTTPS)
+// ============================================================
+function _vCopyText(text, btn, label){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      _vCopyDone(btn,label);
+    }).catch(function(){ _vCopyFallback(text,btn,label); });
+  } else { _vCopyFallback(text,btn,label); }
+}
+function _vCopyFallback(text,btn,label){
+  var ta=document.createElement('textarea');
+  ta.value=text;
+  ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{ document.execCommand('copy'); _vCopyDone(btn,label); }
+  catch(e){ vToast('⚠ Copy failed — select manually'); }
+  document.body.removeChild(ta);
+}
+function _vCopyDone(btn,label){
+  vToast('✦ Copied!');
+  if(btn){ btn.textContent='✓ Copied!'; if(label) setTimeout(function(){ btn.textContent=label; },2000); }
+}
 
 // ============================================================
 //  PDF UNLOCKER
 // ============================================================
 async function vRemovePass(){
   var file=document.getElementById('vUnlockIn').files[0];
-  var password=document.getElementById('vUnlockPass').value;
-  var stat=document.getElementById('vUnlockStat');var btn=event.target;
+  var password=document.getElementById('vUnlockPass').value.trim();
+  var stat=document.getElementById('vUnlockStat');
+  var btn=event.target;
   if(!file){vToast('⚠ Upload a PDF first');return;}
-  btn.disabled=true;stat.textContent='Checking file...';
+  btn.disabled=true;
+  stat.style.color='#7a5a0a';stat.textContent='🔍 Reading PDF...';
   try{
-    var ab=await file.arrayBuffer();
-    var loadTask=pdfjsLib.getDocument({data:ab});
+    var fileBytes=await file.arrayBuffer();
     var pdf;
     try{
-      pdf=await loadTask.promise;
-      stat.style.color='#ffd700';stat.textContent='💡 This PDF has no password protection.';
-      btn.disabled=false;return;
-    }catch(err){
-      if(err.name==='PasswordException'){
-        if(!password){stat.textContent='🔑 Protected. Enter the password to unlock.';btn.disabled=false;return;}
-        pdf=await pdfjsLib.getDocument({data:ab,password:password}).promise;
-      }else{throw err;}
+      pdf=await pdfjsLib.getDocument({data:fileBytes.slice(0)}).promise;
+      stat.style.color='#ffd700';stat.textContent='💡 This PDF has no password — downloading original.';
+      var dl=document.createElement('a');
+      dl.href=URL.createObjectURL(new Blob([fileBytes],{type:'application/pdf'}));
+      dl.download='unlocked_'+file.name;
+      document.body.appendChild(dl);dl.click();document.body.removeChild(dl);
+      btn.disabled=false;vToast('✦ PDF downloaded!');return;
+    }catch(e1){
+      if(e1.name!=='PasswordException'){throw e1;}
+      if(!password){
+        stat.style.color='#ef4444';
+        stat.textContent='🔑 Password protected — enter the password above then click again.';
+        btn.disabled=false;return;
+      }
     }
-    var {jsPDF}=window.jspdf;var outPdf=new jsPDF();
+    stat.textContent='🔑 Unlocking with password...';
+    try{
+      pdf=await pdfjsLib.getDocument({data:fileBytes.slice(0),password:password}).promise;
+    }catch(e2){
+      stat.style.color='#ef4444';stat.textContent='❌ Wrong password — please try again.';
+      btn.disabled=false;vToast('⚠ Wrong password');return;
+    }
+    var jsPDF=window.jspdf.jsPDF;var outPdf=null;
     for(var i=1;i<=pdf.numPages;i++){
-      stat.textContent='Processing page '+i+' of '+pdf.numPages+'...';
-      var page=await pdf.getPage(i);var vp=page.getViewport({scale:2});
+      stat.textContent='⏳ Page '+i+' of '+pdf.numPages+'...';
+      await new Promise(function(r){setTimeout(r,20);});
+      var page=await pdf.getPage(i);
+      var orig=page.getViewport({scale:1});
+      var vp=page.getViewport({scale:2});
       var cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;
       await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
-      var imgData=cv.toDataURL('image/jpeg',0.95);
-      if(i>1)outPdf.addPage();
-      outPdf.addImage(imgData,'JPEG',0,0,outPdf.internal.pageSize.getWidth(),outPdf.internal.pageSize.getHeight());
+      var imgData=cv.toDataURL('image/jpeg',0.92);
+      var wMm=orig.width*0.352778,hMm=orig.height*0.352778;
+      var orient=wMm>hMm?'l':'p';
+      if(!outPdf){outPdf=new jsPDF({orientation:orient,unit:'mm',format:[wMm,hMm],compress:true});}
+      else{outPdf.addPage([wMm,hMm],orient);}
+      outPdf.addImage(imgData,'JPEG',0,0,wMm,hMm,'','FAST');
     }
     outPdf.save('unlocked_'+file.name);
-    stat.style.color='#4ade80';stat.textContent='✅ Successfully Unlocked!';vToast('✦ PDF Unlocked!');
-  }catch(e){stat.style.color='#ef4444';stat.textContent='❌ Failed: Wrong password or corrupted file.';}
+    stat.style.color='#4ade80';stat.textContent='✅ Unlocked & downloaded!';vToast('✦ PDF Unlocked!');
+  }catch(e){
+    stat.style.color='#ef4444';stat.textContent='❌ Error: '+(e.message||'Could not process this PDF.');
+    console.error('vRemovePass',e);
+  }
   btn.disabled=false;
 }
 
@@ -5372,12 +5556,24 @@ function vInspectMeta(inp){
     var grid=document.getElementById('vMetaGrid');grid.innerHTML='';
     Object.entries(data).forEach(function(e){
       var item=document.createElement('div');item.className='meta-item';
-      item.innerHTML='<div class="meta-key">'+e[0]+'</div><div class="meta-val">'+e[1]+'</div>';
+      item.title='Tap to copy '+e[0];item.style.cursor='pointer';
+      item.innerHTML='<div class="meta-key">'+e[0]+'</div><div class="meta-val">'+e[1]+'</div>'
+        +'<div style="font-size:9px;color:rgba(255,215,0,0.35);margin-top:4px;">Tap to copy</div>';
+      item.addEventListener('click',function(){
+        _vCopyText(e[0]+': '+e[1],null,null);vToast('✦ '+e[0]+': '+e[1]+' copied!');
+      });
       grid.appendChild(item);
     });
+    window._vMetaData=data;
     document.getElementById('vMetaResult').style.display='block';vToast('✦ Metadata loaded!');
   };
   img.src=url;
+}
+
+function vCopyAllMeta(){
+  if(!window._vMetaData){vToast('⚠ No metadata loaded');return;}
+  var text=Object.entries(window._vMetaData).map(function(e){return e[0]+': '+e[1];}).join('\n');
+  _vCopyText(text,null,null);vToast('✦ All metadata copied!');
 }
 
 // ============================================================
@@ -5420,25 +5616,374 @@ async function vBulkResize(){
 // ============================================================
 //  BASE64 ENCODER/DECODER
 // ============================================================
+var _MGP_KEY='MGP-VIP-2026-MEDIAGRABBER-SECRET-KEY';
+var _MGP_START='MGP::';var _MGP_END='::MGP';
+function _mgpXor(s,k){var o='';for(var i=0;i<s.length;i++)o+=String.fromCharCode(s.charCodeAt(i)^k.charCodeAt(i%k.length));return o;}
+function _mgpEncode(d){var s=_mgpXor(d,_MGP_KEY);return _MGP_START+btoa(unescape(encodeURIComponent(s)))+_MGP_END;}
+function _mgpDecode(s){var inner=s.slice(_MGP_START.length,s.length-_MGP_END.length);return _mgpXor(decodeURIComponent(escape(atob(inner))),_MGP_KEY);}
+
+// ── Dropdown engine ──
+function vB64DDToggle(id){
+  var dd=document.getElementById(id);
+  if(!dd)return;
+  var isOpen=dd.classList.contains('open');
+  // close all
+  document.querySelectorAll('.vB64DD.open').forEach(function(d){d.classList.remove('open');});
+  if(!isOpen) dd.classList.add('open');
+}
+document.addEventListener('click',function(e){
+  document.querySelectorAll('.vB64DD.open').forEach(function(d){
+    if(!d.contains(e.target)) d.classList.remove('open');
+  });
+});
+function vB64DDSetLabel(ddId, text){
+  var lbl=document.getElementById(ddId+'_label');
+  if(lbl) lbl.textContent=text;
+  var dd=document.getElementById(ddId);
+  if(dd) dd.classList.remove('open');
+}
+function vB64DDSetActive(ddId, val){
+  document.querySelectorAll('#'+ddId+' .vB64DD-item').forEach(function(el){
+    el.classList.toggle('selected', el.id===ddId+'_item_'+val);
+  });
+}
+// Enc selector
+function vB64DDSelectEnc(val, ddId){
+  var labels={image:'🖼️ Image', text:'📝 Text', contact:'👤 Contact', binary:'⚙️ Binary'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  window._vB64EncType = val;
+  vB64SelectType(val);
+}
+// Dec selector
+function vB64DDSelectDec(val, ddId){
+  var labels={image:'🖼️ Decode to Image', text:'📝 Decode to Text', contact:'👤 Decode to Contact', binary:'⚙️ Binary Bits to Text'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  vB64SetDecType(val);
+}
+// Contact fields selector
+function vB64DDSelectCF(val, ddId){
+  var labels={phone:'📞 Phone only', email:'📧 Email only', both:'📞 Phone & Email', trio:'📞 Trio', all:'👤 All fields'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  vB64SetContactFields(val);
+}
+// Binary mode selector
+function vB64DDSelectBM(val, ddId){
+  var labels={file:'📁 File', text:'📝 Text → Bits'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  vB64SetBinaryMode(val);
+}
+// Country code pills
+function vB64SetCC(val){
+  document.querySelectorAll('.vB64CCPill').forEach(function(p){p.classList.remove('active');});
+  var idc=val==='custom'?'custom':val.replace('+','p');
+  var pill=document.getElementById('cc_'+idc)||document.querySelector('.vB64CCPill[onclick*="'+val+'"]');
+  if(pill) pill.classList.add('active');
+  var cw=document.getElementById('vB64CCCustomWrap');
+  if(val==='custom'){_vB64CCIsCustom=true;if(cw)cw.style.display='block';}
+  else{_vB64CCIsCustom=false;_vB64CC=val;if(cw)cw.style.display='none';}
+}
+
+var _vB64CC='+1', _vB64CCIsCustom=false, _vB64DecType='image';
+window._vB64EncType='image';
+window._vB64BinSubMode='file';
+
+function vB64SetActiveCard(){}
+function vB64ResetCard(){}
+
+function vB64SelectType(type){
+  vB64SetActiveCard('vB64EncPicker', type);
+  ['Image','Text','Contact','Binary'].forEach(function(p){
+    var el=document.getElementById('vB64Panel'+p);
+    if(el) el.style.display=(p.toLowerCase()===type)?'block':'none';
+  });
+  var sob=document.getElementById('vB64SiteOnlyBtn');
+  if(sob) sob.style.display=(type==='image')?'inline-flex':'none';
+  var out=document.getElementById('vB64Out');
+  if(out){out.style.display='none';out.value='';}
+  var btns=document.getElementById('vB64Btns');
+  if(btns) btns.style.display='none';
+  var info=document.getElementById('vB64SiteOnlyInfo');
+  if(info) info.style.display='none';
+}
+
+function vB64SetContactFields(mode){
+  vB64SetActiveCard('vB64CFPicker', mode);
+  var showPhone=['phone','both','trio','all'].indexOf(mode)!==-1;
+  var showEmail=['email','both','trio','all'].indexOf(mode)!==-1;
+  var showOrg=['trio','all'].indexOf(mode)!==-1;
+  var pr=document.getElementById('vB64ContactPhoneRow');
+  var er=document.getElementById('vB64ContactEmailRow');
+  var or2=document.getElementById('vB64ContactOrgRow');
+  if(pr) pr.style.display=showPhone?'block':'none';
+  if(er) er.style.display=showEmail?'block':'none';
+  if(or2) or2.style.display=showOrg?'block':'none';
+}
+
+function vB64SetCCFromSelect(val){ vB64SetCC(val); }
+function _vB64SetCCFromSelect_ORIG(val){
+  // Highlight selected pill
+  var picker=document.getElementById('vB64CCPicker');
+  if(picker){
+    picker.querySelectorAll('div').forEach(function(d){
+      d.classList.remove('ccActive');
+      d.style.background='rgba(255,215,0,0.04)';
+      d.style.color='#f5f0dc';
+      d.style.borderColor='rgba(255,215,0,0.18)';
+    });
+    var active=document.getElementById('vB64CC__'+(val==='custom'?'custom':val.replace('+','p')));
+    if(active){
+      active.classList.add('ccActive');
+      active.style.background='rgba(255,215,0,0.18)';
+      active.style.color='var(--vip-gold)';
+      active.style.borderColor='rgba(255,215,0,0.6)';
+    }
+  }
+  var cw=document.getElementById('vB64CCCustomWrap');
+  if(val==='custom'){_vB64CCIsCustom=true;if(cw)cw.style.display='block';}
+  else{_vB64CCIsCustom=false;_vB64CC=val;if(cw)cw.style.display='none';}
+}
+
+function vB64SetBinaryMode(mode){
+  vB64SetActiveCard('vB64BMPicker', mode);
+  window._vB64BinSubMode = mode;
+  var fp=document.getElementById('vB64BinFilePanel');
+  var tp=document.getElementById('vB64BinTextPanel');
+  if(fp) fp.style.display=(mode==='file')?'block':'none';
+  if(tp) tp.style.display=(mode==='text')?'block':'none';
+}
+
+function vB64SetDecType(type){
+  _vB64DecType=type;
+  vB64SetActiveCard('vB64DecPicker', type);
+  var lbl={image:'Decode to Image',text:'Decode to Text',contact:'Decode to Contact',binary:'Binary Bits to Text'};
+  var btn=document.getElementById('vB64DecBtn');
+  if(btn) btn.textContent='Decode: '+(lbl[type]||type);
+  var inp=document.getElementById('vB64DecIn');
+  if(inp){
+    var ph={image:'Paste Base64 string here...',text:'Paste Base64 string here...',contact:'Paste Base64 vCard string here...',binary:'Paste binary bits here e.g. 01001000 01100101 01101100 01101100 01101111'};
+    inp.placeholder=ph[type]||'Paste here...';
+  }
+  var wrap=document.getElementById('vB64DecWrap');
+  if(wrap){wrap.style.display='none';wrap.innerHTML='';}
+}
+
+function _vB64ShowResult(str){
+  var isBinaryText = (window._vB64EncType==='binary' && window._vB64BinSubMode==='text');
+  var isBinaryFile = (window._vB64EncType==='binary' && window._vB64BinSubMode==='file');
+  var isBinary = isBinaryText || isBinaryFile;
+  var out=document.getElementById('vB64Out');
+  out.style.display='block'; out.value=str;
+  if(isBinaryText){
+    out.placeholder='10101010 binary bits...';
+    out.style.color='#4ade80';
+  } else if(isBinaryFile){
+    out.placeholder='Binary file encoded as Base64...';
+    out.style.color='#4ade80';
+  } else {
+    out.placeholder='Base64 string...';
+    out.style.color='';
+  }
+  out.style.fontFamily='monospace';
+  // copy button label
+  var cpBtn=document.getElementById('vB64CopyBtn');
+  if(cpBtn) cpBtn.textContent = isBinary ? '\uD83D\uDCCB Copy Binary' : '\uD83D\uDCCB Copy Base64';
+  document.getElementById('vB64Btns').style.display='flex';
+  var sob=document.getElementById('vB64SiteOnlyBtn');
+  if(sob) sob.style.display=(window._vB64EncType==='image')?'inline-flex':'none';
+  var info=document.getElementById('vB64SiteOnlyInfo');
+  if(info) info.style.display='none';
+  vToast(isBinary ? 'Binary encoded!' : 'Encoded!');
+}
+
 function vEncodeB64(inp){
   var f=inp.files[0];if(!f)return;
   var r=new FileReader();
-  r.onload=function(e){
-    var out=document.getElementById('vB64Out');out.style.display='block';out.value=e.target.result;
-    var btns=document.getElementById('vB64Btns');btns.style.display='flex';vToast('✦ Encoded!');
-  };
+  r.onload=function(e){_vB64ShowResult(e.target.result);};
   r.readAsDataURL(f);
 }
-function vCopyB64(e){var v=document.getElementById('vB64Out').value;if(!v)return;navigator.clipboard.writeText(v);e.currentTarget.textContent='✓ Copied!';setTimeout(function(){e.currentTarget.textContent='📋 Copy Base64';},2000);vToast('✦ Base64 copied!');}
-function vDlB64Txt(){var v=document.getElementById('vB64Out').value;if(!v)return;var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([v],{type:'text/plain'}));a.download='image_base64.txt';a.click();}
-function vDecodeB64(){
-  var input=document.getElementById('vB64DecIn').value.trim();if(!input){vToast('⚠ Paste a Base64 string');return;}
-  var src=input.startsWith('data:')?input:'data:image/png;base64,'+input;
-  var img=document.getElementById('vB64DecImg');img.src=src;
-  img.onerror=function(){vToast('⚠ Invalid Base64 image');};
-  img.onload=function(){document.getElementById('vB64DecWrap').style.display='block';vToast('✦ Image decoded!');};
+
+function vEncodeText(){
+  var txt=document.getElementById('vB64TextIn').value;
+  if(!txt){vToast('Enter some text');return;}
+  _vB64ShowResult(btoa(unescape(encodeURIComponent(txt))));
 }
-function vDlDecImg(){var s=document.getElementById('vB64DecImg').src;if(!s)return;var a=document.createElement('a');a.href=s;a.download='decoded_image.png';a.click();}
+
+function vEncodeContact(){
+  var name=document.getElementById('vB64ContactName').value.trim();
+  var pr=document.getElementById('vB64ContactPhoneRow');
+  var er=document.getElementById('vB64ContactEmailRow');
+  var or2=document.getElementById('vB64ContactOrgRow');
+  var phone=(pr&&pr.style.display!=='none')?document.getElementById('vB64ContactPhone').value.trim():'';
+  var email=(er&&er.style.display!=='none')?document.getElementById('vB64ContactEmail').value.trim():'';
+  var org=(or2&&or2.style.display!=='none')?document.getElementById('vB64ContactOrg').value.trim():'';
+  if(!name){vToast('Enter a name');return;}
+  var cc=_vB64CCIsCustom?(document.getElementById('vB64CCCustom').value.trim()||''):_vB64CC;
+  var fullPhone=phone?(cc+phone):'';
+  var vcard='BEGIN:VCARD\nVERSION:3.0\nFN:'+name+'\n';
+  if(org) vcard+='ORG:'+org+'\n';
+  if(fullPhone) vcard+='TEL:'+fullPhone+'\n';
+  if(email) vcard+='EMAIL:'+email+'\n';
+  vcard+='END:VCARD';
+  _vB64ShowResult(btoa(unescape(encodeURIComponent(vcard))));
+}
+
+function vEncodeBinary(inp){
+  var f=inp.files[0];if(!f)return;
+  document.getElementById('vB64BinaryName').textContent=f.name+' ('+(f.size/1024).toFixed(1)+' KB)';
+  var r=new FileReader();
+  r.onload=function(e){
+    var bytes=new Uint8Array(e.target.result);
+    var bits='';
+    for(var i=0;i<bytes.byteLength;i++){
+      var b=bytes[i].toString(2);
+      while(b.length<8) b='0'+b;
+      bits+=b+' ';
+    }
+    _vB64ShowResult(bits.trim());
+  };
+  r.readAsArrayBuffer(f);
+}
+
+function vEncodeBinaryText(){
+  var txt=document.getElementById('vB64BinTextIn').value;
+  if(!txt){vToast('Enter some text');return;}
+  window._vB64BinSubMode='text';
+  var bits='';
+  for(var i=0;i<txt.length;i++){var b=txt.charCodeAt(i).toString(2);while(b.length<8)b='0'+b;bits+=b+' ';}
+  _vB64ShowResult(bits.trim());
+}
+
+function vCopyB64(e){
+  var v=document.getElementById('vB64Out').value;if(!v)return;
+  var isBinary=(window._vB64EncType==='binary');
+  _vCopyText(v,e.currentTarget,isBinary?'Copy Binary':'Copy Base64');
+}
+function vCopySiteOnly(e){
+  var v=document.getElementById('vB64Out').value;
+  if(!v){vToast('Encode an image first');return;}
+  _vCopyText(_mgpEncode(v),e.currentTarget,'Copy for This Site Only');
+  document.getElementById('vB64SiteOnlyInfo').style.display='block';
+}
+function vDlB64Txt(){
+  var v=document.getElementById('vB64Out').value;if(!v)return;
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([v],{type:'text/plain'}));
+  a.download='base64.txt';a.click();
+}
+
+function vDecodeB64(){
+  var input=document.getElementById('vB64DecIn').value.trim();
+  if(!input){vToast('Paste a Base64 string');return;}
+  if(_vB64DecType!=='binary' && input.startsWith(_MGP_START)&&input.endsWith(_MGP_END)){
+    try{input=_mgpDecode(input);}catch(e){vToast('Could not decode site-only string');return;}
+  }
+  var wrap=document.getElementById('vB64DecWrap');
+  wrap.style.display='none';wrap.innerHTML='';
+
+  if(_vB64DecType==='image'){
+    var imgEl=document.createElement('img');
+    imgEl.id='vB64DecImg';
+    imgEl.style.cssText='max-width:100%;max-height:200px;border-radius:11px;border:1px solid rgba(255,215,0,0.2);display:block;margin:0 auto;';
+    var dlBtn=document.createElement('button');
+    dlBtn.className='btn-vip';dlBtn.style.cssText='margin-top:8px;width:100%;';
+    dlBtn.textContent='Download Image';dlBtn.onclick=vDlDecImg;
+    wrap.appendChild(imgEl);wrap.appendChild(dlBtn);
+    var onOk=function(){wrap.style.display='block';vToast('Image decoded!');};
+    if(input.startsWith('data:')){
+      imgEl.onload=onOk;imgEl.onerror=function(){vToast('Invalid image');};imgEl.src=input;
+    } else {
+      var types=['image/png','image/jpeg','image/webp','image/gif','image/bmp'],tried=0;
+      function tryNext(){
+        if(tried>=types.length){vToast('Could not decode as image');return;}
+        var mime=types[tried++];imgEl.onerror=tryNext;imgEl.onload=onOk;
+        imgEl.src='data:'+mime+';base64,'+input;
+      }
+      tryNext();
+    }
+
+  } else if(_vB64DecType==='text'){
+    try{
+      var decoded=decodeURIComponent(escape(atob(input)));
+      var ta=document.createElement('textarea');
+      ta.style.cssText='width:100%;min-height:80px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,215,0,0.03);color:#f5f0dc;font-size:12px;font-family:monospace;resize:vertical;box-sizing:border-box;';
+      ta.readOnly=true;ta.value=decoded;
+      var cpBtn=document.createElement('button');
+      cpBtn.className='btn-vip';cpBtn.style.cssText='margin-top:8px;width:100%;';
+      cpBtn.textContent='Copy Text';
+      cpBtn.onclick=function(){_vCopyText(ta.value,cpBtn,'Copy Text');};
+      wrap.appendChild(ta);wrap.appendChild(cpBtn);
+      wrap.style.display='block';vToast('Text decoded!');
+    } catch(e){vToast('Could not decode as text');}
+
+  } else if(_vB64DecType==='contact'){
+    try{
+      var vcard=decodeURIComponent(escape(atob(input)));
+      var lines=vcard.split('\n');
+      var box=document.createElement('div');
+      box.style.cssText='padding:12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:10px;line-height:1.9;font-size:13px;color:#f5f0dc;';
+      lines.forEach(function(l){
+        var row=document.createElement('div');
+        if(l.startsWith('FN:'))    row.innerHTML='<b style="color:var(--vip-gold);">Name:</b> '+l.slice(3);
+        else if(l.startsWith('TEL:'))   row.innerHTML='<b style="color:var(--vip-gold);">Phone:</b> '+l.slice(4);
+        else if(l.startsWith('EMAIL:')) row.innerHTML='<b style="color:var(--vip-gold);">Email:</b> '+l.slice(6);
+        else if(l.startsWith('ORG:'))   row.innerHTML='<b style="color:var(--vip-gold);">Org:</b> '+l.slice(4);
+        else return;
+        box.appendChild(row);
+      });
+      if(!box.children.length) box.textContent='No contact fields found';
+      wrap.appendChild(box);wrap.style.display='block';vToast('Contact decoded!');
+    } catch(e){vToast('Could not decode as contact');}
+
+  } else if(_vB64DecType==='binary'){
+    // Input is binary bits like "01001000 01100101 01101100 01101100 01101111"
+    // Strip everything except 0 and 1
+    var cleanBits = input.replace(/[^01]/g,'');
+    if(!cleanBits || cleanBits.length % 8 !== 0){
+      vToast('Invalid binary — must be groups of 8 bits e.g. 01001000 01101001');
+      return;
+    }
+    var decoded = '';
+    for(var i=0;i<cleanBits.length;i+=8){
+      decoded += String.fromCharCode(parseInt(cleanBits.slice(i,i+8),2));
+    }
+    var ta2=document.createElement('textarea');
+    ta2.style.cssText='width:100%;min-height:80px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,215,0,0.03);color:#f5f0dc;font-size:13px;font-family:monospace;resize:vertical;box-sizing:border-box;';
+    ta2.readOnly=true;ta2.value=decoded;
+    var cpBtn2=document.createElement('button');
+    cpBtn2.className='btn-vip';cpBtn2.style.cssText='margin-top:8px;width:100%;';
+    cpBtn2.textContent='Copy Text';
+    cpBtn2.onclick=function(){_vCopyText(ta2.value,cpBtn2,'Copy Text');};
+    wrap.appendChild(ta2);wrap.appendChild(cpBtn2);
+    wrap.style.display='block';vToast('Binary decoded to text!');
+  }
+}
+function vDlDecImg(){
+  var img=document.getElementById('vB64DecImg');
+  if(!img||!img.src)return;
+  var a=document.createElement('a');a.href=img.src;a.download='decoded_image.png';a.click();
+}
+
+// Init: highlight default selected cards
+document.addEventListener('DOMContentLoaded',function(){
+  vB64DDSetActive('vB64EncDD','image');
+  vB64DDSetActive('vB64DecDD','image');
+  vB64DDSetActive('vB64CFDD','phone');
+  vB64DDSetActive('vB64BMDD','file');
+  vB64SetCC('+1');
+});
+
+// auto-highlight default cards on load
+document.addEventListener('DOMContentLoaded', function(){
+  vB64DDSetActive('vB64EncDD','image');
+  vB64DDSetActive('vB64DecDD','image');
+  vB64DDSetActive('vB64CFDD','phone');
+  vB64DDSetActive('vB64BMDD','file');
+  vB64SetCC('+1');
+});
 
 // ============================================================
 //  COLOR PALETTE EXTRACTOR
@@ -5466,7 +6011,7 @@ function vExtractPalette(inp){
       s.innerHTML='<div style="width:46px;height:46px;border-radius:11px;background:'+hex+';border:1px solid rgba(255,215,0,0.2);box-shadow:0 3px 10px rgba(0,0,0,0.3);"></div>'+
         '<div style="font-size:9px;color:var(--vip-gold-dark);font-weight:700;font-family:monospace;">'+hex.toUpperCase()+'</div>'+
         '<div style="font-size:9px;color:#5a4a2a;">rgb('+rgb.join(',')+')</div>';
-      s.addEventListener('click',function(){navigator.clipboard.writeText(hex.toUpperCase());vToast('✦ '+hex.toUpperCase()+' copied!');});
+      s.addEventListener('click',function(){_vCopyText(hex.toUpperCase(),null,null);vToast('✦ '+hex.toUpperCase()+' copied!');});
       sw.appendChild(s);
     });
     document.getElementById('vPalResult').style.display='block';vToast('✦ '+sorted.length+' colors extracted!');
