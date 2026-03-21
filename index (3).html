@@ -2803,6 +2803,32 @@ var db = firebase.database();
         </button>
 
         <div class="settings-divider"></div>
+        <div class="settings-section-label">🧪 Beta</div>
+        <div style="padding:14px 16px;border-radius:14px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,215,0,0.04);margin-bottom:4px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:800;color:#ffd700;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+                <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:linear-gradient(135deg,#7c3aed,#4361ee);color:#fff;font-weight:900;letter-spacing:0.5px;">BETA</span>
+                Enable Beta
+              </div>
+              <div style="font-size:11px;color:#6b7280;line-height:1.6;">A pre-release version of the site released to a limited audience for testing, feedback, and bug identification before the official launch.</div>
+              <div id="betaStatusText" style="font-size:10px;margin-top:6px;font-weight:700;color:#6b7280;">Beta is currently <span id="betaOnOff">disabled</span></div>
+            </div>
+            <div id="betaToggleTrack" onclick="toggleBeta()" style="
+              width:46px;height:26px;border-radius:99px;flex-shrink:0;
+              background:#1f2937;border:1px solid rgba(255,255,255,0.1);
+              position:relative;cursor:pointer;transition:all 0.3s;
+            ">
+              <div id="betaToggleThumb" style="
+                width:20px;height:20px;border-radius:50%;
+                background:#4b5563;position:absolute;top:2px;left:2px;
+                transition:all 0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.4);
+              "></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-divider"></div>
         <div class="settings-section-label">💬 Feedback</div>
         <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Help us improve MediaGrabber Pro by sharing your thoughts.</p>
         <button onclick="window.location.href='index (2).html'" style="
@@ -3632,6 +3658,42 @@ async function submitSettingsFeedback() {
 function openSettings() {
     document.getElementById("settingsOverlay").classList.add("open");
     lockScroll();
+    _initBetaToggle();
+}
+
+function _initBetaToggle(){
+  var on = localStorage.getItem('mgp_beta')==='1';
+  var track = document.getElementById('betaToggleTrack');
+  var thumb = document.getElementById('betaToggleThumb');
+  var lbl   = document.getElementById('betaOnOff');
+  if(!track) return;
+  if(on){
+    track.style.background='linear-gradient(135deg,#7c3aed,#4361ee)';
+    track.style.borderColor='rgba(124,58,237,0.5)';
+    thumb.style.left='24px';
+    thumb.style.background='#fff';
+    if(lbl) lbl.textContent='enabled';
+  } else {
+    track.style.background='#1f2937';
+    track.style.borderColor='rgba(255,255,255,0.1)';
+    thumb.style.left='2px';
+    thumb.style.background='#4b5563';
+    if(lbl) lbl.textContent='disabled';
+  }
+}
+
+function toggleBeta(){
+  var on = localStorage.getItem('mgp_beta')==='1';
+  if(!on){
+    localStorage.setItem('mgp_beta','1');
+    _initBetaToggle();
+    vToast('🧪 Beta enabled — redirecting...');
+    setTimeout(function(){ window.location.href='index (4).html'; }, 1200);
+  } else {
+    localStorage.removeItem('mgp_beta');
+    _initBetaToggle();
+    vToast('Beta disabled');
+  }
 }
 
 function closeSettings() {
