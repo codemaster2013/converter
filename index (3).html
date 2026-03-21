@@ -3327,9 +3327,13 @@ var db = firebase.database();
       <div class="vB64DD" id="vB64BMDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64BMDD')"><span id="vB64BMDD_label">&#128193; File</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64BMDD_item_file" onclick="vB64DDSelectBM('file','vB64BMDD')"><span class="vB64DD-icon">&#128193;</span><div><div>File</div><div class="vB64DD-sub">Upload any file</div></div></div><div class="vB64DD-item" id="vB64BMDD_item_text" onclick="vB64DDSelectBM('text','vB64BMDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Text → Bits</div><div class="vB64DD-sub">Type text → 10101010</div></div></div></div></div>
       <!-- File mode -->
       <div id="vB64BinFilePanel" style="margin-top:8px;">
-        <input type="file" id="vB64BinaryIn" style="display:none" onchange="vEncodeBinary(this)">
+        <input type="file" id="vB64BinaryIn" style="display:none" accept=".pdf,.txt,.png,.jpg,.jpeg,.webp,.gif,.bmp,.svg" onchange="vEncodeBinary(this)">
         <button class="btn-vip btn-vip-solid" style="width:100%;padding:13px;" onclick="document.getElementById('vB64BinaryIn').click()">📁 Choose File</button>
         <div id="vB64BinaryName" style="font-size:11px;color:#7a5a0a;margin-top:6px;text-align:center;"></div>
+        <div style="margin-top:8px;padding:9px 12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:9px;font-size:10px;color:#7a5a0a;line-height:1.7;">
+          ✅ <b style="color:var(--vip-gold);">Supported:</b> PDF · TXT · PNG · JPG · WEBP · GIF · BMP · SVG<br>
+          🚫 <b style="color:#ff6666;">Not supported:</b> Videos, audio, executables or any other format — these cannot be encoded as binary on this platform.
+        </div>
       </div>
       <!-- Text → binary mode -->
       <div id="vB64BinTextPanel" style="display:none;margin-top:8px;">
@@ -3344,12 +3348,17 @@ var db = firebase.database();
       <button class="btn-vip" id="vB64SiteOnlyBtn" onclick="vCopySiteOnly(event)" style="display:none;">🔒 Copy for This Site Only</button>
       <button class="btn-vip" onclick="vDlB64Txt()">💾 Save .txt</button>
     </div>
-    <div id="vB64SiteOnlyInfo" style="display:none;margin-top:8px;padding:10px 13px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.25);border-radius:10px;font-size:11px;color:#7a5a0a;line-height:1.6;">
-      🔒 <b style="color:var(--vip-gold);">Site-only string copied!</b> Paste it in the Decode box on <b style="color:var(--vip-gold);">this site only</b> — it won't work anywhere else.
+    <div id="vB64OneTimeWarn" style="display:none;margin-top:8px;padding:9px 13px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.3);border-radius:9px;font-size:11px;color:#c8a044;font-weight:600;line-height:1.6;">
+      ⚠️ This code can only be used <b style="color:var(--vip-gold);">once</b> — it cannot be decoded again after first use.
     </div>
+
     <span class="g-lbl" style="margin-top:18px;">Decode</span>
     <div class="vB64DD" id="vB64DecDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64DecDD')"><span id="vB64DecDD_label">&#128444;&#65039; Decode to Image</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64DecDD_item_image" onclick="vB64DDSelectDec('image','vB64DecDD')"><span class="vB64DD-icon">&#128444;&#65039;</span><div><div>Decode to Image</div><div class="vB64DD-sub">View decoded image</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_text" onclick="vB64DDSelectDec('text','vB64DecDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Decode to Text</div><div class="vB64DD-sub">Read decoded text</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_contact" onclick="vB64DDSelectDec('contact','vB64DecDD')"><span class="vB64DD-icon">&#128100;</span><div><div>Decode to Contact</div><div class="vB64DD-sub">Parse vCard fields</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_binary" onclick="vB64DDSelectDec('binary','vB64DecDD')"><span class="vB64DD-icon">&#9881;&#65039;</span><div><div>Binary Bits to Text</div><div class="vB64DD-sub">Paste 01010101 → get text</div></div></div></div></div>
 
+    <div id="vB64DecNotice" style="display:none;margin-top:8px;padding:9px 12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:9px;font-size:10px;color:#7a5a0a;line-height:1.7;">
+      ✅ <b style="color:var(--vip-gold);">Binary decoder supports:</b> Text · PDF content · Image data — paste the 01010101 bits below.<br>
+      🚫 <b style="color:#ff6666;">Cannot decode:</b> Video, audio or any non-text binary format — the output will be unreadable characters.
+    </div>
     <textarea class="g-inp" id="vB64DecIn" placeholder="Paste Base64 string here…" style="min-height:70px;margin-top:8px;resize:vertical;font-family:monospace;font-size:11px;"></textarea>
     <button class="btn-vip btn-vip-solid" style="margin-top:8px;width:100%;" id="vB64DecBtn" onclick="vDecodeB64()">🔄 Decode to Image</button>
     <div id="vB64DecWrap" style="display:none;margin-top:10px;"></div>
@@ -5706,8 +5715,7 @@ function vB64SelectType(type){
   if(out){out.style.display='none';out.value='';}
   var btns=document.getElementById('vB64Btns');
   if(btns) btns.style.display='none';
-  var info=document.getElementById('vB64SiteOnlyInfo');
-  if(info) info.style.display='none';
+
 }
 
 function vB64SetContactFields(mode){
@@ -5758,6 +5766,8 @@ function vB64SetBinaryMode(mode){
 
 function vB64SetDecType(type){
   _vB64DecType=type;
+  var notice=document.getElementById('vB64DecNotice');
+  if(notice) notice.style.display=(type==='binary')?'block':'none';
   vB64SetActiveCard('vB64DecPicker', type);
   var lbl={image:'Decode to Image',text:'Decode to Text',contact:'Decode to Contact',binary:'Binary Bits to Text'};
   var btn=document.getElementById('vB64DecBtn');
@@ -5794,8 +5804,9 @@ function _vB64ShowResult(str){
   document.getElementById('vB64Btns').style.display='flex';
   var sob=document.getElementById('vB64SiteOnlyBtn');
   if(sob) sob.style.display=(window._vB64EncType==='image')?'inline-flex':'none';
-  var info=document.getElementById('vB64SiteOnlyInfo');
-  if(info) info.style.display='none';
+
+  var warn=document.getElementById('vB64OneTimeWarn');
+  if(warn) warn.style.display='none';
   vToast(isBinary ? 'Binary encoded!' : 'Encoded!');
 }
 
@@ -5833,6 +5844,16 @@ function vEncodeContact(){
 
 function vEncodeBinary(inp){
   var f=inp.files[0];if(!f)return;
+  // Block unsupported file types
+  var allowed=['application/pdf','text/plain','image/png','image/jpeg','image/jpg','image/webp','image/gif','image/bmp','image/svg+xml'];
+  var ext=f.name.split('.').pop().toLowerCase();
+  var allowedExt=['pdf','txt','png','jpg','jpeg','webp','gif','bmp','svg'];
+  if(allowed.indexOf(f.type)===-1 && allowedExt.indexOf(ext)===-1){
+    var nm=document.getElementById('vB64BinaryName');
+    nm.innerHTML='<span style="color:#ff4444;font-weight:700;">🚫 Unsupported format: '+f.name+'</span><br><span style="color:#7a5a0a;font-size:10px;">Only PDF, TXT, PNG, JPG, WEBP, GIF, BMP and SVG files are supported. Videos, audio and executables cannot be encoded.</span>';
+    inp.value='';
+    return;
+  }
   document.getElementById('vB64BinaryName').textContent=f.name+' ('+(f.size/1024).toFixed(1)+' KB)';
   var r=new FileReader();
   r.onload=function(e){
@@ -5865,8 +5886,15 @@ function vCopyB64(e){
 function vCopySiteOnly(e){
   var v=document.getElementById('vB64Out').value;
   if(!v){vToast('Encode an image first');return;}
-  _vCopyText(_mgpEncode(v),e.currentTarget,'Copy for This Site Only');
-  document.getElementById('vB64SiteOnlyInfo').style.display='block';
+  // Generate unique token
+  var token='T'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+  localStorage.setItem(token,'1');
+  // Bake token INSIDE the data before scrambling — completely invisible
+  var payload=token+'|SPLIT|'+v;
+  var encoded=_mgpEncode(payload);
+  _vCopyText(encoded,e.currentTarget,'Copy for This Site Only');
+  var warn=document.getElementById('vB64OneTimeWarn');
+  if(warn) warn.style.display='block';
 }
 function vDlB64Txt(){
   var v=document.getElementById('vB64Out').value;if(!v)return;
@@ -5878,8 +5906,52 @@ function vDlB64Txt(){
 function vDecodeB64(){
   var input=document.getElementById('vB64DecIn').value.trim();
   if(!input){vToast('Paste a Base64 string');return;}
+
+  // ── One-time-use: token is baked INSIDE the scrambled payload ──
   if(_vB64DecType!=='binary' && input.startsWith(_MGP_START)&&input.endsWith(_MGP_END)){
-    try{input=_mgpDecode(input);}catch(e){vToast('Could not decode site-only string');return;}
+    var decrypted;
+    try{decrypted=_mgpDecode(input);}catch(e){vToast('Invalid or tampered code');return;}
+    // Check if it has a token baked in
+    var splitIdx=decrypted.indexOf('|SPLIT|');
+    if(splitIdx!==-1){
+      var token=decrypted.slice(0,splitIdx);
+      var uses=localStorage.getItem(token);
+      var wrap2=document.getElementById('vB64DecWrap');
+      if(uses===null){
+        // Already used — show error, clear textarea, keep it fully editable
+        var decInp0=document.getElementById('vB64DecIn');
+        if(decInp0){
+          decInp0.value='';
+          decInp0.readOnly=false;
+          decInp0.style.color='';
+          decInp0.style.fontStyle='';
+          decInp0.placeholder='This code has already been used. Please generate a new code.';
+        }
+        wrap2.style.display='block';
+        wrap2.innerHTML='<div style="padding:16px;background:rgba(180,0,0,0.1);border:1.5px solid rgba(220,50,50,0.5);border-radius:12px;text-align:center;">'
+          +'<div style="font-size:26px;margin-bottom:7px;">🔒</div>'
+          +'<div style="color:#ff4444;font-size:13px;font-weight:800;letter-spacing:0.5px;">ACCESS DENIED</div>'
+          +'<div style="color:#c8a0a0;font-size:11px;margin-top:8px;line-height:1.7;">This one-time code has already been used and is now permanently invalidated.<br>A new code must be generated to access this content.</div>'
+          +'</div>';
+        vToast('This code has already been used!');
+        return;
+      }
+      // Valid — burn the token immediately
+      localStorage.removeItem(token);
+      input=decrypted.slice(splitIdx+7); // extract actual image data
+      // Clear the textarea and show a clean message — keep it fully responsive
+      var decInp=document.getElementById('vB64DecIn');
+      if(decInp){
+        decInp.value='';
+        decInp.placeholder='This code has been used and is now permanently invalidated. Generate a new code to decode again.';
+        decInp.style.color='';
+        decInp.style.fontStyle='';
+        decInp.readOnly=false;
+        decInp.title='';
+      }
+    } else {
+      input=decrypted; // regular site-only string without token
+    }
   }
   var wrap=document.getElementById('vB64DecWrap');
   wrap.style.display='none';wrap.innerHTML='';
@@ -5892,7 +5964,17 @@ function vDecodeB64(){
     dlBtn.className='btn-vip';dlBtn.style.cssText='margin-top:8px;width:100%;';
     dlBtn.textContent='Download Image';dlBtn.onclick=vDlDecImg;
     wrap.appendChild(imgEl);wrap.appendChild(dlBtn);
-    var onOk=function(){wrap.style.display='block';vToast('Image decoded!');};
+    var onOk=function(){
+      wrap.style.display='block';
+      vToast('Image decoded!');
+      // Textarea stays clean and responsive
+      var decInp2=document.getElementById('vB64DecIn');
+      if(decInp2){
+        decInp2.value='';
+        decInp2.placeholder='Code used. Generate a new code to decode again.';
+        decInp2.readOnly=false;
+      }
+    };
     if(input.startsWith('data:')){
       imgEl.onload=onOk;imgEl.onerror=function(){vToast('Invalid image');};imgEl.src=input;
     } else {
@@ -5940,25 +6022,99 @@ function vDecodeB64(){
 
   } else if(_vB64DecType==='binary'){
     // Input is binary bits like "01001000 01100101 01101100 01101100 01101111"
-    // Strip everything except 0 and 1
     var cleanBits = input.replace(/[^01]/g,'');
     if(!cleanBits || cleanBits.length % 8 !== 0){
       vToast('Invalid binary — must be groups of 8 bits e.g. 01001000 01101001');
       return;
     }
-    var decoded = '';
+    // Convert bits to byte array
+    var bytes2 = [];
     for(var i=0;i<cleanBits.length;i+=8){
-      decoded += String.fromCharCode(parseInt(cleanBits.slice(i,i+8),2));
+      bytes2.push(parseInt(cleanBits.slice(i,i+8),2));
     }
-    var ta2=document.createElement('textarea');
-    ta2.style.cssText='width:100%;min-height:80px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,215,0,0.03);color:#f5f0dc;font-size:13px;font-family:monospace;resize:vertical;box-sizing:border-box;';
-    ta2.readOnly=true;ta2.value=decoded;
-    var cpBtn2=document.createElement('button');
-    cpBtn2.className='btn-vip';cpBtn2.style.cssText='margin-top:8px;width:100%;';
-    cpBtn2.textContent='Copy Text';
-    cpBtn2.onclick=function(){_vCopyText(ta2.value,cpBtn2,'Copy Text');};
-    wrap.appendChild(ta2);wrap.appendChild(cpBtn2);
-    wrap.style.display='block';vToast('Binary decoded to text!');
+    // Detect file type from magic bytes
+    function detectType(b){
+      if(b[0]===0xFF&&b[1]===0xD8&&b[2]===0xFF) return 'image/jpeg';
+      if(b[0]===0x89&&b[1]===0x50&&b[2]===0x4E&&b[3]===0x47) return 'image/png';
+      if(b[0]===0x47&&b[1]===0x49&&b[2]===0x46) return 'image/gif';
+      if(b[0]===0x52&&b[1]===0x49&&b[2]===0x46&&b[3]===0x46) return 'image/webp';
+      if(b[0]===0x42&&b[1]===0x4D) return 'image/bmp';
+      // SVG: check for "<svg" or "<?xml" text
+      var head='';for(var x=0;x<Math.min(50,b.length);x++) head+=String.fromCharCode(b[x]);
+      if(head.indexOf('<svg')!==-1||head.indexOf('<?xml')!==-1) return 'image/svg+xml';
+      // PDF
+      if(b[0]===0x25&&b[1]===0x50&&b[2]===0x44&&b[3]===0x46) return 'application/pdf';
+      return 'text';
+    }
+    var mime = detectType(bytes2);
+    // Build binary string and base64
+    var binStr='';
+    for(var j=0;j<bytes2.length;j++) binStr+=String.fromCharCode(bytes2[j]);
+    var b64 = btoa(binStr);
+
+    if(mime.startsWith('image/')){
+      // Show as image
+      if(mime==='image/svg+xml'){
+        // SVG: show inline as text rendered
+        var svgStr = '';
+        for(var k=0;k<bytes2.length;k++) svgStr+=String.fromCharCode(bytes2[k]);
+        var blob = new Blob([svgStr],{type:'image/svg+xml'});
+        var url = URL.createObjectURL(blob);
+        var imgSvg=document.createElement('img');
+        imgSvg.style.cssText='max-width:100%;max-height:220px;border-radius:11px;border:1px solid rgba(255,215,0,0.2);display:block;margin:0 auto;';
+        imgSvg.src=url;
+        var dlSvg=document.createElement('button');
+        dlSvg.className='btn-vip';dlSvg.style.cssText='margin-top:8px;width:100%;';
+        dlSvg.textContent='Download SVG';
+        dlSvg.onclick=function(){var a=document.createElement('a');a.href=url;a.download='decoded.svg';a.click();};
+        var lbl=document.createElement('div');
+        lbl.style.cssText='font-size:10px;color:#7a5a0a;text-align:center;margin-top:4px;';
+        lbl.textContent='SVG Image detected';
+        wrap.appendChild(imgSvg);wrap.appendChild(lbl);wrap.appendChild(dlSvg);
+        wrap.style.display='block';vToast('SVG image decoded!');
+      } else {
+        var imgEl2=document.createElement('img');
+        imgEl2.style.cssText='max-width:100%;max-height:220px;border-radius:11px;border:1px solid rgba(255,215,0,0.2);display:block;margin:0 auto;';
+        imgEl2.src='data:'+mime+';base64,'+b64;
+        var dlImg2=document.createElement('button');
+        dlImg2.className='btn-vip';dlImg2.style.cssText='margin-top:8px;width:100%;';
+        dlImg2.textContent='Download Image';
+        var extMap={'image/jpeg':'jpg','image/png':'png','image/gif':'gif','image/webp':'webp','image/bmp':'bmp'};
+        dlImg2.onclick=function(){var a=document.createElement('a');a.href=imgEl2.src;a.download='decoded.'+(extMap[mime]||'png');a.click();};
+        var lbl2=document.createElement('div');
+        lbl2.style.cssText='font-size:10px;color:#7a5a0a;text-align:center;margin-top:4px;';
+        lbl2.textContent='Image detected ('+mime+')';
+        wrap.appendChild(imgEl2);wrap.appendChild(lbl2);wrap.appendChild(dlImg2);
+        imgEl2.onload=function(){wrap.style.display='block';vToast('Image decoded from binary!');};
+        imgEl2.onerror=function(){vToast('Could not render image');};
+      }
+    } else if(mime==='application/pdf'){
+      // PDF: offer download
+      var pdfBlob=new Blob([new Uint8Array(bytes2)],{type:'application/pdf'});
+      var pdfUrl=URL.createObjectURL(pdfBlob);
+      var pdfDiv=document.createElement('div');
+      pdfDiv.style.cssText='padding:14px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:10px;text-align:center;';
+      pdfDiv.innerHTML='<div style="font-size:24px;margin-bottom:8px;">📄</div><div style="color:var(--vip-gold);font-size:12px;font-weight:700;">PDF file detected</div>';
+      var dlPdf=document.createElement('button');
+      dlPdf.className='btn-vip';dlPdf.style.cssText='margin-top:10px;width:100%;';
+      dlPdf.textContent='Download PDF';
+      dlPdf.onclick=function(){var a=document.createElement('a');a.href=pdfUrl;a.download='decoded.pdf';a.click();};
+      wrap.appendChild(pdfDiv);wrap.appendChild(dlPdf);
+      wrap.style.display='block';vToast('PDF decoded from binary!');
+    } else {
+      // Plain text
+      var textStr='';
+      for(var t=0;t<bytes2.length;t++) textStr+=String.fromCharCode(bytes2[t]);
+      var ta2=document.createElement('textarea');
+      ta2.style.cssText='width:100%;min-height:80px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,215,0,0.03);color:#f5f0dc;font-size:13px;font-family:monospace;resize:vertical;box-sizing:border-box;';
+      ta2.readOnly=true;ta2.value=textStr;
+      var cpBtn2=document.createElement('button');
+      cpBtn2.className='btn-vip';cpBtn2.style.cssText='margin-top:8px;width:100%;';
+      cpBtn2.textContent='Copy Text';
+      cpBtn2.onclick=function(){_vCopyText(ta2.value,cpBtn2,'Copy Text');};
+      wrap.appendChild(ta2);wrap.appendChild(cpBtn2);
+      wrap.style.display='block';vToast('Binary decoded to text!');
+    }
   }
 }
 function vDlDecImg(){
