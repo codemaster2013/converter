@@ -2079,139 +2079,179 @@ if(update !== updatesArray[updatesArray.length - 1]){
 
     <!-- ✦ VIP GLASSMORPHISM BANNER ✦ -->
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap');
-    @keyframes vipFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-    @keyframes vipGlow{0%,100%{box-shadow:0 0 40px rgba(255,215,0,0.3),0 0 80px rgba(255,140,0,0.15),0 15px 50px rgba(0,0,0,0.6);}50%{box-shadow:0 0 70px rgba(255,215,0,0.65),0 0 140px rgba(255,140,0,0.3),0 15px 60px rgba(0,0,0,0.7);}}
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&display=swap');
+    @keyframes vipFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+    @keyframes vipGlow{
+      0%,100%{box-shadow:0 0 50px rgba(255,215,0,0.45),0 0 100px rgba(255,140,0,0.2),0 20px 60px rgba(0,0,0,0.7),inset 0 0 30px rgba(255,215,0,0.05);}
+      50%{box-shadow:0 0 90px rgba(255,215,0,0.75),0 0 180px rgba(255,140,0,0.4),0 20px 80px rgba(0,0,0,0.8),inset 0 0 60px rgba(255,215,0,0.08);}
+    }
     @keyframes vipConic{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
     @keyframes vipConicRev{0%{transform:rotate(0deg);}100%{transform:rotate(-360deg);}}
-    @keyframes vipOrb1{0%,100%{transform:translate(0,0);}50%{transform:translate(25px,-18px);}}
-    @keyframes vipOrb2{0%,100%{transform:translate(0,0);}50%{transform:translate(-18px,14px);}}
-    @keyframes vipStar{0%,100%{opacity:0;transform:scale(0) rotate(0deg);}50%{opacity:1;transform:scale(1) rotate(180deg);}}
-    @keyframes vipTextGlow{0%,100%{filter:drop-shadow(0 0 10px rgba(255,215,0,0.6));}50%{filter:drop-shadow(0 0 28px rgba(255,215,0,1)) drop-shadow(0 0 55px rgba(255,160,0,0.6));}}
-    @keyframes vipBadge{0%,100%{transform:rotate(-4deg) scale(1);}50%{transform:rotate(4deg) scale(1.08);}}
-    @keyframes vipPill{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0);}50%{box-shadow:0 0 14px rgba(255,215,0,0.5);}}
-    @keyframes vipScan{0%{top:-5%;}100%{top:110%;}}
-    @keyframes vipShimmer{0%{left:-100%;}100%{left:140%;}}
+    @keyframes vipOrb1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(20px,-15px) scale(1.15);}}
+    @keyframes vipOrb2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-15px,12px) scale(0.88);}}
+    @keyframes vipOrb3{0%,100%{transform:translate(0,0);}50%{transform:translate(12px,18px);}}
+    @keyframes vipStar{0%,100%{opacity:0;transform:scale(0) rotate(0deg);}50%{opacity:1;transform:scale(1) rotate(200deg);}}
+    @keyframes vipStarTwinkle{0%,100%{opacity:0.1;transform:scale(0.5);}50%{opacity:1;transform:scale(1.2);}}
+    @keyframes vipTextGlow{
+      0%,100%{filter:drop-shadow(0 0 8px rgba(255,215,0,0.7)) drop-shadow(0 0 20px rgba(255,140,0,0.3));}
+      50%{filter:drop-shadow(0 0 25px rgba(255,215,0,1)) drop-shadow(0 0 60px rgba(255,180,0,0.7)) drop-shadow(0 0 100px rgba(255,100,0,0.3));}
+    }
+    @keyframes vipBadge{0%,100%{transform:rotate(-4deg) scale(1);filter:drop-shadow(0 0 12px rgba(255,215,0,0.6));}50%{transform:rotate(4deg) scale(1.1);filter:drop-shadow(0 0 28px rgba(255,215,0,1));}}
+    @keyframes vipPill{0%,100%{border-color:rgba(255,215,0,0.25);background:rgba(255,215,0,0.06);}50%{border-color:rgba(255,215,0,0.7);background:rgba(255,215,0,0.18);box-shadow:0 0 18px rgba(255,215,0,0.4);}}
+    @keyframes vipScan{0%{top:-4%;}100%{top:108%;}}
+    @keyframes vipShimmer{0%{left:-110%;}100%{left:150%;}}
     @keyframes vipBtnShine{0%{left:-80%;}100%{left:120%;}}
-    @keyframes vipDot{0%,100%{transform:scale(1);opacity:0.5;}50%{transform:scale(1.6);opacity:1;}}
-    @keyframes vipRainbow{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
-    #vipGlassBanner{animation:vipFloat 4.5s ease-in-out infinite,vipGlow 2.5s ease-in-out infinite;cursor:pointer;position:relative;margin:36px auto 14px;max-width:580px;}
-    #vipGlassBanner:hover .vipShimBar{animation:vipShimmer 0.7s ease forwards;}
-    #vipGlassBanner:hover .vipBtnShineBar{animation:vipBtnShine 0.55s ease forwards;}
+    @keyframes vipDot{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1.5);}}
+    @keyframes vipRainbow{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+    @keyframes vipFlare{0%,100%{opacity:0;transform:scale(0.3);}45%,55%{opacity:0.7;transform:scale(1);}}
+    @keyframes vipChipGlow{0%,100%{border-color:rgba(255,215,0,0.18);color:rgba(255,200,80,0.65);}50%{border-color:rgba(255,215,0,0.55);color:#ffd700;box-shadow:0 0 8px rgba(255,215,0,0.3);}}
+    @keyframes vipBorderDash{0%{background-position:0% 0%;}100%{background-position:200% 0%;}}
+    #vipGlassBanner{
+      animation:vipFloat 4.5s ease-in-out infinite, vipGlow 2.5s ease-in-out infinite;
+      cursor:pointer;position:relative;margin:38px auto 16px;max-width:590px;
+      overflow:hidden;border-radius:28px;
+    }
+    #vipGlassBanner:hover .vipShimBar{animation:vipShimmer 0.65s ease forwards;}
+    #vipGlassBanner:hover .vipBtnShineBar{animation:vipBtnShine 0.5s ease forwards;}
+    #vipGlassBanner:hover{transform:translateY(-4px) scale(1.015);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+    .vipChip{animation:vipChipGlow 2.5s ease-in-out infinite;}
+    .vipChip:nth-child(2){animation-delay:0.3s;}
+    .vipChip:nth-child(3){animation-delay:0.6s;}
+    .vipChip:nth-child(4){animation-delay:0.9s;}
     .vipSwitchBtn{transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.25s!important;}
-    .vipSwitchBtn:hover{transform:scale(1.1) translateY(-2px)!important;box-shadow:0 12px 42px rgba(255,215,0,0.9),0 0 80px rgba(255,215,0,0.4)!important;}
+    .vipSwitchBtn:hover{transform:scale(1.1) translateY(-2px)!important;box-shadow:0 12px 45px rgba(255,215,0,0.95),0 0 90px rgba(255,215,0,0.45)!important;}
     </style>
 
-    <div id="vipGlassBanner" onclick="window.location.href='index (3).html'" style="overflow:hidden;border-radius:28px;">
+    <div id="vipGlassBanner" onclick="window.location.href='index (3).html'">
 
-      <!-- Dual spinning rings -->
-      <div style="position:absolute;inset:-8px;border-radius:32px;overflow:hidden;pointer-events:none;opacity:0.75;">
-        <div style="position:absolute;inset:-55%;background:conic-gradient(from 0deg,transparent,rgba(255,215,0,0.85) 50deg,rgba(255,140,0,0.6) 100deg,transparent 150deg,rgba(255,215,0,0.5) 230deg,transparent 300deg);animation:vipConic 3s linear infinite;border-radius:50%;filter:blur(3px);"></div>
-        <div style="position:absolute;inset:8px;background:#050200;border-radius:26px;"></div>
+      <!-- ── Dual counter-rotating conic rings (clipped inside) ── -->
+      <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:28px;">
+        <div style="position:absolute;inset:-3px;overflow:hidden;border-radius:28px;opacity:0.8;">
+          <div style="position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent,rgba(255,215,0,0.9) 45deg,rgba(255,140,0,0.65) 90deg,transparent 140deg,rgba(255,215,0,0.55) 220deg,rgba(255,100,0,0.4) 270deg,transparent 310deg);animation:vipConic 3s linear infinite;border-radius:50%;filter:blur(2px);"></div>
+          <div style="position:absolute;inset:3px;background:#050200;border-radius:26px;"></div>
+        </div>
+        <div style="position:absolute;inset:0;overflow:hidden;border-radius:28px;opacity:0.4;">
+          <div style="position:absolute;inset:-70%;background:conic-gradient(from 60deg,transparent,rgba(255,80,0,0.55) 70deg,transparent 130deg,rgba(255,215,0,0.4) 240deg,transparent 300deg);animation:vipConicRev 5s linear infinite;border-radius:50%;filter:blur(5px);"></div>
+          <div style="position:absolute;inset:0;background:#050200;border-radius:28px;opacity:0.85;"></div>
+        </div>
       </div>
-      <div style="position:absolute;inset:-3px;border-radius:28px;overflow:hidden;pointer-events:none;opacity:0.4;">
-        <div style="position:absolute;inset:-70%;background:conic-gradient(from 60deg,transparent,rgba(255,80,0,0.5) 70deg,transparent 130deg,rgba(255,215,0,0.35) 250deg,transparent);animation:vipConicRev 5s linear infinite;border-radius:50%;filter:blur(5px);"></div>
-        <div style="position:absolute;inset:3px;background:#050200;border-radius:26px;"></div>
+
+      <!-- ── Orbs (clipped inside) ── -->
+      <div style="position:absolute;inset:0;overflow:hidden;border-radius:28px;pointer-events:none;">
+        <div style="position:absolute;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,0.6),rgba(255,180,0,0.2),transparent 68%);top:-10px;left:10px;animation:vipOrb1 6s ease-in-out infinite;filter:blur(18px);mix-blend-mode:screen;"></div>
+        <div style="position:absolute;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,100,0,0.5),transparent 65%);bottom:5px;right:15px;animation:vipOrb2 7s ease-in-out infinite;filter:blur(13px);mix-blend-mode:screen;"></div>
+        <div style="position:absolute;width:65px;height:65px;border-radius:50%;background:radial-gradient(circle,rgba(255,240,80,0.55),transparent 65%);top:25px;right:110px;animation:vipOrb3 9s ease-in-out infinite;filter:blur(9px);mix-blend-mode:screen;"></div>
+        <!-- lens flares -->
+        <div style="position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.75),transparent);top:0;left:42%;animation:vipFlare 5s ease-in-out infinite 1s;filter:blur(3px);"></div>
+        <div style="position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,200,0.65),transparent);bottom:1px;right:32%;animation:vipFlare 4.5s ease-in-out infinite 2.8s;filter:blur(2px);"></div>
       </div>
 
-      <!-- Orbs -->
-      <div style="position:absolute;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,0.45),transparent 65%);top:-10px;left:0px;animation:vipOrb1 6s ease-in-out infinite;pointer-events:none;filter:blur(16px);mix-blend-mode:screen;"></div>
-      <div style="position:absolute;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,120,0,0.35),transparent 65%);bottom:0px;right:5px;animation:vipOrb2 7s ease-in-out infinite;pointer-events:none;filter:blur(12px);mix-blend-mode:screen;"></div>
+      <!-- ── Sparkles (clipped inside) ── -->
+      <div style="position:absolute;inset:0;overflow:hidden;border-radius:28px;pointer-events:none;z-index:1;">
+        <div style="position:absolute;color:#ffd700;font-size:16px;top:8px;left:22px;animation:vipStar 2.5s ease-in-out infinite 0s;text-shadow:0 0 10px #ffd700,0 0 20px #ffa500;">✦</div>
+        <div style="position:absolute;color:rgba(255,215,0,0.75);font-size:11px;top:11px;right:44px;animation:vipStar 2.8s ease-in-out infinite 0.8s;text-shadow:0 0 8px #ffd700;">★</div>
+        <div style="position:absolute;color:rgba(255,200,80,0.65);font-size:9px;bottom:11px;left:50px;animation:vipStarTwinkle 2s ease-in-out infinite 1.4s;">✦</div>
+        <div style="position:absolute;color:rgba(255,180,0,0.7);font-size:13px;bottom:9px;right:72px;animation:vipStar 3s ease-in-out infinite 0.5s;text-shadow:0 0 8px #ffa500;">✧</div>
+        <div style="position:absolute;color:rgba(255,215,0,0.45);font-size:7px;top:48%;left:10px;animation:vipStarTwinkle 3s ease-in-out infinite 2s;">◆</div>
+        <div style="position:absolute;color:rgba(255,215,0,0.4);font-size:6px;top:38%;right:8px;animation:vipStarTwinkle 2.5s ease-in-out infinite 0.6s;">◆</div>
+      </div>
 
-      <!-- Sparkles -->
-      <div style="position:absolute;color:#ffd700;font-size:14px;top:7px;left:22px;animation:vipStar 2.5s ease-in-out infinite 0s;pointer-events:none;text-shadow:0 0 8px #ffd700;">✦</div>
-      <div style="position:absolute;color:rgba(255,215,0,0.7);font-size:10px;top:10px;right:44px;animation:vipStar 2.5s ease-in-out infinite 0.8s;pointer-events:none;">★</div>
-      <div style="position:absolute;color:rgba(255,200,80,0.6);font-size:8px;bottom:10px;left:48px;animation:vipStar 3s ease-in-out infinite 1.4s;pointer-events:none;">✦</div>
-      <div style="position:absolute;color:rgba(255,180,0,0.6);font-size:11px;bottom:8px;right:70px;animation:vipStar 3s ease-in-out infinite 0.5s;pointer-events:none;text-shadow:0 0 6px #ffa500;">✧</div>
+      <!-- ── Canvas particles ── -->
+      <canvas id="vipCanvas" style="position:absolute;inset:0;width:100%;height:100%;border-radius:28px;pointer-events:none;opacity:0.6;z-index:1;"></canvas>
 
-      <!-- Canvas particles -->
-      <canvas id="vipCanvas" style="position:absolute;inset:0;width:100%;height:100%;border-radius:24px;pointer-events:none;opacity:0.55;"></canvas>
-
-      <!-- Main glass panel -->
+      <!-- ── Main glass panel ── -->
       <div style="
-        position:relative;border-radius:24px;padding:20px 26px;
-        background:linear-gradient(145deg,rgba(40,18,0,0.72),rgba(16,8,0,0.91),rgba(32,14,0,0.76),rgba(10,5,0,0.94));
-        backdrop-filter:blur(32px) saturate(2.5) brightness(1.15);
-        -webkit-backdrop-filter:blur(32px) saturate(2.5) brightness(1.15);
-        border:1px solid rgba(255,215,0,0.18);overflow:hidden;z-index:1;
+        position:relative;border-radius:26px;padding:22px 28px;
+        background:linear-gradient(145deg,rgba(42,20,0,0.74),rgba(16,8,0,0.93),rgba(34,15,0,0.79),rgba(10,5,0,0.96));
+        backdrop-filter:blur(34px) saturate(2.8) brightness(1.18);
+        -webkit-backdrop-filter:blur(34px) saturate(2.8) brightness(1.18);
+        border:1px solid rgba(255,215,0,0.2);
+        z-index:2;
       ">
-        <!-- Top sheen -->
-        <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.07),transparent);border-radius:24px 24px 0 0;pointer-events:none;"></div>
-        <!-- Top gold line -->
-        <div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,180,0.5),rgba(255,215,0,0.9),rgba(255,255,180,0.5),transparent);pointer-events:none;"></div>
-        <!-- Bottom line -->
-        <div style="position:absolute;bottom:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.4),transparent);pointer-events:none;"></div>
-        <!-- Scanline -->
-        <div style="position:absolute;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.25),transparent);animation:vipScan 4.5s linear infinite;pointer-events:none;"></div>
+        <!-- Inner top sheen -->
+        <div style="position:absolute;top:0;left:0;right:0;height:42%;background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent);border-radius:26px 26px 0 0;pointer-events:none;"></div>
+        <!-- Top gold glow line -->
+        <div style="position:absolute;top:0;left:7%;right:7%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(255,255,180,0.6),rgba(255,215,0,1),rgba(255,255,180,0.6),transparent);box-shadow:0 0 12px rgba(255,215,0,0.9);pointer-events:none;"></div>
+        <!-- Bottom glow line -->
+        <div style="position:absolute;bottom:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.5),rgba(255,180,0,0.7),rgba(255,215,0,0.5),transparent);pointer-events:none;"></div>
+        <!-- Left accent line -->
+        <div style="position:absolute;left:0;top:15%;bottom:15%;width:1.5px;background:linear-gradient(180deg,transparent,rgba(255,215,0,0.6),transparent);pointer-events:none;"></div>
+        <!-- Right accent line -->
+        <div style="position:absolute;right:0;top:15%;bottom:15%;width:1.5px;background:linear-gradient(180deg,transparent,rgba(255,215,0,0.4),transparent);pointer-events:none;"></div>
+        <!-- Scan line -->
+        <div style="position:absolute;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.3),rgba(255,215,0,0.5),rgba(255,215,0,0.3),transparent);animation:vipScan 4s linear infinite;pointer-events:none;"></div>
         <!-- Shimmer -->
-        <div class="vipShimBar" style="position:absolute;top:0;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,0.05),transparent);left:-100%;pointer-events:none;transform:skewX(-15deg);"></div>
-        <!-- Dots -->
-        <div style="position:absolute;right:18px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:repeat(2,7px);gap:4px;pointer-events:none;">
-          <div style="width:3px;height:3px;border-radius:50%;background:#ffd700;animation:vipDot 1.8s infinite 0s;"></div>
-          <div style="width:3px;height:3px;border-radius:50%;background:#ffd700;animation:vipDot 1.8s infinite 0.3s;"></div>
-          <div style="width:3px;height:3px;border-radius:50%;background:rgba(255,215,0,0.5);animation:vipDot 1.8s infinite 0.6s;"></div>
-          <div style="width:3px;height:3px;border-radius:50%;background:rgba(255,215,0,0.3);animation:vipDot 1.8s infinite 0.9s;"></div>
+        <div class="vipShimBar" style="position:absolute;top:0;width:55%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,0.06),rgba(255,215,0,0.04),transparent);left:-110%;pointer-events:none;transform:skewX(-15deg);"></div>
+        <!-- Dot grid -->
+        <div style="position:absolute;right:16px;top:16px;display:grid;grid-template-columns:repeat(3,7px);gap:4px;pointer-events:none;">
+          <div style="width:3px;height:3px;border-radius:50%;background:#ffd700;animation:vipDot 1.6s infinite 0s;"></div>
+          <div style="width:3px;height:3px;border-radius:50%;background:#ffd700;animation:vipDot 1.6s infinite 0.18s;"></div>
+          <div style="width:3px;height:3px;border-radius:50%;background:rgba(255,215,0,0.6);animation:vipDot 1.6s infinite 0.36s;"></div>
+          <div style="width:3px;height:3px;border-radius:50%;background:rgba(255,215,0,0.5);animation:vipDot 1.6s infinite 0.54s;"></div>
+          <div style="width:3px;height:3px;border-radius:50%;background:rgba(255,215,0,0.35);animation:vipDot 1.6s infinite 0.72s;"></div>
+          <div style="width:3px;height:3px;border-radius:50%;background:rgba(255,215,0,0.2);animation:vipDot 1.6s infinite 0.9s;"></div>
         </div>
 
-        <!-- CONTENT ROW -->
-        <div style="display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap;position:relative;z-index:2;">
+        <!-- CONTENT -->
+        <div style="display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap;position:relative;z-index:3;">
 
-          <!-- Left -->
+          <!-- LEFT: crown + text -->
           <div style="display:flex;align-items:center;gap:14px;">
 
-            <!-- Crown -->
+            <!-- Crown badge -->
             <div style="position:relative;flex-shrink:0;">
-              <div style="position:absolute;inset:-5px;border-radius:18px;overflow:hidden;opacity:0.85;">
-                <div style="position:absolute;inset:-55%;background:conic-gradient(from 0deg,#ffd700,#ff8c00,#ffd700,#ffec80,#ffd700);animation:vipConic 2s linear infinite;border-radius:50%;filter:blur(2px);"></div>
+              <div style="position:absolute;inset:-5px;border-radius:18px;overflow:hidden;opacity:0.9;">
+                <div style="position:absolute;inset:-55%;background:conic-gradient(from 0deg,#ffd700,#ff8c00,#ffec80,#ffd700,#ff8c00,#ffd700);animation:vipConic 1.8s linear infinite;border-radius:50%;filter:blur(2px);"></div>
                 <div style="position:absolute;inset:5px;background:#080400;border-radius:13px;"></div>
               </div>
               <div style="
-                position:relative;width:52px;height:52px;border-radius:14px;
-                background:linear-gradient(145deg,#3a2000,#ffd700,#6b4800,#ffe57a);
-                display:flex;align-items:center;justify-content:center;font-size:24px;
-                box-shadow:0 6px 24px rgba(255,215,0,0.6),inset 0 2px 0 rgba(255,255,255,0.35);
-                animation:vipBadge 3.5s ease-in-out infinite;border:1px solid rgba(255,255,200,0.3);
+                position:relative;width:54px;height:54px;border-radius:15px;
+                background:linear-gradient(145deg,#2a1500,#ffd700,#5c3800,#ffe57a,#b8860b);
+                display:flex;align-items:center;justify-content:center;font-size:26px;
+                box-shadow:0 0 0 1px rgba(255,255,200,0.3),0 8px 28px rgba(255,215,0,0.65),inset 0 2px 0 rgba(255,255,255,0.38),inset 0 -2px 0 rgba(0,0,0,0.35);
+                animation:vipBadge 3.5s ease-in-out infinite;
               ">👑
-                <div style="position:absolute;top:4px;left:5px;right:5px;height:32%;background:rgba(255,255,255,0.22);border-radius:8px;pointer-events:none;"></div>
+                <div style="position:absolute;top:5px;left:6px;right:6px;height:30%;background:rgba(255,255,255,0.22);border-radius:9px;pointer-events:none;"></div>
+                <div style="position:absolute;bottom:3px;left:20%;right:20%;height:1px;background:rgba(255,215,0,0.9);box-shadow:0 0 6px #ffd700;"></div>
               </div>
             </div>
 
-            <!-- Text -->
+            <!-- Text block -->
             <div>
-              <!-- Pill -->
-              <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,215,0,0.3);margin-bottom:6px;animation:vipPill 2s ease-in-out infinite;backdrop-filter:blur(8px);">
-                <div style="width:5px;height:5px;border-radius:50%;background:#ffd700;box-shadow:0 0 8px #ffd700;animation:vipDot 1.2s infinite;"></div>
-                <span style="font-size:8px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;background:linear-gradient(90deg,#ffd700,#ffec80,#ffa500);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Cinzel Decorative',serif;">✦ VIP Access ✦</span>
+              <!-- Animated pill -->
+              <div style="display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:99px;border:1px solid rgba(255,215,0,0.3);margin-bottom:7px;animation:vipPill 2s ease-in-out infinite;backdrop-filter:blur(8px);">
+                <div style="width:6px;height:6px;border-radius:50%;background:#ffd700;box-shadow:0 0 10px #ffd700,0 0 20px #ffa500;animation:vipDot 1.2s infinite;"></div>
+                <span style="font-size:8px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;background:linear-gradient(90deg,#ffd700,#ffec80,#ffa500,#ffd700);background-size:200%;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:vipRainbow 2s linear infinite;font-family:'Cinzel Decorative',serif;">✦ Exclusive VIP ✦</span>
               </div>
               <!-- Headline -->
-              <div style="font-size:18px;font-weight:900;background:linear-gradient(135deg,#ffd700,#ffec80,#ffa500,#ffd700);background-size:200% auto;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;animation:vipTextGlow 3s ease-in-out infinite,vipRainbow 4s linear infinite;font-family:'Cinzel Decorative',serif;">Wanna Switch to VIP?</div>
-              <!-- Chips -->
-              <div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;">
-                <span style="font-size:8px;font-weight:700;color:rgba(255,200,80,0.75);padding:2px 7px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);">⚙️ Base64</span>
-                <span style="font-size:8px;font-weight:700;color:rgba(255,200,80,0.75);padding:2px 7px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);">🔬 Metadata</span>
-                <span style="font-size:8px;font-weight:700;color:rgba(255,200,80,0.75);padding:2px 7px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);">⚡ Binary</span>
-                <span style="font-size:8px;font-weight:700;color:rgba(255,200,80,0.75);padding:2px 7px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);">🎨 Palette</span>
+              <div style="font-size:19px;font-weight:900;background:linear-gradient(135deg,#ffd700 0%,#ffec80 20%,#ffa500 45%,#ffe066 65%,#ffd700 100%);background-size:200% auto;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;animation:vipTextGlow 3s ease-in-out infinite,vipRainbow 4s linear infinite;font-family:'Cinzel Decorative',serif;">Wanna Switch to VIP?</div>
+              <!-- Feature chips -->
+              <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;">
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">⚙️ Base64</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">🔬 Metadata</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">⚡ Binary</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">🎨 Palette</span>
               </div>
             </div>
           </div>
 
-          <!-- CTA -->
+          <!-- CTA button -->
           <div class="vipSwitchBtn" style="
-            position:relative;padding:12px 22px;border-radius:99px;
-            background:linear-gradient(135deg,#5a3800,#ffd700,#8b6000,#ffe066);
+            position:relative;padding:13px 24px;border-radius:99px;
+            background:linear-gradient(135deg,#4a2800,#ffd700,#7a5000,#ffe066,#b8860b);
             background-size:200% auto;
-            color:#1a0a00;font-size:11px;font-weight:900;letter-spacing:1.2px;
+            color:#1a0a00;font-size:11px;font-weight:900;letter-spacing:1.3px;
             text-transform:uppercase;white-space:nowrap;flex-shrink:0;overflow:hidden;
-            box-shadow:0 8px 28px rgba(255,215,0,0.6),inset 0 2px 0 rgba(255,255,255,0.45);
+            box-shadow:0 8px 32px rgba(255,215,0,0.65),0 0 0 1px rgba(255,255,200,0.35),0 0 50px rgba(255,215,0,0.25),inset 0 2px 0 rgba(255,255,255,0.48);
             font-family:'Cinzel Decorative',serif;animation:vipRainbow 3s linear infinite;
           ">
-            <span style="position:relative;z-index:1;display:flex;align-items:center;gap:6px;">
-              <span style="animation:vipBadge 2s ease-in-out infinite;font-size:12px;">✦</span>
+            <span style="position:relative;z-index:1;display:flex;align-items:center;gap:7px;">
+              <span style="animation:vipBadge 2s ease-in-out infinite;font-size:13px;">✦</span>
               Switch to VIP
-              <span style="animation:vipBadge 2s ease-in-out infinite reverse;font-size:12px;">✦</span>
+              <span style="animation:vipBadge 2s ease-in-out infinite reverse;font-size:13px;">✦</span>
             </span>
-            <div style="position:absolute;top:0;left:0;right:0;height:45%;background:rgba(255,255,255,0.28);border-radius:99px;pointer-events:none;"></div>
-            <div class="vipBtnShineBar" style="position:absolute;top:0;width:40%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,0.4),transparent);left:-80%;pointer-events:none;transform:skewX(-15deg);"></div>
+            <div style="position:absolute;top:0;left:0;right:0;height:46%;background:rgba(255,255,255,0.3);border-radius:99px;pointer-events:none;"></div>
+            <div class="vipBtnShineBar" style="position:absolute;top:0;width:42%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,0.42),transparent);left:-80%;pointer-events:none;transform:skewX(-15deg);"></div>
           </div>
         </div>
       </div>
@@ -2222,9 +2262,28 @@ if(update !== updatesArray[updatesArray.length - 1]){
       var c=document.getElementById('vipCanvas');if(!c)return;
       var ctx=c.getContext('2d');
       function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight;}
-      resize();
-      var pts=[];for(var i=0;i<20;i++) pts.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5+0.5,vx:(Math.random()-.5)*.3,vy:-Math.random()*.5-.15,life:Math.random()});
-      function draw(){ctx.clearRect(0,0,c.width,c.height);pts.forEach(function(p){p.life+=0.007;if(p.life>1){p.life=0;p.x=Math.random()*c.width;p.y=c.height+4;}p.x+=p.vx;p.y+=p.vy;ctx.save();ctx.globalAlpha=Math.sin(p.life*Math.PI)*0.65;ctx.fillStyle='#ffd700';ctx.shadowColor='#ffd700';ctx.shadowBlur=7;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore();});requestAnimationFrame(draw);}
+      resize();window.addEventListener('resize',resize);
+      var pts=[];
+      for(var i=0;i<24;i++) pts.push({x:Math.random()*400,y:Math.random()*120,r:Math.random()*1.8+0.4,vx:(Math.random()-.5)*.35,vy:-Math.random()*.55-.12,life:Math.random(),type:Math.random()>.7?'star':'dot'});
+      function draw(){
+        ctx.clearRect(0,0,c.width,c.height);
+        pts.forEach(function(p){
+          p.life+=0.007;
+          if(p.life>1){p.life=0;p.x=Math.random()*c.width;p.y=c.height+4;}
+          p.x+=p.vx;p.y+=p.vy;
+          var a=Math.sin(p.life*Math.PI)*0.7;
+          ctx.save();ctx.globalAlpha=a;
+          if(p.type==='star'){
+            ctx.fillStyle='#ffe066';ctx.shadowColor='#ffd700';ctx.shadowBlur=10;
+            ctx.font=(p.r*5)+'px serif';ctx.fillText('✦',p.x,p.y);
+          } else {
+            ctx.fillStyle='#ffd700';ctx.shadowColor='#ffd700';ctx.shadowBlur=8;
+            ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+          }
+          ctx.restore();
+        });
+        requestAnimationFrame(draw);
+      }
       draw();
     })();
     </script>
