@@ -2077,6 +2077,86 @@ if(update !== updatesArray[updatesArray.length - 1]){
 </h1>
     <p class="subtitle">Convert, combine, and extract. Professional-grade media tools that never leave your browser.</p>
 
+    <!-- ✦ VIP GLASSMORPHISM BANNER ✦ -->
+    <div id="vipGlassBanner" style="
+      position:relative;
+      margin:32px auto 8px;
+      max-width:560px;
+      border-radius:22px;
+      padding:2px;
+      background:linear-gradient(135deg,rgba(255,215,0,0.7),rgba(180,100,0,0.4),rgba(255,215,0,0.7));
+      box-shadow:0 8px 40px rgba(255,215,0,0.18), 0 0 0 1px rgba(255,215,0,0.12);
+      animation:vipGlowPulse 3s ease-in-out infinite;
+      cursor:pointer;
+    " onclick="window.location.href='index (3).html'">
+      <div style="
+        border-radius:21px;
+        padding:22px 28px;
+        background:rgba(10,5,0,0.55);
+        backdrop-filter:blur(20px) saturate(1.8);
+        -webkit-backdrop-filter:blur(20px) saturate(1.8);
+        display:flex;
+        align-items:center;
+        gap:18px;
+        justify-content:space-between;
+        flex-wrap:wrap;
+      ">
+        <!-- Left: icon + text -->
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="
+            width:48px;height:48px;border-radius:14px;
+            background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);
+            display:flex;align-items:center;justify-content:center;
+            font-size:22px;flex-shrink:0;
+            box-shadow:0 4px 16px rgba(255,215,0,0.35);
+          ">👑</div>
+          <div>
+            <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,215,0,0.6);margin-bottom:3px;">Exclusive Access</div>
+            <div style="font-size:16px;font-weight:900;color:#ffd700;letter-spacing:0.3px;line-height:1.2;">Wanna Switch to VIP?</div>
+            <div style="font-size:11px;color:rgba(255,200,80,0.65);margin-top:3px;font-weight:500;">Unlock premium tools — Base64, Metadata, Binary & more</div>
+          </div>
+        </div>
+        <!-- Right: switch button -->
+        <div style="
+          padding:10px 22px;
+          border-radius:99px;
+          background:linear-gradient(135deg,#b8860b,#ffd700);
+          color:#000;
+          font-size:12px;
+          font-weight:900;
+          letter-spacing:0.8px;
+          text-transform:uppercase;
+          white-space:nowrap;
+          box-shadow:0 4px 18px rgba(255,215,0,0.4);
+          transition:transform 0.15s,box-shadow 0.15s;
+          flex-shrink:0;
+        "
+        onmouseover="this.style.transform='scale(1.06)';this.style.boxShadow='0 6px 24px rgba(255,215,0,0.6)'"
+        onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 18px rgba(255,215,0,0.4)'"
+        >Switch to VIP ✦</div>
+      </div>
+      <!-- Shimmer sweep -->
+      <div style="
+        position:absolute;inset:0;border-radius:22px;
+        background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.07) 50%,transparent 70%);
+        background-size:200% 100%;
+        animation:vipShimmer 2.5s linear infinite;
+        pointer-events:none;
+      "></div>
+    </div>
+
+    <style>
+    @keyframes vipGlowPulse{
+      0%,100%{box-shadow:0 8px 40px rgba(255,215,0,0.18),0 0 0 1px rgba(255,215,0,0.12);}
+      50%{box-shadow:0 8px 55px rgba(255,215,0,0.38),0 0 0 1px rgba(255,215,0,0.28);}
+    }
+    @keyframes vipShimmer{
+      0%{background-position:200% 0;}
+      100%{background-position:-200% 0;}
+    }
+    #vipGlassBanner:hover{transform:translateY(-2px);transition:transform 0.2s;}
+    </style>
+
  <h2 id="converter" class="section-title">Image Converter</h2>
 <div class="card">
     <label class="upload-area" for="imgInput">

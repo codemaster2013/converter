@@ -1,61 +1,17 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<!-- VIP AUTO-REDIRECT: runs before anything renders -->
-<script>
-(function(){
-  // "Just once" from settings — skip redirect this one time, then VIP resumes
-  if(localStorage.getItem('mgp_skip_once')==='1'){
-    localStorage.removeItem('mgp_skip_once');
-  } else if(localStorage.getItem('mgp_vip_default')==='1'){
-    window.location.replace('index (3).html');
-  }
-})();
-</script>
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="https://codemaster2013.github.io/converter/sitemap.xml" />
-    <meta name="google-site-verification" content="KbFDykQbzWuFYw1MOPvcTvgaYO6rS5zBdLwHbdtZpB0" />
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="MediaGrabber Pro">
-    <meta name="description" content="MediaGrabber Pro: The all-in-one browser tool for secure image conversion, PDF password removal, and Smart OCR text extraction. Fast, free, and 100% private.">
-    <title>MediaGrabber Pro | Secure Image Converter, OCR & PDF Tools</title>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "MediaGrabber Pro",
-  "url": "https://codemaster2013.github.io/converter/"
-}
-</script>
-
-
-<meta property="og:image" content="https://codemaster2013.github.io/converter/og-image.png">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://codemaster2013.github.io/converter/">
-<meta name="twitter:title" content="MediaGrabber Pro">
-<meta name="twitter:description" content="Professional-grade media tools that never leave your browser.">
-<meta name="twitter:image" content="https://codemaster2013.github.io/converter/og-image.png">
-
-    
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/plugins/encryption.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-
-<!-- Favicons -->
-<link rel="icon" href="favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
-<link rel="manifest" href="site.webmanifest">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediaGrabber VIP — Elite Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <style>
 
 /* --- THE BRIGHTER PURPLE NEON GLOW --- */
@@ -141,6 +97,7 @@ body.light-mode select#format option {
         
         body { 
             margin: 0; 
+            padding-top: 80px;
             background: radial-gradient(circle at top, #1a1033, var(--bg)); 
             color: var(--text);
             line-height: 1.6;
@@ -149,31 +106,297 @@ body.light-mode select#format option {
 
         body.light-mode { background: var(--bg); }
 
-        /* NAVIGATION BAR */
+        /* NAVIGATION BAR — legacy rule, overridden by #glassNav */
         nav {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 5% 10px 1%;
-            background: var(--nav-bg);
-            backdrop-filter: blur(15px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            padding: 10px 4%;
+        }
+
+        /* Scrolled state — deeper glass + compact */
+        nav.nav-scrolled {
+            padding: 6px 4%;
+            background: rgba(10, 5, 30, 0.55);
+            backdrop-filter: blur(40px) saturate(220%);
+            -webkit-backdrop-filter: blur(40px) saturate(220%);
+            border-bottom: 1px solid rgba(124, 58, 237, 0.25);
+            box-shadow:
+                0 8px 40px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(124, 58, 237, 0.12),
+                0 1px 0 rgba(255, 255, 255, 0.06) inset;
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.45);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255,255,255,0.9) inset;
+        }
+
+        body.light-mode nav.nav-scrolled {
+            background: rgba(255, 255, 255, 0.72);
+            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
         }
 
         .logo-group {
             display: flex;
             align-items: center;
             height: 50px;
+            transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav.nav-scrolled .logo-group {
+            height: 40px;
         }
 
         .main-logo {
-            height: 420%;
+            height: 42px;
             width: auto;
             object-fit: contain;
+            transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.35s ease;
+            filter: drop-shadow(0 0 8px rgba(200, 160, 60, 0.35));
         }
+
+        nav.nav-scrolled .main-logo {
+            height: 34px;
+            filter: drop-shadow(0 0 12px rgba(200, 160, 60, 0.55));
+        }
+
+
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================ */
+
+@media (max-width:900px){
+
+.container{
+    padding:25px 16px;
+}
+
+.card{
+    padding:25px;
+}
+
+.nav-links{
+    width:100%;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
+}
+
+.hero-title{
+    letter-spacing:-1px;
+}
+
+.pr-sidebar{
+    display:none;
+}
+
+}
+
+@media (max-width:600px){
+
+.hero-title{
+    font-size:32px;
+}
+
+.subtitle{
+    font-size:15px;
+}
+
+.section-title{
+    font-size:24px;
+}
+
+.upload-area{
+    padding:25px;
+}
+
+.card{
+    padding:18px;
+}
+
+nav{
+    padding:10px 12px;
+}
+
+.main-logo {
+    height: 32px;
+}
+
+}
+
+
+.pr-glass-panel{
+    width:100%;
+    max-width:100%;
+    height:90vh;
+}
+
+/* =========================
+   PREMIUM GLASS NAVBAR
+========================= */
+
+#glassNav{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:80px;
+
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+
+    padding:0 30px;
+
+    /* Glassmorphism */
+    background:rgba(255,215,0,0.05);
+    backdrop-filter:blur(25px) saturate(180%);
+    -webkit-backdrop-filter:blur(25px) saturate(180%);
+
+    border-bottom:1px solid rgba(255,215,0,0.2);
+
+    transition:all 0.35s ease;
+    z-index:9999;
+}
+
+/* Scroll Effect */
+
+#glassNav.scrolled{
+    background:rgba(10,8,2,0.55);
+    backdrop-filter:blur(40px) saturate(220%);
+    -webkit-backdrop-filter:blur(40px) saturate(220%);
+    border-bottom:1px solid rgba(255,215,0,0.45);
+
+    box-shadow:
+    0 5px 30px rgba(255,215,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+/* Nav Left — VIP Badge */
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    justify-content:flex-start;
+}
+
+/* Nav Right — Buttons */
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    justify-content:flex-end;
+}
+
+/* Logo Container — Center */
+.logo-container{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* VIP Status Pill */
+.vip-status-pill{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 14px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    background:rgba(255,215,0,0.1);
+    border:1px solid rgba(255,215,0,0.35);
+    color:#ffd700;
+    backdrop-filter:blur(10px);
+    white-space:nowrap;
+    transition:all 0.25s ease;
+}
+
+.vip-status-pill:hover{
+    background:rgba(255,215,0,0.18);
+    box-shadow:0 0 14px rgba(255,215,0,0.3);
+}
+
+.vip-status-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 6px #22c55e, 0 0 12px rgba(34,197,94,0.5);
+    animation:vip-pulse 2s ease-in-out infinite;
+    flex-shrink:0;
+}
+
+@keyframes vip-pulse{
+    0%,100%{ box-shadow:0 0 5px #22c55e, 0 0 10px rgba(34,197,94,0.4); }
+    50%{ box-shadow:0 0 10px #22c55e, 0 0 20px rgba(34,197,94,0.7); }
+}
+
+/* Settings & Back Buttons */
+.settings-btn,
+.vip-back-btn{
+    padding:8px 16px;
+    border-radius:30px;
+    border:1px solid rgba(255,215,0,0.25);
+    background:rgba(255,215,0,0.08);
+    color:#ffd700;
+    cursor:pointer;
+    font-weight:600;
+    font-size:12px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:all 0.25s ease;
+    backdrop-filter:blur(10px);
+    white-space:nowrap;
+}
+
+.settings-btn:hover,
+.vip-back-btn:hover{
+    background:rgba(255,215,0,0.2);
+    box-shadow:0 0 15px rgba(255,215,0,0.4);
+    transform:translateY(-1px);
+    border-color:rgba(255,215,0,0.5);
+}
+
+/* Logo Image */
+.nav-logo{
+    height:200%;
+    width: auto;
+    max-width:280px;
+    object-fit:cover;
+
+    filter:drop-shadow(0 0 8px rgba(255,215,0,0.5));
+
+    transition:all 0.3s ease;
+}
+
+/* Hover effect */
+.nav-logo:hover{
+    transform:scale(1.05);
+    filter:drop-shadow(0 0 14px rgba(255,215,0,0.85));
+}
+
+/* Mobile responsive */
+@media(max-width:600px){
+    #glassNav{
+        padding:0 14px;
+        height:60px;
+    }
+    .settings-btn span,
+    .vip-back-btn span{ display:none; }
+    .vip-status-pill{ font-size:10px; padding:5px 10px; }
+    .nav-logo{ height:60px; }
+}
+
 
         .nav-links {
             display: flex;
@@ -221,13 +444,14 @@ body.light-mode select#format option {
 
       /* ===== NEON SHIMMER HERO TITLE ===== */
 
-.hero-title {
-    font-size: 52px;
-    margin: 10px 0;
-    font-weight: 800;
-    letter-spacing: -2px;
-    text-align: center;
-    text-transform: uppercase;
+.hero-title{
+    font-size:clamp(28px,6vw,52px);
+    margin:10px 0;
+    font-weight:800;
+    letter-spacing:-2px;
+    text-align:center;
+    text-transform:uppercase;
+
 
     background: linear-gradient(
         90deg,
@@ -565,7 +789,7 @@ body.light-mode .neon-select:hover {
 .settings-btn {
     cursor: pointer;
     background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(167,139,250,0.1));
-    border: 1px solid rgba(124,58,237,0.4);
+    border: 1px solid #ffd700;
     padding: 8px 16px;
     border-radius: 30px;
     display: flex;
@@ -573,12 +797,12 @@ body.light-mode .neon-select:hover {
     gap: 8px;
     color: var(--text);
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(124,58,237,0.15);
+    box-shadow: 0 0 10px rgba(255,215,0,0.2);
 }
 .settings-btn:hover {
     background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(167,139,250,0.2));
-    box-shadow: 0 0 20px rgba(124,58,237,0.5);
-    border-color: #a78bfa;
+    box-shadow: 0 0 20px rgba(255,215,0,0.45);
+    border-color: #ffe566;
     transform: translateY(-1px);
 }
 
@@ -1028,7 +1252,7 @@ body.light-mode .pr-select { background: rgba(0,0,0,0.04); color: #111827; }
 /* The glass panel itself */
 .pr-glass-panel {
     width: 100%;
-    max-width: 1100px;
+    max-width: 98vw;
     height: 88vh;
     border-radius: 28px;
     display: flex;
@@ -1162,8 +1386,8 @@ body.light-mode .pr-header-title {
 
 /* Sidebar */
 .pr-sidebar {
-    width: 260px;
-    min-width: 200px;
+    width: 220px;
+    min-width: 0;
     background: rgba(255,255,255,0.03);
     border-right: 1px solid rgba(167,139,250,0.15);
     display: flex;
@@ -1265,7 +1489,7 @@ body.light-mode .pr-canvas-area { background: rgba(0,0,0,0.04); }
     align-items: center;
     gap: 10px;
     padding: 10px 20px;
-    background: rgba(255,255,255,0.04);
+   
     border-top: 1px solid rgba(167,139,250,0.15);
     justify-content: center;
     flex-wrap: wrap;
@@ -1391,10 +1615,11 @@ body.light-mode .fb-input { background: rgba(0,0,0,0.05); color: #111; }
 
 
 /* 🔒 Lock background scroll */
+
 body.modal-open {
     overflow: hidden !important;
+    height: 100vh;
 }
-
 
 /* Updates Row */
 .updates-row {
@@ -1411,6 +1636,11 @@ body.modal-open {
 .updates-row:hover{
     box-shadow:0 0 20px rgba(124,58,237,0.4);
     transform:translateY(-2px);
+}
+.updates-row:active,
+.updates-row.tapped{
+    border-color:#ffd700 !important;
+    box-shadow:0 0 18px rgba(255,215,0,0.4) !important;
 }
 
 /* Blue dot */
@@ -1471,8 +1701,8 @@ body.modal-open {
     padding:30px;
     background:rgba(13,6,38,0.55);
     backdrop-filter:blur(30px);
-    border:1px solid rgba(124,58,237,0.3);
-    box-shadow:0 0 60px rgba(124,58,237,0.3);
+    border:1px solid #ffd700;
+    box-shadow:0 0 60px rgba(255,215,0,0.3);
 }
 body.light-mode #updatesModal{
     background:rgba(255,255,255,0.6);
@@ -1543,15 +1773,15 @@ animation:pulseGlow 1.5s infinite;
 
 /* Card glow effect */
 .update-card.new-update{
-border:1px solid rgba(37,99,235,0.6);
-box-shadow:0 0 20px rgba(37,99,235,0.35);
+border:1px solid rgba(255,215,0,0.8);
+box-shadow:0 0 20px rgba(255,215,0,0.4);
 }
 
 /* Glow animation */
 @keyframes pulseGlow{
-0%{box-shadow:0 0 6px rgba(37,99,235,0.5);}
-50%{box-shadow:0 0 18px rgba(37,99,235,1);}
-100%{box-shadow:0 0 6px rgba(37,99,235,0.5);}
+0%{box-shadow:0 0 6px rgba(255,215,0,0.4);}
+50%{box-shadow:0 0 18px rgba(255,215,0,0.9);}
+100%{box-shadow:0 0 6px rgba(255,215,0,0.4);}
 }
 
 
@@ -1567,19 +1797,19 @@ gap:16px;
 padding:18px 20px;
 border-radius:18px;
 background:rgba(18,20,45,0.85);
-border:1px solid rgba(168,85,247,0.5);
+border:1px solid rgba(255,215,0,0.5);
 color:white;
 transition:all 0.3s ease;
 box-shadow:
-0 0 8px rgba(168,85,247,0.4),
-0 0 18px rgba(168,85,247,0.25);
+0 0 8px rgba(255,215,0,0.3),
+0 0 18px rgba(255,215,0,0.15);
 }
 
 /* Glow effect on hover */
 .update-card:hover{
 box-shadow:
-0 0 12px rgba(168,85,247,0.7),
-0 0 30px rgba(168,85,247,0.45);
+0 0 12px rgba(255,215,0,0.6),
+0 0 30px rgba(255,215,0,0.3);
 transform:translateY(-2px);
 }
 
@@ -1615,10 +1845,10 @@ width:100%;
 padding:18px;
 border-radius:16px;
 background:rgba(20,22,50,0.9);
-border:1px solid rgba(168,85,247,0.6);
+border:1px solid rgba(255,215,0,0.5);
 box-shadow:
-0 0 10px rgba(168,85,247,0.5),
-0 0 25px rgba(168,85,247,0.25);
+0 0 10px rgba(255,215,0,0.3),
+0 0 25px rgba(255,215,0,0.15);
 color:white;
 }
 
@@ -1639,82 +1869,528 @@ line-height:1.5;
 
 
 /* ============================
-   VIP LOADING SCREEN
+   VIP GOLD THEME OVERRIDES
 ============================ */
-#vipLoader {
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,215,0,0.45) #05030a;
+}
+html::-webkit-scrollbar { width: 6px; }
+html::-webkit-scrollbar-track { background: #05030a; }
+html::-webkit-scrollbar-thumb {
+  background: rgba(255,215,0,0.45);
+  border-radius: 99px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,215,0,0.65);
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+  min-width: 0;
+}
+:root {
+  --vip-gold: #ffd700;
+  --vip-gold-light: #ffe566;
+  --vip-gold-dark: #b8860b;
+  --vip-gold-dim: rgba(255,215,0,0.1);
+  --vip-gold-border: rgba(255,215,0,0.25);
+}
+
+body {
+  background: radial-gradient(circle at top, #1a0f00, #05030a) !important;
+}
+
+/* Gold nav */
+.vip-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px;
+  background: rgba(5,3,10,0.9);
+  backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 1000;
+  border-bottom: 1px solid var(--vip-gold-border);
+  box-shadow: 0 1px 30px rgba(255,215,0,0.06);
+  flex-wrap: nowrap;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.vip-nav-brand { display:flex; align-items:center; gap:8px; min-width:0; flex-shrink:1; }
+.vip-crown { font-size:26px; filter:drop-shadow(0 0 10px rgba(255,215,0,0.8)); animation: crownFloat 3s ease-in-out infinite; }
+@keyframes crownFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
+.vip-nav-title {
+  font-family: 'Cinzel', serif; font-size:clamp(12px,2.5vw,18px); font-weight:900; letter-spacing:1px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  background: linear-gradient(90deg,#b8860b,#ffd700,#ffe566,#ffd700,#b8860b);
+  background-size:200% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation: goldShimmer 3s linear infinite;
+}
+@keyframes goldShimmer { to{background-position:200% center;} }
+.vip-status-pill {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,215,0,0.12); border:1px solid var(--vip-gold-border);
+  padding:6px 14px; border-radius:99px; font-size:11px; font-weight:800; color:var(--vip-gold);
+  letter-spacing:1.5px; text-transform:uppercase;
+}
+.vip-status-dot { width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 8px #4ade80; animation:sdot 2s ease-in-out infinite; }
+@keyframes sdot { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.vip-back-btn {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,215,0,0.08); border:1px solid rgba(255,215,0,0.2);
+  color:var(--vip-gold-light); padding:8px 16px; border-radius:99px;
+  font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;
+  text-decoration:none; font-family:'Inter',sans-serif;
+}
+.vip-back-btn:hover { background:rgba(255,215,0,0.15); border-color:var(--vip-gold); box-shadow:0 0 16px rgba(255,215,0,0.2); }
+
+/* VIP Hero */
+.vip-hero { text-align:center; padding:50px 20px 36px; position:relative; z-index:1; width:100%; box-sizing:border-box; }
+.vip-hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,215,0,0.08); border:1px solid rgba(255,215,0,0.3);
+  padding:8px 20px; border-radius:99px; font-size:11px; font-weight:800;
+  color:var(--vip-gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:24px;
+}
+.vip-hero-title {
+  font-family:'Cinzel',serif; font-size:clamp(28px,4.5vw,52px); font-weight:900;
+  line-height:1.15; margin-bottom:16px;
+  background:linear-gradient(180deg,#fff8dc 0%,#ffd700 40%,#b8860b 80%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  filter:drop-shadow(0 0 25px rgba(255,215,0,0.25));
+}
+.vip-hero-sub { font-size:15px; color:#7a6a4a; max-width:600px; margin:0 auto 28px; padding:0 16px; }
+.vip-benefits { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:28px; width:100%; box-sizing:border-box; padding:0 16px; }
+.vip-chip {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,215,0,0.07); border:1px solid rgba(255,215,0,0.18);
+  padding:7px 14px; border-radius:99px; font-size:12px; font-weight:600; color:var(--vip-gold-light);
+  transition:all 0.2s;
+}
+.vip-chip:hover { background:rgba(255,215,0,0.13); transform:translateY(-2px); box-shadow:0 4px 14px rgba(255,215,0,0.1); }
+
+.vip-divider { height:1px; background:linear-gradient(90deg,transparent,rgba(255,215,0,0.35),transparent); margin:0; }
+
+/* VIP Content Grid */
+.vip-content { max-width:900px; margin:0 auto; padding:30px 20px 70px; position:relative; z-index:1; width:100%; box-sizing:border-box; }
+.vip-section-label {
+  font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+  color:#7a5a0a; margin-bottom:18px; display:flex; align-items:center; gap:10px;
+  max-width:860px; margin-left:auto; margin-right:auto; width:100%;
+}
+.vip-section-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,215,0,0.2),transparent); }
+
+/* VIP Card */
+.vB64PickCard.active {
+  background: rgba(255,215,0,0.14) !important;
+  border-color: rgba(255,215,0,0.6) !important;
+  box-shadow: 0 0 14px rgba(255,215,0,0.18);
+}
+.vip-card {
+  background:linear-gradient(145deg,rgba(255,215,0,0.04),rgba(180,110,0,0.05));
+  border:1px solid var(--vip-gold-border); border-radius:22px; padding:28px 24px;
+  margin-bottom:20px; position:relative; overflow:visible; transition:all 0.3s;
+  width:100%; box-sizing:border-box; word-break:break-word; max-width:860px; margin-left:auto; margin-right:auto;
+}
+.vip-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--vip-gold),transparent); opacity:0; transition:opacity 0.3s; }
+.vip-card:hover { border-color:rgba(255,215,0,0.42); box-shadow:0 6px 35px rgba(255,215,0,0.08); transform:translateY(-2px); }
+.vip-card:hover::before { opacity:1; }
+.vip-card-icon { font-size:30px; margin-bottom:12px; display:block; filter:drop-shadow(0 0 7px rgba(255,215,0,0.35)); }
+.vip-card-title { font-family:'Cinzel',serif; font-size:15px; font-weight:700; color:var(--vip-gold-light); margin-bottom:5px; }
+.vip-card-desc { font-size:12px; color:#6a5a3a; margin-bottom:18px; line-height:1.6; }
+.vip-tag { position:absolute; top:14px; right:14px; background:linear-gradient(135deg,#b8860b,#ffd700); color:#000; font-size:8px; font-weight:900; padding:3px 9px; border-radius:99px; letter-spacing:1px; text-transform:uppercase; }
+
+/* VIP Buttons */
+.btn-vip {
+  width:100%; padding:13px 20px; border-radius:13px;
+  border:1px solid rgba(255,215,0,0.3); background:rgba(255,215,0,0.08);
+  color:var(--vip-gold); font-size:13px; font-weight:700; cursor:pointer;
+  font-family:'Inter',sans-serif; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-vip:hover { background:rgba(255,215,0,0.16); border-color:var(--vip-gold); box-shadow:0 0 22px rgba(255,215,0,0.2); transform:translateY(-1px); }
+.btn-vip:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+.btn-vip-solid {
+  background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b) !important;
+  background-size:200% auto !important; animation:goldShimmer 3s linear infinite !important;
+  color:#000 !important; font-weight:800 !important; border:none !important;
+  box-shadow:0 4px 18px rgba(255,215,0,0.3) !important;
+}
+.btn-vip-solid:hover { box-shadow:0 6px 28px rgba(255,215,0,0.45) !important; transform:translateY(-2px) !important; }
+
+/* VIP Inputs */
+.g-inp {
+  width:100%; padding:12px 15px; margin-top:10px; border-radius:12px;
+  border:1px solid rgba(255,215,0,0.18); background:rgba(255,215,0,0.03);
+  color:#f5f0dc; font-size:13px; font-family:'Inter',sans-serif; outline:none; transition:all 0.25s;
+  box-sizing:border-box;
+}
+.g-inp:focus { border-color:var(--vip-gold); background:rgba(255,215,0,0.06); box-shadow:0 0 0 3px rgba(255,215,0,0.08); }
+.g-inp::placeholder { color:#3a2f1a; }
+.g-sel {
+  width:100%; padding:12px 15px; margin-top:10px; border-radius:12px;
+  border:1px solid rgba(255,215,0,0.18); background:rgba(255,215,0,0.03);
+  color:#f5f0dc; font-size:13px; font-family:'Inter',sans-serif; outline:none; cursor:pointer;
+  appearance:none; box-sizing:border-box; transition:all 0.25s;
+  background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat:no-repeat; background-position:right 12px center; background-size:15px;
+}
+.g-sel:focus { border-color:var(--vip-gold); box-shadow:0 0 0 3px rgba(255,215,0,0.08); }
+.g-sel option { background:#0c0818; color:#f5f0dc; }
+.vB64PickCard { user-select:none; }
+.vB64PickCard.active {
+  background: linear-gradient(135deg,rgba(255,215,0,0.18),rgba(180,110,0,0.12)) !important;
+  border-color: rgba(255,215,0,0.7) !important;
+  box-shadow: 0 0 0 2px rgba(255,215,0,0.15), 0 4px 16px rgba(255,215,0,0.12);
+  transform: translateY(-2px);
+}
+.vB64PickCard.active div:first-child { filter: drop-shadow(0 0 6px rgba(255,215,0,0.5)); }
+.g-lbl { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#7a5a0a; margin-top:14px; display:block; }
+.g-upload {
+  border:2px dashed rgba(255,215,0,0.25); background:rgba(255,215,0,0.02);
+  border-radius:14px; padding:28px 16px; text-align:center; cursor:pointer; transition:all 0.25s;
+  display:block; margin-top:10px;
+}
+.g-upload:hover { border-color:var(--vip-gold); background:rgba(255,215,0,0.06); box-shadow:0 0 18px rgba(255,215,0,0.08); }
+.g-upload p { font-size:12px; color:#5a4a2a; font-weight:500; margin-top:6px; }
+.g-prog-wrap { background:rgba(255,215,0,0.07); border-radius:99px; height:5px; overflow:hidden; margin-top:10px; display:none; }
+.g-prog-bar { height:100%; background:linear-gradient(90deg,#b8860b,#ffd700,#ffe566); border-radius:99px; width:0%; transition:width 0.3s; box-shadow:0 0 7px rgba(255,215,0,0.5); }
+.g-status { font-size:11px; color:#7a5a0a; margin-top:7px; min-height:16px; text-align:center; }
+.g-flist { margin-top:12px; display:flex; flex-direction:column; gap:7px; }
+.g-fitem {
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  background:rgba(255,215,0,0.04); border:1px solid rgba(255,215,0,0.12);
+  border-radius:10px; padding:9px 12px; font-size:12px;
+}
+.g-fname { color:#f5f0dc; font-weight:500; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.g-fsel { padding:4px 8px; border-radius:7px; background:rgba(255,215,0,0.06); border:1px solid rgba(255,215,0,0.18); color:var(--vip-gold); font-size:11px; font-family:'Inter',sans-serif; cursor:pointer; outline:none; }
+.g-fdel { background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.25); color:#ef4444; padding:4px 9px; border-radius:7px; font-size:10px; font-weight:700; cursor:pointer; }
+.g-result-box { background:rgba(255,215,0,0.03); border:1px solid rgba(255,215,0,0.12); border-radius:11px; padding:12px; margin-top:10px; font-size:13px; color:#f5f0dc; min-height:70px; resize:vertical; width:100%; box-sizing:border-box; font-family:'Inter',sans-serif; }
+
+/* Grid for tools */
+.vip-tools-grid { display:flex; flex-direction:column; gap:20px; margin-bottom:40px; width:100%; max-width:860px; margin-left:auto; margin-right:auto; }
+
+/* Stats */
+.vip-stats { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:32px; width:100%; justify-content:center; }
+.vip-stat { background:rgba(255,215,0,0.04); border:1px solid var(--vip-gold-border); border-radius:14px; padding:14px 20px; text-align:center; transition:all 0.25s; flex:1; min-width:120px; max-width:180px; }
+.vip-stat:hover { border-color:rgba(255,215,0,0.42); box-shadow:0 4px 18px rgba(255,215,0,0.07); }
+.vip-stat-num { font-family:'Cinzel',serif; font-size:26px; font-weight:900; color:var(--vip-gold); display:block; line-height:1; margin-bottom:5px; text-shadow:0 0 18px rgba(255,215,0,0.35); }
+.vip-stat-lbl { font-size:10px; color:#5a4a2a; font-weight:600; letter-spacing:0.5px; }
+
+/* Priority badge */
+.vip-priority { display:inline-flex; align-items:center; gap:5px; background:rgba(255,215,0,0.09); border:1px solid rgba(255,215,0,0.18); padding:4px 10px; border-radius:99px; font-size:10px; font-weight:700; color:var(--vip-gold); letter-spacing:0.5px; margin-bottom:12px; }
+.vip-pdot { width:6px; height:6px; border-radius:50%; background:var(--vip-gold); box-shadow:0 0 6px var(--vip-gold); animation:sdot 1.5s ease-in-out infinite; }
+
+/* Meta grid */
+.meta-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr)); gap:7px; margin-top:12px; }
+.meta-item { background:rgba(255,215,0,0.03); border:1px solid rgba(255,215,0,0.1); border-radius:10px; padding:9px 11px; }
+.meta-key { font-size:9px; color:#7a5a0a; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; }
+.meta-val { font-size:12px; color:#f5f0dc; margin-top:2px; font-weight:500; }
+
+/* Toast */
+#vipToast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(80px); background:linear-gradient(135deg,#b8860b,#ffd700); color:#000; padding:11px 22px; border-radius:99px; font-size:13px; font-weight:800; z-index:99999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1); letter-spacing:0.5px; box-shadow:0 5px 25px rgba(255,215,0,0.3); pointer-events:none; }
+#vipToast.show { transform:translateX(-50%) translateY(0); }
+
+/* Particles bg */
+.vip-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.vip-particle { position:absolute; width:2px; height:2px; border-radius:50%; background:var(--vip-gold); opacity:0; animation:pflyup var(--d,5s) var(--dl,0s) ease-in infinite; }
+@keyframes pflyup { 0%{opacity:0;transform:translateY(100vh);} 8%{opacity:0.5;} 92%{opacity:0.2;} 100%{opacity:0;transform:translateY(-5vh);} }
+
+/* VIP settings modal gold overrides */
+#settingsModal { background:linear-gradient(145deg,#0d0800,#1a1000,#0b0800) !important; border-color:rgba(255,215,0,0.3) !important; box-shadow:0 0 60px rgba(255,215,0,0.15),0 0 120px rgba(180,100,0,0.08) !important; }
+.settings-modal-title { background:linear-gradient(90deg,#fff8dc,#ffd700,#b8860b) !important; background-size:200% auto !important; -webkit-background-clip:text !important; background-clip:text !important; }
+.theme-card.dark-card { background:linear-gradient(135deg,#0b0800,#1a1000) !important; border-color:rgba(255,215,0,0.2) !important; }
+.theme-card.dark-card.active,.theme-card.dark-card:hover { border-color:var(--vip-gold) !important; box-shadow:0 0 16px rgba(255,215,0,0.4) !important; }
+.theme-card.light-card.active,.theme-card.light-card:hover { border-color:var(--vip-gold) !important; }
+.settings-divider { background:linear-gradient(90deg,transparent,rgba(255,215,0,0.3),transparent) !important; }
+.updates-row { background:rgba(255,215,0,0.06) !important; border-color:rgba(255,215,0,0.18) !important; }
+.updates-row:hover { box-shadow:0 0 18px rgba(255,215,0,0.3) !important; }
+.btn-switch-vip { border-color:rgba(255,215,0,0.4) !important; background:linear-gradient(135deg,rgba(255,215,0,0.12),rgba(180,110,0,0.18)) !important; color:var(--vip-gold) !important; }
+.pr-btn { background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b) !important; color:#000 !important; font-weight:800 !important; }
+
+/* Responsive */
+@media(max-width:768px){
+  .vip-hero-title{font-size:32px;}
+  .vip-tools-grid{grid-template-columns:1fr;}
+  .vip-stats{grid-template-columns:repeat(2,1fr);}
+  .meta-grid{grid-template-columns:1fr;}
+  .vip-nav{padding:10px 4%;}
+  .vip-nav-title{font-size:14px;}
+  .vip-back-btn{font-size:11px;padding:6px 12px;}
+  .pr-header{flex-wrap:wrap;gap:8px;}
+  .pr-header-btns{flex-wrap:wrap;gap:6px;}
+  .pr-sidebar{width:100%;min-width:0;max-height:180px;border-right:none;border-bottom:1px solid rgba(167,139,250,0.15);}
+  .pr-body{flex-direction:column;}
+  .vip-card{padding:20px 16px;}
+  .g-inp,.g-sel{font-size:16px;}
+}
+@media(max-width:400px){
+  .vip-hero-title{font-size:26px;}
+  .vip-stats{grid-template-columns:repeat(2,1fr);}
+  .vip-status-pill{display:none;}
+}
+
+canvas#_hiddenCv { display:none; }
+
+body{
+    overflow-x:hidden;
+}
+
+/* ============================
+   TOOL TAB BAR
+============================ */
+#toolTabBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: sticky;
+  top: 80px;
+  z-index: 100;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: none;
+  border-radius: 0;
+}
+#toolTabBar::-webkit-scrollbar { display: none; }
+
+.tool-tab {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,215,0,0.15);
+  background: rgba(255,215,0,0.04);
+  color: #7a6a4a;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+.tool-tab:hover {
+  border-color: rgba(255,215,0,0.4);
+  color: var(--vip-gold-light);
+  background: rgba(255,215,0,0.09);
+  box-shadow: 0 0 12px rgba(255,215,0,0.1);
+}
+.tool-tab.active {
+  background: linear-gradient(135deg, rgba(255,215,0,0.18), rgba(180,110,0,0.22));
+  border-color: var(--vip-gold);
+  color: var(--vip-gold);
+  box-shadow: 0 0 16px rgba(255,215,0,0.2), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+.tool-tab.more-tab {
+  border-color: rgba(255,215,0,0.3);
+  color: var(--vip-gold-light);
+  background: rgba(255,215,0,0.07);
+  font-size: 16px;
+  padding: 7px 16px;
+  letter-spacing: 1px;
+}
+.tool-tab.more-tab:hover {
+  background: rgba(255,215,0,0.15);
+  box-shadow: 0 0 18px rgba(255,215,0,0.2);
+}
+
+/* ============================
+   MORE MODAL OVERLAY
+============================ */
+#moreModalOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  justify-content: center;
+  align-items: center;
+}
+#moreModalOverlay.open {
+  display: flex;
+}
+
+#moreModal {
+  background: linear-gradient(145deg, rgba(20,12,5,0.97), rgba(30,18,2,0.98));
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 26px;
+  padding: 32px 28px;
+  width: 90%;
+  max-width: 560px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow:
+    0 0 60px rgba(255,215,0,0.12),
+    0 0 120px rgba(180,100,0,0.07),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: moreModalIn 0.32s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,215,0,0.2) transparent;
+}
+#moreModal::-webkit-scrollbar { width: 4px; }
+#moreModal::-webkit-scrollbar-track { background: transparent; }
+#moreModal::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.2); border-radius: 99px; }
+
+@keyframes moreModalIn {
+  from { opacity: 0; transform: scale(0.88) translateY(24px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+#moreModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+#moreModalTitle {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #fff8dc, #ffd700, #b8860b);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: goldShimmer 3s linear infinite;
+  font-family: 'Cinzel', serif;
+}
+#moreModalClose {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 16px;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+#moreModalClose:hover { background: rgba(239,68,68,0.2); color: #ef4444; border-color: #ef4444; }
+
+#moreModalGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media(max-width: 480px) {
+  #moreModalGrid { grid-template-columns: 1fr; }
+}
+
+.more-tool-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,215,0,0.15);
+  background: rgba(255,215,0,0.03);
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+}
+.more-tool-btn:hover {
+  background: rgba(255,215,0,0.09);
+  border-color: rgba(255,215,0,0.45);
+  box-shadow: 0 4px 18px rgba(255,215,0,0.08);
+  transform: translateY(-2px);
+}
+.more-tool-icon { font-size: 22px; margin-bottom: 4px; }
+.more-tool-name { font-size: 13px; font-weight: 700; color: var(--vip-gold-light); letter-spacing: 0.2px; }
+.more-tool-desc { font-size: 11px; color: #5a4a2a; font-weight: 500; line-height: 1.4; }
+
+
+
+
+
+
+
+/* ============================
+   BACK-TO-APP LOADING SCREEN
+============================ */
+#backLoader {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 999999;
-  background: linear-gradient(-45deg, #0f0024, #240046, #3a0ca3, #4361ee, #7209b7, #4cc9f0);
+  background: linear-gradient(-45deg, #0f0024, #240046, #3a0ca3, #4361ee, #7209b7);
   background-size: 400% 400%;
-  animation: vipBgMove 6s ease infinite;
+  animation: blBgMove 6s ease infinite;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 22px;
 }
-#vipLoader.open { display: flex; }
-@keyframes vipBgMove {
+#backLoader.open { display: flex; }
+@keyframes blBgMove {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-#vipLoader .vl-crown {
-  font-size: 52px;
-  animation: vipCrownFloat 1.8s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(255,215,0,0.8));
+#backLoader .bl-icon {
+  font-size: 50px;
+  animation: blFloat 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(199,125,255,0.8));
 }
-@keyframes vipCrownFloat {
-  0%,100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-8px) scale(1.08); }
+@keyframes blFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
 }
-#vipLoader .vl-title {
+#backLoader .bl-title {
   font-family: 'Cinzel', serif;
-  font-size: clamp(22px, 5vw, 38px);
+  font-size: clamp(20px, 5vw, 34px);
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   text-align: center;
-  background: linear-gradient(90deg, #fff8dc, #ffd700, #c77dff, #4cc9f0, #fff);
+  background: linear-gradient(90deg, #fff, #c77dff, #4361ee, #4cc9f0, #fff);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: shimmer 2.5s linear infinite;
-  text-shadow: none;
 }
-#vipLoader .vl-sub {
+#backLoader .bl-sub {
   font-size: 13px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.45);
   letter-spacing: 2px;
   text-transform: uppercase;
   text-align: center;
 }
-#vipLoader .vl-spinner {
-  width: 60px; height: 60px;
+#backLoader .bl-spinner {
+  width: 58px; height: 58px;
   border-radius: 50%;
   border: 4px solid rgba(255,255,255,0.1);
-  border-top: 4px solid #ffd700;
-  border-right: 4px solid #c77dff;
+  border-top: 4px solid #c77dff;
+  border-right: 4px solid #4361ee;
   animation: spin 0.9s linear infinite;
-  box-shadow: 0 0 22px rgba(255,215,0,0.5), 0 0 40px rgba(114,9,183,0.4);
+  box-shadow: 0 0 20px rgba(114,9,183,0.6), 0 0 40px rgba(67,97,238,0.4);
 }
-#vipLoader .vl-bar-wrap {
-  width: 220px;
-  height: 4px;
+#backLoader .bl-bar-wrap {
+  width: 210px; height: 4px;
   background: rgba(255,255,255,0.1);
-  border-radius: 99px;
-  overflow: hidden;
+  border-radius: 99px; overflow: hidden;
 }
-#vipLoader .vl-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #ffd700, #c77dff, #4cc9f0);
+#backLoader .bl-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #c77dff, #4361ee, #4cc9f0);
   border-radius: 99px;
   transition: width 0.1s linear;
-  box-shadow: 0 0 8px rgba(255,215,0,0.6);
+  box-shadow: 0 0 8px rgba(199,125,255,0.6);
 }
-#vipLoader .vl-tap {
+#backLoader .bl-tap {
   font-size: 12px;
   color: rgba(255,255,255,0.28);
   cursor: pointer;
@@ -1723,134 +2399,370 @@ line-height:1.5;
   font-family: 'Inter', sans-serif;
   margin-top: 4px;
 }
-#vipLoader .vl-tap:hover { color: rgba(255,255,255,0.55); }
+#backLoader .bl-tap:hover { color: rgba(255,255,255,0.6); }
 
-    </style>
+
+/* ============================
+   BACK CHOICE CARD
+============================ */
+#backChoiceOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  justify-content: center;
+  align-items: center;
+}
+#backChoiceOverlay.open { display: flex; }
+#backChoiceCard {
+  background: linear-gradient(145deg, #0d0800, #1a1000, #0b0800);
+  border: 1px solid rgba(255,215,0,0.35);
+  border-radius: 28px;
+  padding: 36px 28px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(255,215,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+  animation: bcCardPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes bcCardPop {
+  from { opacity:0; transform: scale(0.85) translateY(20px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.bc-icon { font-size: 44px; margin-bottom: 14px; }
+.bc-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px; font-weight: 900;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #fff8dc, #ffd700, #b8860b);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: goldShimmer 3s linear infinite;
+}
+.bc-sub { font-size: 13px; color: #7a6a4a; margin-bottom: 24px; line-height: 1.6; }
+.bc-btn-row { display: flex; flex-direction: column; gap: 10px; }
+.bc-btn {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,215,0,0.25);
+  background: rgba(255,215,0,0.05);
+  color: var(--vip-gold-light);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: flex; align-items: center; gap: 12px;
+  text-align: left; width: 100%;
+}
+.bc-btn:hover {
+  background: rgba(255,215,0,0.12);
+  border-color: var(--vip-gold);
+  box-shadow: 0 4px 20px rgba(255,215,0,0.12);
+  transform: translateY(-2px);
+}
+.bc-btn-icon { font-size: 22px; flex-shrink: 0; }
+.bc-btn-label { font-size: 14px; font-weight: 700; color: var(--vip-gold); display: block; }
+.bc-btn-desc  { font-size: 11px; color: #5a4a2a; margin-top: 2px; display: block; }
+.bc-cancel {
+  margin-top: 14px; background: none; border: none;
+  color: #5a4a2a; font-size: 12px; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: color 0.2s;
+}
+.bc-cancel:hover { color: #9ca3af; }
+
+
+/* ============================
+   SCROLL TO TOP BUTTON
+============================ */
+#scrollTopBtn {
+  position: fixed;
+  bottom: 32px;
+  right: 28px;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,215,0,0.45);
+  background: linear-gradient(135deg, rgba(20,12,0,0.92), rgba(40,24,0,0.95));
+  color: var(--vip-gold);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 24px rgba(255,215,0,0.18), 0 0 0 1px rgba(255,215,0,0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(16px) scale(0.92);
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.34,1.56,0.64,1),
+              transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.2s ease;
+}
+#scrollTopBtn.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+#scrollTopBtn:hover {
+  box-shadow: 0 6px 30px rgba(255,215,0,0.32), 0 0 0 1px rgba(255,215,0,0.2);
+  transform: translateY(-2px) scale(1.03);
+}
+#scrollTopBtn:active { transform: translateY(0) scale(0.97); }
+#scrollTopBtn .stb-arrow {
+  font-size: 15px;
+  line-height: 1;
+  animation: stbBounce 1.6s ease-in-out infinite;
+}
+@keyframes stbBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-3px); }
+}
+@media(max-width: 600px) {
+  #scrollTopBtn { bottom: 20px; right: 16px; padding: 10px 16px; font-size: 12px; }
+}
+
+
+/* ============================
+   SWITCH MODE CARD (Settings)
+============================ */
+#switchModeOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  justify-content: center;
+  align-items: center;
+}
+#switchModeOverlay.open { display: flex; }
+
+#switchModeCard {
+  background: linear-gradient(145deg, rgba(8,4,20,0.97), rgba(16,8,35,0.98));
+  border: 1px solid rgba(255,215,0,0.35);
+  border-radius: 28px;
+  padding: 36px 28px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px rgba(255,215,0,0.08),
+    0 0 50px rgba(255,215,0,0.12),
+    0 0 100px rgba(114,9,183,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: smcPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes smcPop {
+  from { opacity:0; transform: scale(0.82) translateY(24px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.smc-icon { font-size: 42px; margin-bottom: 14px; display:block; }
+.smc-title {
+  font-family: 'Cinzel', serif;
+  font-size: 17px; font-weight: 900;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #fff8dc, #ffd700, #b8860b);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: goldShimmer 3s linear infinite;
+}
+.smc-sub {
+  font-size: 12px; color: #5a4a2a;
+  margin-bottom: 24px; line-height: 1.7;
+}
+.smc-btns { display: flex; flex-direction: column; gap: 10px; }
+.smc-btn {
+  padding: 15px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,215,0,0.22);
+  background: rgba(255,215,0,0.04);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: flex; align-items: center; gap: 12px;
+  text-align: left; width: 100%;
+}
+.smc-btn:hover {
+  background: rgba(255,215,0,0.11);
+  border-color: var(--vip-gold);
+  box-shadow: 0 4px 22px rgba(255,215,0,0.13);
+  transform: translateY(-2px);
+}
+.smc-btn-icon { font-size: 24px; flex-shrink: 0; }
+.smc-btn-label { font-size: 13px; font-weight: 700; color: var(--vip-gold); display: block; }
+.smc-btn-desc  { font-size: 11px; color: #5a4a2a; margin-top: 2px; display: block; line-height: 1.4; }
+.smc-cancel {
+  margin-top: 14px; background: none; border: none;
+  color: #4a3a1a; font-size: 12px; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: color 0.2s;
+}
+.smc-cancel:hover { color: #9ca3af; }
+
+
+/* ── Base64 Styled Dropdown — Gold Theme ── */
+.vB64DD { position:relative; width:100%; margin-top:8px; }
+.vB64DD-btn {
+  width:100%; padding:13px 16px; border-radius:10px;
+  background:linear-gradient(135deg,#1a0f00,#2a1800);
+  border:1.5px solid rgba(255,215,0,0.5);
+  color:#ffd700; font-size:12px; font-weight:800;
+  letter-spacing:1px; text-transform:uppercase;
+  cursor:pointer; display:flex; align-items:center;
+  justify-content:space-between; gap:10px;
+  box-shadow:inset 0 1px 0 rgba(255,215,0,0.06), 0 3px 14px rgba(0,0,0,0.5);
+  transition:border-color 0.2s,box-shadow 0.2s;
+  font-family:inherit; box-sizing:border-box;
+}
+.vB64DD-btn:hover { border-color:rgba(255,215,0,0.9); box-shadow:inset 0 1px 0 rgba(255,215,0,0.08),0 0 20px rgba(255,215,0,0.15); }
+.vB64DD-arrow {
+  width:0; height:0; flex-shrink:0;
+  border-left:7px solid transparent;
+  border-right:7px solid transparent;
+  border-top:9px solid #b8860b;
+  transition:transform 0.2s;
+}
+.vB64DD.open .vB64DD-arrow { transform:rotate(180deg); }
+.vB64DD-list {
+  display:none;
+  background:linear-gradient(160deg,#1a0f00,#120a00);
+  border:1.5px solid rgba(255,215,0,0.4);
+  border-top:none; border-radius:0 0 10px 10px;
+  overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,0.7);
+  z-index:99999;
+}
+.vB64DD.open .vB64DD-list { display:block; }
+.vB64DD-item {
+  padding:11px 16px; cursor:pointer;
+  font-size:12px; font-weight:600; color:#c8a44a;
+  display:flex; align-items:center; gap:11px;
+  border-bottom:1px solid rgba(255,215,0,0.08);
+  transition:background 0.13s,color 0.13s;
+}
+.vB64DD-item:last-child { border-bottom:none; }
+.vB64DD-item:hover { background:rgba(255,215,0,0.1); color:#ffd700; }
+.vB64DD-item.selected { background:rgba(255,215,0,0.08); color:#ffd700; }
+.vB64DD-icon { font-size:16px; flex-shrink:0; }
+.vB64DD-sub { font-size:9px; color:#7a5a0a; font-weight:500; margin-top:1px; }
+/* CC pills */
+.vB64CCScroll { overflow-x:auto; margin-top:6px; padding-bottom:3px; }
+.vB64CCScroll::-webkit-scrollbar { height:3px; }
+.vB64CCScroll::-webkit-scrollbar-thumb { background:rgba(255,215,0,0.2); border-radius:3px; }
+.vB64CCPills { display:flex; gap:5px; padding:2px 0; }
+.vB64CCPill {
+  flex-shrink:0; padding:5px 10px; border-radius:7px;
+  border:1px solid rgba(255,215,0,0.2);
+  background:rgba(255,215,0,0.04);
+  cursor:pointer; font-size:11px; font-weight:700;
+  color:#a07820; font-family:monospace; white-space:nowrap;
+  transition:all 0.13s;
+}
+.vB64CCPill:hover { background:rgba(255,215,0,0.14); color:#ffd700; border-color:rgba(255,215,0,0.55); }
+.vB64CCPill.active { background:rgba(255,215,0,0.18); color:#ffd700; border-color:rgba(255,215,0,0.7); }
+</style>
 </head>
-
 <body>
 
-<!-- VIP LOADING SCREEN -->
-<div id="vipLoader">
-  <div class="vl-crown">👑</div>
-  <div class="vl-title">Switching to VIP</div>
-  <div class="vl-spinner"></div>
-  <div class="vl-bar-wrap"><div class="vl-bar" id="vlBar"></div></div>
-  <div class="vl-sub">Unlocking Elite Access...</div>
-  <div class="vl-tap" onclick="window.location.href='index (3).html'">Tap here if not redirected</div>
+
+    
+<canvas id="_hiddenCv"></canvas>
+
+<!-- SCROLL TO TOP BUTTON -->
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <span class="stb-arrow">↑</span>
+  Scroll up
+</button>
+
+
+
+
+<!-- SWITCH MODE CARD -->
+<div id="switchModeOverlay" onclick="smcOutsideClick(event)">
+  <div id="switchModeCard">
+    <span class="smc-icon">🔄</span>
+    <div class="smc-title">How do you want to switch?</div>
+    <div class="smc-sub">You currently have VIP set as default.<br>Choose how you'd like to go back.</div>
+    <div class="smc-btns">
+      <button class="smc-btn" onclick="smcOnce()">
+        <span class="smc-btn-icon">👣</span>
+        <div>
+          <span class="smc-btn-label">Just this once</span>
+          <span class="smc-btn-desc">Go back now. VIP still opens next time you visit.</span>
+        </div>
+      </button>
+      <button class="smc-btn" onclick="smcForever()">
+        <span class="smc-btn-icon">🔓</span>
+        <div>
+          <span class="smc-btn-label">Switch forever</span>
+          <span class="smc-btn-desc">Remove VIP as default. Main site opens next time.</span>
+        </div>
+      </button>
+    </div>
+    <button class="smc-cancel" onclick="closeSwitchMode()">✕ Cancel</button>
+  </div>
 </div>
 
+<!-- BACK CHOICE CARD -->
+<div id="backChoiceOverlay" onclick="bcOutsideClick(event)">
+  <div id="backChoiceCard">
+    <div class="bc-icon">🚀</div>
+    <div class="bc-title">Where do you want to go?</div>
+    <div class="bc-sub">Choose how you'd like to leave this VIP space.</div>
+    <div class="bc-btn-row">
+      <button class="bc-btn" onclick="bcSetDefault()">
+        <span class="bc-btn-icon">⭐</span>
+        <div>
+          <span class="bc-btn-label">Set as Default</span>
+          <span class="bc-btn-desc">Always open VIP. Hides nav Back to App button.</span>
+        </div>
+      </button>
+      <button class="bc-btn" onclick="bcGoOriginal()">
+        <span class="bc-btn-icon">🌐</span>
+        <div>
+          <span class="bc-btn-label">Go to Original Website</span>
+          <span class="bc-btn-desc">Switch back to the main app with a loading screen.</span>
+        </div>
+      </button>
+    </div>
+    <button class="bc-cancel" onclick="closeBackChoice()">✕ Cancel</button>
+  </div>
+</div>
 
+<!-- BACK TO APP LOADING SCREEN -->
+<div id="backLoader">
+  <div class="bl-icon">🚀</div>
+  <div class="bl-title">Heading Back...</div>
+  <div class="bl-spinner"></div>
+  <div class="bl-bar-wrap"><div class="bl-bar" id="blBar"></div></div>
+  <div class="bl-sub">Switching to the main app</div>
+  <div class="bl-tap" id="blTapLink" onclick="window.location.href='index.html'">Tap here if not redirected</div>
+</div>
 
-<!-- Firebase v8 (compatible with your code style) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<div id="vipToast">✦ Done!</div>
+<div class="vip-particles" id="vipParticles"></div>
 
+<!-- Firebase init -->
 <script>
 var firebaseConfig = {
-  apiKey: "AIzaSyC3YUoMC6_jckDdSl8WL0WpYQkV3BCDHQQ",
-  authDomain: "converter-updates1.firebaseapp.com",
-  databaseURL: "https://converter-updates1-default-rtdb.firebaseio.com",
-  projectId: "converter-updates1",
-  storageBucket: "converter-updates1.firebasestorage.app",
-  messagingSenderId: "807472151461",
-  appId: "1:807472151461:web:d4cc2b6c35d037594b464c"
+  apiKey: "AIzaSyBq_wKuVj6y4PSUMidLW042Kq4bsy1Rw_k",
+  authDomain: "converter-updatesvip.firebaseapp.com",
+  databaseURL: "https://converter-updatesvip-default-rtdb.firebaseio.com",
+  projectId: "converter-updatesvip",
+  storageBucket: "converter-updatesvip.firebasestorage.app",
+  messagingSenderId: "1026348089243",
+  appId: "1:1026348089243:web:45139ac598431161246b3e"
 };
-
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
-
-
-
-document.addEventListener("DOMContentLoaded", function(){
-
-    if(typeof db === "undefined"){
-        console.error("Firebase DB not initialized");
-        return;
-    }
-
-    const updatesContent = document.getElementById("updatesContent");
-
-    if(!updatesContent){
-        console.error("updatesContent element not found");
-        return;
-    }
-
-    db.ref("updates").on("value", snapshot => {
-
-        const data = snapshot.val();
-        updatesContent.innerHTML = "";
-
-        if(!data){
-            updatesContent.innerHTML = "No updates available.";
-            return;
-        }
-
-        let updatesArray = [];
-
-        Object.keys(data).forEach(key=>{
-            if(key !== "latest"){
-                updatesArray.push({...data[key], id:key});
-            }
-        });
-
-        if(updatesArray.length === 0){
-            updatesContent.innerHTML = "No updates available.";
-            return;
-        }
-
-        updatesArray.sort((a,b)=> b.time - a.time);
-
-        updatesArray.forEach(update=>{
-
-            const lastSeen = localStorage.getItem("lastSeenUpdateTime") || 0;
-const isNew = update.time > lastSeen;
-            const card = document.createElement("div");
-            card.className="update-card";
-
-          card.className = "update-card" + (isNew ? " new-update" : "");
-
-card.innerHTML = `
-    <div class="update-header">
-        <span>
-            ${update.label} • ${update.type}
-            ${isNew ? `<span class="new-badge">NEW</span>` : ""}
-        </span>
-    </div>
-    <div class="update-message">
-        ${update.message}
-    </div>
-`;
-
-            card.addEventListener("click",()=>{
-                card.classList.toggle("expanded");
-            });
-
-         
-
-            updatesContent.appendChild(card);
-            // Add divider except last item
-if(update !== updatesArray[updatesArray.length - 1]){
-    const divider = document.createElement("div");
-    divider.className = "update-divider";
-    updatesContent.appendChild(divider);
-}
-            // Add divider except for last item
-if(update !== updatesArray[updatesArray.length - 1]){
-    const divider = document.createElement("div");
-    divider.className = "update-divider";
-    updatesContent.appendChild(divider);
-}
-        });
-
-    });
-
-});
-
-
 </script>
 
-
+<!-- ====== SETTINGS MODAL ====== -->
 <!-- ====== SETTINGS MODAL ====== -->
 <div id="settingsOverlay" onclick="closeSettingsOutside(event)">
     <div id="settingsModal">
@@ -1858,24 +2770,9 @@ if(update !== updatesArray[updatesArray.length - 1]){
             <span class="settings-modal-title">⚙️ Settings <span class="premium-tag">✦ Ultra Premium</span></span>
             <button class="settings-close-btn" onclick="closeSettings()">✕</button>
         </div>
-        <div class="settings-section-label">🎨 Appearance — Theme</div>
-        <div class="theme-cards">
-            <div class="theme-card dark-card active" id="darkCard" onclick="setTheme('dark')">
-                <span class="theme-card-icon">🌑</span>
-                <span class="theme-card-name">Dark Mode</span>
-                <span class="active-badge">✦ On</span>
-            </div>
-            <div class="theme-card light-card" id="lightCard" onclick="setTheme('light')">
-                <span class="theme-card-icon">☀️</span>
-                <span class="theme-card-name">Light Mode</span>
-                <span class="active-badge">✦ On</span>
-            </div>
-        </div>
-        <div class="settings-divider"></div>
-
 <div class="settings-section-label">🔔 Updates</div>
 
-<div class="updates-row" onclick="openUpdates()">
+<div class="updates-row" onclick="this.classList.add('tapped'); openUpdates()">
     <span>App Updates</span>
     <div class="bell-wrapper">
         🔔
@@ -1884,28 +2781,25 @@ if(update !== updatesArray[updatesArray.length - 1]){
 </div>
 
         <div class="settings-divider"></div>
-        <div class="settings-section-label">👑 VIP Access</div>
-        <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Unlock all exclusive tools, HD exports, and the full VIP experience.</p>
-        <button onclick="launchVipLoader()" style="
+        <div class="settings-section-label">🔙 Navigation</div>
+        <button onclick="closeSettings(); setTimeout(openSwitchModeOrLoader, 250);" style="
             width:100%;
-            padding:14px;
+            padding:13px;
             border-radius:12px;
-            border:1px solid rgba(255,215,0,0.5);
-            background:linear-gradient(135deg,rgba(255,215,0,0.15),rgba(180,110,0,0.2));
+            border:1px solid rgba(255,215,0,0.3);
+            background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(180,110,0,0.14));
             color:#ffd700;
-            font-size:15px;
-            font-weight:800;
+            font-size:14px;
+            font-weight:700;
             cursor:pointer;
-            transition:all 0.25s;
+            transition:all 0.2s;
             font-family:inherit;
             display:flex;
             align-items:center;
             justify-content:center;
-            gap:10px;
-            letter-spacing:0.5px;
-            box-shadow: 0 0 18px rgba(255,215,0,0.12);
-        " onmouseover="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.28),rgba(180,110,0,0.35))';this.style.boxShadow='0 0 28px rgba(255,215,0,0.35)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.15),rgba(180,110,0,0.2))';this.style.boxShadow='0 0 18px rgba(255,215,0,0.12)';this.style.transform='translateY(0)'">
-            👑 Switch to VIP
+            gap:8px;
+        " onmouseover="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.18),rgba(180,110,0,0.28))';this.style.boxShadow='0 0 18px rgba(255,215,0,0.28)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.08),rgba(180,110,0,0.14))';this.style.boxShadow='none'">
+            ← Back to App
         </button>
 
         <div class="settings-divider"></div>
@@ -1915,7 +2809,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
             width:100%;
             padding:12px;
             border-radius:12px;
-            border:1px solid rgba(124,58,237,0.3);
+            border:1px solid #ffd700;
             background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1));
             color:#a78bfa;
             font-size:14px;
@@ -1927,7 +2821,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
             align-items:center;
             justify-content:center;
             gap:8px;
-        " onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.3),rgba(67,97,238,0.2))';this.style.boxShadow='0 0 16px rgba(124,58,237,0.35)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1))';this.style.boxShadow='none'">
+        " onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.3),rgba(67,97,238,0.2))';this.style.boxShadow='0 0 16px rgba(255,215,0,0.35)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1))';this.style.boxShadow='none'">
             💬 Give Feedback
         </button>
     </div>
@@ -2047,221 +2941,624 @@ if(update !== updatesArray[updatesArray.length - 1]){
   </div>
 </div>
 
-<nav>
-    <div class="logo-group">
-        <img id="logoImg" src="dark mode.png" alt="Media Grabber" class="main-logo">
-    </div>
+<!-- ====== VIP NAV ====== -->
 
-    <div class="nav-links">
-        <a href="#converter">Converter</a>
-        <a href="#pdf">PDF Tool</a>
-        <a href="#ocr">Smart OCR</a>
-        <a href="#unlocker">PDF Unlocker</a>
-        <a href="#" onclick="openPDFReaderGate(); return false;" style= "font-weight:700; display:inline-flex; align-items:center; gap:5px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> PDF Reader</a>
-    </div>
+<nav id="glassNav">
 
-    <button class="settings-btn" id="settingsBtn" title="Settings" onclick="openSettings()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-        <span style="font-size:13px; font-weight:600;">Settings</span>
+  <!-- LEFT: VIP Status -->
+  <div class="nav-left">
+    <div class="vip-status-pill">
+      <span class="vip-status-dot"></span>
+      VIP ACTIVE
+    </div>
+  </div>
+
+  <!-- CENTER: Logo -->
+  <div class="logo-container">
+    <img src="image.png" class="nav-logo" alt="Media Grabber">
+  </div>
+
+  <!-- RIGHT: Action Buttons -->
+  <div class="nav-right">
+    <button class="settings-btn" onclick="openSettings()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Settings</span>
     </button>
+    <button class="vip-back-btn" onclick="goBack()">
+      <span>← Back to App</span>
+    </button>
+  </div>
 </nav>
 
-<div class="container">
-    <div class="badge">PRO v1.2.0 • Browser & PC-Only</div>
+<!-- ====== HERO ====== -->
+<div class="vip-hero">
+  <div class="vip-hero-badge">✦ Elite Member Access ✦</div>
+  <h1 class="vip-hero-title">Your VIP<br>Command Center</h1>
+  <p class="vip-hero-sub">Every tool unlocked. No limits. Premium processing, exclusive features, and golden experience.</p>
+  <div class="vip-benefits">
+    <div class="vip-chip">⚡ Priority Processing</div>
+    <div class="vip-chip">🎨 Ultra HD Export</div>
+    <div class="vip-chip">🔒 No Watermarks</div>
+    <div class="vip-chip">♾️ Unlimited Batch</div>
+    <div class="vip-chip">📖 PDF Reader</div>
+    <div class="vip-chip">🔬 Metadata Inspector</div>
+    <div class="vip-chip">📐 Bulk Resizer</div>
+    <div class="vip-chip">🎨 Color Extractor</div>
+  </div>
+</div>
 
-    <h1 class="hero-title">
-    One Tool.<br>Master Your Media.
-</h1>
-    <p class="subtitle">Convert, combine, and extract. Professional-grade media tools that never leave your browser.</p>
+<div class="vip-divider"></div>
 
-    <!-- ✦ VIP GLASSMORPHISM BANNER ✦ -->
-    <div id="vipGlassBanner" style="
-      position:relative;
-      margin:32px auto 8px;
-      max-width:560px;
-      border-radius:22px;
-      padding:2px;
-      background:linear-gradient(135deg,rgba(255,215,0,0.7),rgba(180,100,0,0.4),rgba(255,215,0,0.7));
-      box-shadow:0 8px 40px rgba(255,215,0,0.18), 0 0 0 1px rgba(255,215,0,0.12);
-      animation:vipGlowPulse 3s ease-in-out infinite;
-      cursor:pointer;
-    " onclick="window.location.href='index (3).html'">
-      <div style="
-        border-radius:21px;
-        padding:22px 28px;
-        background:rgba(10,5,0,0.55);
-        backdrop-filter:blur(20px) saturate(1.8);
-        -webkit-backdrop-filter:blur(20px) saturate(1.8);
-        display:flex;
-        align-items:center;
-        gap:18px;
-        justify-content:space-between;
-        flex-wrap:wrap;
-      ">
-        <!-- Left: icon + text -->
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div style="
-            width:48px;height:48px;border-radius:14px;
-            background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);
-            display:flex;align-items:center;justify-content:center;
-            font-size:22px;flex-shrink:0;
-            box-shadow:0 4px 16px rgba(255,215,0,0.35);
-          ">👑</div>
-          <div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,215,0,0.6);margin-bottom:3px;">Exclusive Access</div>
-            <div style="font-size:16px;font-weight:900;color:#ffd700;letter-spacing:0.3px;line-height:1.2;">Wanna Switch to VIP?</div>
-            <div style="font-size:11px;color:rgba(255,200,80,0.65);margin-top:3px;font-weight:500;">Unlock premium tools — Base64, Metadata, Binary & more</div>
-          </div>
-        </div>
-        <!-- Right: switch button -->
-        <div style="
-          padding:10px 22px;
-          border-radius:99px;
-          background:linear-gradient(135deg,#b8860b,#ffd700);
-          color:#000;
-          font-size:12px;
-          font-weight:900;
-          letter-spacing:0.8px;
-          text-transform:uppercase;
-          white-space:nowrap;
-          box-shadow:0 4px 18px rgba(255,215,0,0.4);
-          transition:transform 0.15s,box-shadow 0.15s;
-          flex-shrink:0;
-        "
-        onmouseover="this.style.transform='scale(1.06)';this.style.boxShadow='0 6px 24px rgba(255,215,0,0.6)'"
-        onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 18px rgba(255,215,0,0.4)'"
-        >Switch to VIP ✦</div>
+<!-- ====== TOOL TAB BAR ====== -->
+<div id="toolTabBar">
+  <button class="tool-tab active" onclick="toolTabClick(this,'converter')">🎨 Converter</button>
+  <button class="tool-tab" onclick="toolTabClick(this,'pdf')">📄 PDF Tools</button>
+  <button class="tool-tab" onclick="toolTabClick(this,'ocr')">🔍 Smart OCR</button>
+  <button class="tool-tab" onclick="toolTabClick(this,'palette')">🎨 Color Palette</button>
+  <button class="tool-tab" onclick="toolTabClick(this,'imgcomp')">🗜️ Image Compressor</button>
+  <button class="tool-tab more-tab" onclick="openMoreModal()">⋯ More</button>
+</div>
+
+<!-- ====== MORE MODAL (Glassmorphism) ====== -->
+<div id="moreModalOverlay" onclick="closeMoreModalOutside(event)">
+  <div id="moreModal">
+    <div id="moreModalHeader">
+      <span id="moreModalTitle">✦ All Tools</span>
+      <button id="moreModalClose" onclick="closeMoreModal()">✕</button>
+    </div>
+    <div id="moreModalGrid">
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('converter')">
+        <span class="more-tool-icon">🎨</span>
+        <span class="more-tool-name">Converter</span>
+        <span class="more-tool-desc">Batch image format converter</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('pdf')">
+        <span class="more-tool-icon">📄</span>
+        <span class="more-tool-name">PDF Tools</span>
+        <span class="more-tool-desc">Build, unlock & manage PDFs</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('ocr')">
+        <span class="more-tool-icon">🔍</span>
+        <span class="more-tool-name">Smart OCR</span>
+        <span class="more-tool-desc">Extract text from images & PDFs</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('palette')">
+        <span class="more-tool-icon">🎨</span>
+        <span class="more-tool-name">Color Palette</span>
+        <span class="more-tool-desc">Extract dominant colors from images</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('imgcomp')">
+        <span class="more-tool-icon">🗜️</span>
+        <span class="more-tool-name">Image Compressor</span>
+        <span class="more-tool-desc">Reduce image file size</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('pdfcomp')">
+        <span class="more-tool-icon">📦</span>
+        <span class="more-tool-name">PDF Compressor</span>
+        <span class="more-tool-desc">Shrink PDF file size</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('meta')">
+        <span class="more-tool-icon">🔬</span>
+        <span class="more-tool-name">Metadata Inspector</span>
+        <span class="more-tool-desc">Image technical metadata viewer</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('resizer')">
+        <span class="more-tool-icon">📐</span>
+        <span class="more-tool-name">Bulk Resizer</span>
+        <span class="more-tool-desc">Resize multiple images at once</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('base64')">
+        <span class="more-tool-icon">💾</span>
+        <span class="more-tool-name">Base64 Encoder</span>
+        <span class="more-tool-desc">Image ↔ Base64 conversion</span>
+      </button>
+
+      <button class="more-tool-btn" onclick="toolTabClickFromModal('pdfextract')">
+        <span class="more-tool-icon">✂️</span>
+        <span class="more-tool-name">PDF Page Extractor</span>
+        <span class="more-tool-desc">Extract pages as image files</span>
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- ====== MAIN CONTENT ====== -->
+<div class="vip-content">
+
+  <!-- STATS -->
+  <div class="vip-stats">
+    <div class="vip-stat"><span class="vip-stat-num" id="vStatConverted">0</span><span class="vip-stat-lbl">Files Converted</span></div>
+    <div class="vip-stat"><span class="vip-stat-num">∞</span><span class="vip-stat-lbl">Batch Limit</span></div>
+    <div class="vip-stat"><span class="vip-stat-num">4K</span><span class="vip-stat-lbl">Max Resolution</span></div>
+    <div class="vip-stat"><span class="vip-stat-num">0</span><span class="vip-stat-lbl">Watermarks</span></div>
+    <div class="vip-stat"><span class="vip-stat-num">100%</span><span class="vip-stat-lbl">Private & Local</span></div>
+  </div>
+
+  <!-- CORE TOOLS SECTION -->
+  <div class="vip-section-label">⚡ Enhanced Core Tools</div>
+  <div class="vip-tools-grid">
+
+    <!-- IMAGE CONVERTER -->
+    <div class="vip-card">
+      <span class="vip-tag">VIP</span>
+      <span class="vip-card-icon">🎨</span>
+      <div class="vip-card-title">Ultra HD Batch Converter</div>
+      <div class="vip-card-desc">Convert unlimited images with quality control. HEIC support. All formats.</div>
+      <div class="vip-priority"><span class="vip-pdot"></span> Priority Processing Active</div>
+      <label class="g-upload" for="vImgIn">
+        <span style="font-size:30px;">📁</span>
+        <p>Tap to upload images (unlimited)</p>
+        <input type="file" id="vImgIn" multiple accept="image/*" hidden onchange="vHandleImgs(this)">
+      </label>
+      <div id="vImgList" class="g-flist"></div>
+      <span class="g-lbl">Output Format</span>
+      <select class="g-sel" id="vImgFmt">
+        <option value="image/png">PNG — Lossless</option>
+        <option value="image/jpeg">JPG — Optimized</option>
+        <option value="image/webp">WEBP — Ultra Compact</option>
+        <option value="image/bmp">BMP</option>
+        <option value="image/gif">GIF</option>
+        <option value="image/tiff">TIFF — Professional</option>
+        <option value="image/avif">AVIF — Next-Gen</option>
+      </select>
+      <span class="g-lbl">Quality: <span id="vQualVal">95%</span></span>
+      <input type="range" class="g-inp" id="vQual" min="10" max="100" value="95" style="padding:5px;" oninput="document.getElementById('vQualVal').textContent=this.value+'%'">
+      <div class="g-prog-wrap" id="vImgProg"><div class="g-prog-bar" id="vImgBar"></div></div>
+      <div class="g-status" id="vImgStat"></div>
+      <button class="btn-vip btn-vip-solid" style="margin-top:14px;" onclick="vConvertAll()">⚡ Convert All & Download</button>
+    </div>
+
+    <!-- IMAGE TO PDF -->
+    <div class="vip-card" id="proPdfBuilderCard">
+      <span class="vip-tag">VIP</span>
+      <span class="vip-card-icon">📄</span>
+      <div class="vip-card-title">Pro PDF Builder</div>
+      <div class="vip-card-desc">Build professional PDFs from images. Custom page size, password protection, author metadata.</div>
+      <label class="g-upload" for="vPdfIn">
+        <span style="font-size:30px;">🖼️</span>
+        <p>Add images to PDF (unlimited)</p>
+        <input type="file" id="vPdfIn" multiple accept="image/*" hidden onchange="vHandlePdf(this)">
+      </label>
+      <div id="vPdfList" class="g-flist"></div>
+      <span class="g-lbl">Document Name</span>
+      <input class="g-inp" id="vPdfName" placeholder="MyDocument_VIP" onkeydown="if(event.key==='Enter') makePDF()">
+      <span class="g-lbl">Password (optional)</span>
+      <input class="g-inp" id="vPdfPass" type="password" placeholder="Protect your PDF" onkeydown="if(event.key==='Enter') makePDF()">
+      <span class="g-lbl">Page Size</span>
+      <select class="g-sel" id="vPageSize">
+        <option value="a4">A4 — Standard</option>
+        <option value="letter">Letter — US</option>
+        <option value="a3">A3 — Large</option>
+      </select>
+      <div class="g-status" id="vPdfStat"></div>
+      <button class="btn-vip btn-vip-solid" style="margin-top:14px;" onclick="vBuildPDF()">📄 Build & Download PDF</button>
+    </div>
+
+    <!-- OCR -->
+    <div class="vip-card">
+      <span class="vip-tag">VIP</span>
+      <span class="vip-card-icon">🔍</span>
+      <div class="vip-card-title">Smart OCR Pro</div>
+      <div class="vip-card-desc">Extract text from images or PDFs. Multi-language. Export as TXT or PDF.</div>
+      <label class="g-upload" for="vOcrIn">
+        <span style="font-size:30px;">📝</span>
+        <p>Upload image or PDF</p>
+        <input type="file" id="vOcrIn" accept="image/*,application/pdf" hidden onchange="vHandleOcr(this)">
+      </label>
+      <div id="vOcrFile" style="font-size:11px;color:#7a5a0a;margin-top:6px;text-align:center;"></div>
+      <span class="g-lbl">Language</span>
+      <select class="g-sel" id="vOcrLang">
+        <option value="eng">English</option>
+        <option value="fra">French</option>
+        <option value="deu">German</option>
+        <option value="spa">Spanish</option>
+        <option value="ita">Italian</option>
+        <option value="por">Portuguese</option>
+        <option value="chi_sim">Chinese (Simplified)</option>
+        <option value="jpn">Japanese</option>
+        <option value="ara">Arabic</option>
+        <option value="hin">Hindi</option>
+      </select>
+      <div class="g-prog-wrap" id="vOcrProg" style="margin-top:10px;"><div class="g-prog-bar" id="vOcrBar"></div></div>
+      <div class="g-status" id="vOcrStat"></div>
+      <button class="btn-vip btn-vip-solid" style="margin-top:12px;" onclick="vRunOcr()">🔍 Extract Text</button>
+      <textarea class="g-result-box" id="vOcrResult" style="min-height:90px;margin-top:10px;resize:vertical;" placeholder="Extracted text appears here..."></textarea>
+      <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;">
+        <button class="btn-vip" onclick="vCopyOcr(event)">📋 Copy</button>
+        <button class="btn-vip" onclick="vDlOcrTxt()">📄 TXT</button>
+        <button class="btn-vip" onclick="vDlOcrPdf()">📕 PDF</button>
       </div>
-      <!-- Shimmer sweep -->
-      <div style="
-        position:absolute;inset:0;border-radius:22px;
-        background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.07) 50%,transparent 70%);
-        background-size:200% 100%;
-        animation:vipShimmer 2.5s linear infinite;
-        pointer-events:none;
-      "></div>
     </div>
 
-    <style>
-    @keyframes vipGlowPulse{
-      0%,100%{box-shadow:0 8px 40px rgba(255,215,0,0.18),0 0 0 1px rgba(255,215,0,0.12);}
-      50%{box-shadow:0 8px 55px rgba(255,215,0,0.38),0 0 0 1px rgba(255,215,0,0.28);}
-    }
-    @keyframes vipShimmer{
-      0%{background-position:200% 0;}
-      100%{background-position:-200% 0;}
-    }
-    #vipGlassBanner:hover{transform:translateY(-2px);transition:transform 0.2s;}
-    </style>
+    <!-- PDF UNLOCKER -->
+    <div class="vip-card">
+      <span class="vip-tag">VIP</span>
+      <span class="vip-card-icon">🔓</span>
+      <div class="vip-card-title">PDF Password Remover</div>
+      <div class="vip-card-desc">Unlock password-protected PDFs and download a clean decrypted version.</div>
+      <label class="g-upload" for="vUnlockIn">
+        <span style="font-size:30px;">🔒</span>
+        <p>Upload Locked PDF</p>
+        <input type="file" id="vUnlockIn" accept="application/pdf" hidden onchange="document.getElementById('vUnlockName').textContent='📄 '+this.files[0].name">
+      </label>
+      <div id="vUnlockName" style="font-size:11px;color:#7a5a0a;margin-top:6px;text-align:center;"></div>
+      <span class="g-lbl">Current PDF Password</span>
+      <input class="g-inp" id="vUnlockPass" type="password" placeholder="Enter PDF password" onkeydown="if(event.key==='Enter') vRemovePass()">
+      <div class="g-status" id="vUnlockStat"></div>
+      <button class="btn-vip btn-vip-solid" style="margin-top:14px;" onclick="vRemovePass()">🔓 Decrypt & Download</button>
+    </div>
 
- <h2 id="converter" class="section-title">Image Converter</h2>
-<div class="card">
-    <label class="upload-area" for="imgInput">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--purple)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <p style="margin-top:10px; font-weight:600">Click to upload images Supports JPG, PNG, WEBP, PSD, and more</p>
-        <input type="file" id="imgInput" multiple accept="image/*" hidden onchange="handleConvFiles(this)">
+  </div><!-- end tools-grid -->
+
+  <!-- PDF READER -->
+  <div class="vip-section-label">📖 VIP PDF Reader</div>
+  <div class="vip-card" style="padding:20px;max-width:860px;margin-left:auto;margin-right:auto;">
+    <span class="vip-tag">VIP</span>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span style="font-size:32px;">📖</span>
+      <div>
+        <div class="vip-card-title">Full-Featured PDF Reader</div>
+        <div class="vip-card-desc" style="margin:0;">Read, annotate, and navigate any PDF. Reading history. Zoom controls. Fully functional.</div>
+      </div>
+      <button class="btn-vip btn-vip-solid" style="margin-left:auto;width:auto;padding:12px 24px;" onclick="openPDFReaderGate()">📖 Open PDF Reader</button>
+    </div>
+  </div>
+
+  <!-- EXCLUSIVE TOOLS -->
+  <div class="vip-section-label" style="margin-top:10px;">🧪 Exclusive VIP-Only Tools</div>
+
+  <!-- METADATA INSPECTOR -->
+  <div class="vip-card">
+    <span class="vip-tag">EXCLUSIVE</span>
+    <span class="vip-card-icon">🔬</span>
+    <div class="vip-card-title">Image Metadata Inspector</div>
+    <div class="vip-card-desc">Inspect full technical metadata: dimensions, file size, megapixels, aspect ratio, MIME type and more.</div>
+    <label class="g-upload" for="vMetaIn">
+      <span style="font-size:30px;">🔬</span>
+      <p>Upload any image to inspect its metadata</p>
+      <input type="file" id="vMetaIn" accept="image/*" hidden onchange="vInspectMeta(this)">
     </label>
-
-    <div id="globalFormatContainer" style="display:none; margin-top:20px; padding:15px; border: 1px dashed var(--purple); border-radius:12px; background:rgba(124, 58, 237, 0.05);">
-        <p style="margin:0 0 10px 0; font-size:13px; font-weight:700; color:var(--purple-neon);">⚡ BATCH ACTION: Set all files to:</p>
-        <select id="globalFormat" onchange="setAllFormats(this.value)" class="neon-select">
-            <option value="" disabled selected>Select format for all...</option>
-            <option value="image/png">PNG (MOST USED 👑)</option>
-            <option value="image/jpeg">JPG / JPEG (MOST USED 👑)</option>
-            <option value="image/webp">WEBP</option> 
-            <option value="image/bmp">BMP</option>
-            <option value="image/gif">GIF</option>
-            <option value="image/tiff">TIFF</option>
-            <option value="image/avif">AVIF</option>
-            <option value="image/heif">HEIF (IPHONE 📱)</option>
-            <option value="image/svg+xml">SVG</option>
-            <option value="image/vnd.adobe.photoshop">PSD</option>
-        </select>
+    <div id="vMetaResult" style="display:none;margin-top:14px;">
+      <button onclick="vCopyAllMeta()" style="width:100%;margin-bottom:10px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.35);background:rgba(255,215,0,0.08);color:var(--vip-gold);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,215,0,0.16)'" onmouseout="this.style.background='rgba(255,215,0,0.08)'">📋 Copy All</button>
+      <div class="meta-grid" id="vMetaGrid"></div>
     </div>
+  </div>
 
-    <div id="convFileList" class="file-list" style="display:none; margin-top:20px;"></div>
-    
-    <button class="btn-primary" onclick="convertAndDownloadOneByOne()">Convert & Download</button>
-</div>
-
-
-
-   <h2 id="pdf" class="section-title">Image to PDF</h2>
-<div class="card">
-    <p class="subtitle" style="text-align:left; margin-bottom:15px">Combine multiple images into a single professional document.</p>
-    
-    <label class="upload-area" for="pdfImgs">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--purple)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <p style="margin-top:5px; font-weight:600">Click to add images</p>
-        <input type="file" id="pdfImgs" multiple accept="image/*" hidden onchange="handlePdfFiles(this)">
+  <!-- BULK RESIZER -->
+  <div class="vip-card">
+    <span class="vip-tag">EXCLUSIVE</span>
+    <span class="vip-card-icon">📐</span>
+    <div class="vip-card-title">Bulk Image Resizer</div>
+    <div class="vip-card-desc">Resize multiple images to exact pixel dimensions in one click. Stretch, Fit, or Cover modes.</div>
+    <label class="g-upload" for="vResizeIn">
+      <span style="font-size:30px;">📐</span>
+      <p>Upload images to resize</p>
+      <input type="file" id="vResizeIn" multiple accept="image/*" hidden onchange="vHandleResize(this)">
     </label>
-
-    <div id="pdfFileList" class="file-list" style="display:none; margin-top:20px;"></div>
-
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
-        <input id="pdfName" placeholder="Document Name">
-        <input id="pdfPass" type="password" placeholder="Set Password (Optional)">
+    <div id="vResizeNames" style="font-size:11px;color:#7a5a0a;margin-top:6px;"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
+      <div><span class="g-lbl">Width (px)</span><input class="g-inp" id="vResW" type="number" value="800" onkeydown="if(event.key==='Enter') vBulkResize()"></div>
+      <div><span class="g-lbl">Height (px)</span><input class="g-inp" id="vResH" type="number" value="600" onkeydown="if(event.key==='Enter') vBulkResize()"></div>
     </div>
-    <button class="btn-primary" onclick="makePDF()">Generate PDF</button>
-</div>
-<h2 id="ocr" class="section-title">Smart OCR</h2>
-<div class="card">
-    <label class="upload-area" for="ocrInput" style="border-style: dashed; border-width: 2px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--purple)">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-        <p style="margin-top:15px; font-weight:600; font-size: 15px;">Click to upload document (Supports Images and PDF)</p>
-        <input type="file" id="ocrInput" accept="image/*,application/pdf" hidden>
+    <span class="g-lbl">Mode</span>
+    <select class="g-sel" id="vResMode">
+      <option value="stretch">Stretch to exact size</option>
+      <option value="fit">Fit (maintain ratio)</option>
+      <option value="cover">Cover (crop to fill)</option>
+    </select>
+    <span class="g-lbl">Output Format</span>
+    <select class="g-sel" id="vResFmt">
+      <option value="image/png">PNG</option>
+      <option value="image/jpeg">JPG</option>
+      <option value="image/webp">WEBP</option>
+    </select>
+    <div class="g-prog-wrap" id="vResProg" style="margin-top:10px;"><div class="g-prog-bar" id="vResBar"></div></div>
+    <div class="g-status" id="vResStat"></div>
+    <button class="btn-vip btn-vip-solid" style="margin-top:14px;" onclick="vBulkResize()">📐 Resize & Download All</button>
+  </div>
+
+  <!-- IMAGE TO BASE64 -->
+  <div class="vip-card">
+    <span class="vip-tag">EXCLUSIVE</span>
+    <span class="vip-card-icon">💾</span>
+    <div class="vip-card-title">Image ↔ Base64 Encoder</div>
+    <div class="vip-card-desc">Convert images to Base64 strings for embedding in code — or decode Base64 back to a downloadable image.</div>
+    <span class="g-lbl" style="margin-top:0;">Encode: Select Type</span>
+    <!-- Encode type picker -->
+    <div class="vB64DD" id="vB64EncDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64EncDD')"><span id="vB64EncDD_label">&#128444;&#65039; Image</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64EncDD_item_image" onclick="vB64DDSelectEnc('image','vB64EncDD')"><span class="vB64DD-icon">&#128444;&#65039;</span><div><div>Image</div><div class="vB64DD-sub">JPG · PNG · WEBP · GIF</div></div></div><div class="vB64DD-item" id="vB64EncDD_item_text" onclick="vB64DDSelectEnc('text','vB64EncDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Text</div><div class="vB64DD-sub">Any plain text</div></div></div><div class="vB64DD-item" id="vB64EncDD_item_contact" onclick="vB64DDSelectEnc('contact','vB64EncDD')"><span class="vB64DD-icon">&#128100;</span><div><div>Contact</div><div class="vB64DD-sub">vCard · Phone · Email</div></div></div><div class="vB64DD-item" id="vB64EncDD_item_binary" onclick="vB64DDSelectEnc('binary','vB64EncDD')"><span class="vB64DD-icon">&#9881;&#65039;</span><div><div>Binary</div><div class="vB64DD-sub">010101 · Any file</div></div></div></div></div>
+
+    <!-- Image upload (default) -->
+    <div id="vB64PanelImage" style="margin-top:10px;">
+      <input type="file" id="vB64In" accept="image/*" style="display:none" onchange="vEncodeB64(this)">
+      <button class="btn-vip btn-vip-solid" style="width:100%;padding:14px;" onclick="document.getElementById('vB64In').click()">🖼️ Choose Image</button>
+    </div>
+
+    <!-- Text input -->
+    <div id="vB64PanelText" style="display:none;margin-top:10px;">
+      <textarea id="vB64TextIn" class="g-inp" placeholder="Type or paste your text here..." style="min-height:80px;resize:vertical;font-family:monospace;font-size:12px;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();vEncodeText();}"></textarea>
+      <button class="btn-vip btn-vip-solid" style="width:100%;margin-top:8px;" onclick="vEncodeText()">⚡ Encode Text</button>
+    </div>
+
+    <!-- Contact input -->
+    <div id="vB64PanelContact" style="display:none;margin-top:10px;">
+      <input class="g-inp" id="vB64ContactName" placeholder="Full Name" style="margin-top:0;" onkeydown="if(event.key==='Enter') vEncodeContact()">
+
+      <div class="vB64DD" id="vB64CFDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64CFDD')"><span id="vB64CFDD_label">&#128222; Phone only</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64CFDD_item_phone" onclick="vB64DDSelectCF('phone','vB64CFDD')"><span class="vB64DD-icon">&#128222;</span><div><div>Phone only</div><div class="vB64DD-sub">Phone number only</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_email" onclick="vB64DDSelectCF('email','vB64CFDD')"><span class="vB64DD-icon">&#128231;</span><div><div>Email only</div><div class="vB64DD-sub">Email address only</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_both" onclick="vB64DDSelectCF('both','vB64CFDD')"><span class="vB64DD-icon">&#128222;&#128231;</span><div><div>Phone &amp; Email</div><div class="vB64DD-sub">Both phone and email</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_trio" onclick="vB64DDSelectCF('trio','vB64CFDD')"><span class="vB64DD-icon">&#128222;&#128231;&#127962;</span><div><div>Trio</div><div class="vB64DD-sub">Phone, Email &amp; Organisation</div></div></div><div class="vB64DD-item" id="vB64CFDD_item_all" onclick="vB64DDSelectCF('all','vB64CFDD')"><span class="vB64DD-icon">&#128100;</span><div><div>All fields</div><div class="vB64DD-sub">Full vCard</div></div></div></div></div>
+
+      <!-- Phone row -->
+      <div id="vB64ContactPhoneRow" style="margin-top:8px;">
+        <div style="display:block;">
+          <!-- Country code picker -->
+          <div class="vB64CCScroll"><div class="vB64CCPills" id="vB64CCPillsRow"><div class="vB64CCPill" onclick="vB64SetCC('custom')">&#9999;&#65039; Custom</div><div class="vB64CCPill" id="cc_p1" onclick="vB64SetCC('+1')">+1</div><div class="vB64CCPill" id="cc_p7" onclick="vB64SetCC('+7')">+7</div><div class="vB64CCPill" id="cc_p20" onclick="vB64SetCC('+20')">+20</div><div class="vB64CCPill" id="cc_p27" onclick="vB64SetCC('+27')">+27</div><div class="vB64CCPill" id="cc_p30" onclick="vB64SetCC('+30')">+30</div><div class="vB64CCPill" id="cc_p31" onclick="vB64SetCC('+31')">+31</div><div class="vB64CCPill" id="cc_p32" onclick="vB64SetCC('+32')">+32</div><div class="vB64CCPill" id="cc_p33" onclick="vB64SetCC('+33')">+33</div><div class="vB64CCPill" id="cc_p34" onclick="vB64SetCC('+34')">+34</div><div class="vB64CCPill" id="cc_p36" onclick="vB64SetCC('+36')">+36</div><div class="vB64CCPill" id="cc_p39" onclick="vB64SetCC('+39')">+39</div><div class="vB64CCPill" id="cc_p40" onclick="vB64SetCC('+40')">+40</div><div class="vB64CCPill" id="cc_p41" onclick="vB64SetCC('+41')">+41</div><div class="vB64CCPill" id="cc_p44" onclick="vB64SetCC('+44')">+44</div><div class="vB64CCPill" id="cc_p45" onclick="vB64SetCC('+45')">+45</div><div class="vB64CCPill" id="cc_p46" onclick="vB64SetCC('+46')">+46</div><div class="vB64CCPill" id="cc_p47" onclick="vB64SetCC('+47')">+47</div><div class="vB64CCPill" id="cc_p48" onclick="vB64SetCC('+48')">+48</div><div class="vB64CCPill" id="cc_p49" onclick="vB64SetCC('+49')">+49</div><div class="vB64CCPill" id="cc_p51" onclick="vB64SetCC('+51')">+51</div><div class="vB64CCPill" id="cc_p52" onclick="vB64SetCC('+52')">+52</div><div class="vB64CCPill" id="cc_p55" onclick="vB64SetCC('+55')">+55</div><div class="vB64CCPill" id="cc_p57" onclick="vB64SetCC('+57')">+57</div><div class="vB64CCPill" id="cc_p60" onclick="vB64SetCC('+60')">+60</div><div class="vB64CCPill" id="cc_p61" onclick="vB64SetCC('+61')">+61</div><div class="vB64CCPill" id="cc_p62" onclick="vB64SetCC('+62')">+62</div><div class="vB64CCPill" id="cc_p63" onclick="vB64SetCC('+63')">+63</div><div class="vB64CCPill" id="cc_p65" onclick="vB64SetCC('+65')">+65</div><div class="vB64CCPill" id="cc_p66" onclick="vB64SetCC('+66')">+66</div><div class="vB64CCPill" id="cc_p81" onclick="vB64SetCC('+81')">+81</div><div class="vB64CCPill" id="cc_p82" onclick="vB64SetCC('+82')">+82</div><div class="vB64CCPill" id="cc_p84" onclick="vB64SetCC('+84')">+84</div><div class="vB64CCPill" id="cc_p86" onclick="vB64SetCC('+86')">+86</div><div class="vB64CCPill" id="cc_p90" onclick="vB64SetCC('+90')">+90</div><div class="vB64CCPill" id="cc_p91" onclick="vB64SetCC('+91')">+91</div><div class="vB64CCPill" id="cc_p92" onclick="vB64SetCC('+92')">+92</div><div class="vB64CCPill" id="cc_p93" onclick="vB64SetCC('+93')">+93</div><div class="vB64CCPill" id="cc_p94" onclick="vB64SetCC('+94')">+94</div><div class="vB64CCPill" id="cc_p98" onclick="vB64SetCC('+98')">+98</div><div class="vB64CCPill" id="cc_p212" onclick="vB64SetCC('+212')">+212</div><div class="vB64CCPill" id="cc_p213" onclick="vB64SetCC('+213')">+213</div><div class="vB64CCPill" id="cc_p216" onclick="vB64SetCC('+216')">+216</div><div class="vB64CCPill" id="cc_p234" onclick="vB64SetCC('+234')">+234</div><div class="vB64CCPill" id="cc_p254" onclick="vB64SetCC('+254')">+254</div><div class="vB64CCPill" id="cc_p256" onclick="vB64SetCC('+256')">+256</div><div class="vB64CCPill" id="cc_p966" onclick="vB64SetCC('+966')">+966</div><div class="vB64CCPill" id="cc_p971" onclick="vB64SetCC('+971')">+971</div><div class="vB64CCPill" id="cc_p972" onclick="vB64SetCC('+972')">+972</div><div class="vB64CCPill" id="cc_p974" onclick="vB64SetCC('+974')">+974</div><div class="vB64CCPill" id="cc_p977" onclick="vB64SetCC('+977')">+977</div></div></div>
+          <input class="g-inp" id="vB64ContactPhone" placeholder="Phone number" style="width:100%;margin-top:8px;box-sizing:border-box;" onkeydown="if(event.key==='Enter') vEncodeContact()">
+        </div>
+        <div id="vB64CCCustomWrap" style="display:none;margin-top:6px;">
+          <input class="g-inp" id="vB64CCCustom" placeholder="Enter custom code e.g. +123" style="margin-top:0;" oninput="_vB64CC=this.value" onkeydown="if(event.key==='Enter') vEncodeContact()">
+        </div>
+      </div>
+
+      <!-- Email row -->
+      <div id="vB64ContactEmailRow" style="display:none;margin-top:6px;">
+        <input class="g-inp" id="vB64ContactEmail" placeholder="Email Address" style="margin-top:0;" onkeydown="if(event.key==='Enter') vEncodeContact()">
+      </div>
+
+      <!-- Org row -->
+      <div id="vB64ContactOrgRow" style="display:none;margin-top:6px;">
+        <input class="g-inp" id="vB64ContactOrg" placeholder="Organisation" style="margin-top:0;" onkeydown="if(event.key==='Enter') vEncodeContact()">
+      </div>
+
+      <button class="btn-vip btn-vip-solid" style="width:100%;margin-top:10px;" onclick="vEncodeContact()">⚡ Encode Contact</button>
+    </div>
+
+    <!-- Binary -->
+
+    <div id="vB64PanelBinary" style="display:none;margin-top:10px;">
+      <!-- Binary mode picker -->
+      <div class="vB64DD" id="vB64BMDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64BMDD')"><span id="vB64BMDD_label">&#128193; File</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64BMDD_item_file" onclick="vB64DDSelectBM('file','vB64BMDD')"><span class="vB64DD-icon">&#128193;</span><div><div>File</div><div class="vB64DD-sub">Upload any file</div></div></div><div class="vB64DD-item" id="vB64BMDD_item_text" onclick="vB64DDSelectBM('text','vB64BMDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Text → Bits</div><div class="vB64DD-sub">Type text → 10101010</div></div></div></div></div>
+      <!-- File mode -->
+      <div id="vB64BinFilePanel" style="margin-top:8px;">
+        <input type="file" id="vB64BinaryIn" style="display:none" accept=".pdf,.txt,.png,.jpg,.jpeg,.webp,.gif,.bmp,.svg" onchange="vEncodeBinary(this)">
+        <button class="btn-vip btn-vip-solid" style="width:100%;padding:13px;" onclick="document.getElementById('vB64BinaryIn').click()">📁 Choose File</button>
+        <div id="vB64BinaryName" style="font-size:11px;color:#7a5a0a;margin-top:6px;text-align:center;"></div>
+        <div style="margin-top:8px;padding:9px 12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:9px;font-size:10px;color:#7a5a0a;line-height:1.7;">
+          ✅ <b style="color:var(--vip-gold);">Supported:</b> PDF · TXT · PNG · JPG · WEBP · GIF · BMP · SVG<br>
+          🚫 <b style="color:#ff6666;">Not supported:</b> Videos, audio, executables or any other format — these cannot be encoded as binary on this platform.
+        </div>
+      </div>
+      <!-- Text → binary mode -->
+      <div id="vB64BinTextPanel" style="display:none;margin-top:8px;">
+        <textarea id="vB64BinTextIn" class="g-inp" placeholder="Type text to convert to 10101010 binary bits…" style="min-height:70px;resize:vertical;font-family:monospace;font-size:12px;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();vEncodeBinaryText();}"></textarea>
+        <button class="btn-vip btn-vip-solid" style="width:100%;margin-top:8px;" onclick="vEncodeBinaryText()">⚡ Convert to 10101010 Binary</button>
+      </div>
+    </div>
+
+    <textarea class="g-result-box" id="vB64Out" style="display:none;min-height:70px;font-family:monospace;font-size:10px;margin-top:8px;" placeholder="Result..."></textarea>
+    <div id="vB64Btns" style="display:none;gap:7px;margin-top:7px;flex-wrap:wrap;">
+      <button class="btn-vip" id="vB64CopyBtn" onclick="vCopyB64(event)">📋 Copy Base64</button>
+      <button class="btn-vip" id="vB64SiteOnlyBtn" onclick="vCopySiteOnly(event)" style="display:none;">🔒 Copy for This Site Only</button>
+      <button class="btn-vip" onclick="vDlB64Txt()">💾 Save .txt</button>
+    </div>
+    <div id="vB64OneTimeWarn" style="display:none;margin-top:8px;padding:9px 13px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.3);border-radius:9px;font-size:11px;color:#c8a044;font-weight:600;line-height:1.6;">
+      ⚠️ This code can only be used <b style="color:var(--vip-gold);">once</b> — it cannot be decoded again after first use.
+    </div>
+
+    <span class="g-lbl" style="margin-top:18px;">Decode</span>
+    <div class="vB64DD" id="vB64DecDD"><button class="vB64DD-btn" onclick="vB64DDToggle('vB64DecDD')"><span id="vB64DecDD_label">&#128444;&#65039; Decode to Image</span><span class="vB64DD-arrow"></span></button><div class="vB64DD-list"><div class="vB64DD-item" id="vB64DecDD_item_image" onclick="vB64DDSelectDec('image','vB64DecDD')"><span class="vB64DD-icon">&#128444;&#65039;</span><div><div>Decode to Image</div><div class="vB64DD-sub">View decoded image</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_text" onclick="vB64DDSelectDec('text','vB64DecDD')"><span class="vB64DD-icon">&#128221;</span><div><div>Decode to Text</div><div class="vB64DD-sub">Read decoded text</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_contact" onclick="vB64DDSelectDec('contact','vB64DecDD')"><span class="vB64DD-icon">&#128100;</span><div><div>Decode to Contact</div><div class="vB64DD-sub">Parse vCard fields</div></div></div><div class="vB64DD-item" id="vB64DecDD_item_binary" onclick="vB64DDSelectDec('binary','vB64DecDD')"><span class="vB64DD-icon">&#9881;&#65039;</span><div><div>Binary Bits to Text</div><div class="vB64DD-sub">Paste 01010101 → get text</div></div></div></div></div>
+
+    <div id="vB64DecNotice" style="display:none;margin-top:8px;padding:9px 12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:9px;font-size:10px;color:#7a5a0a;line-height:1.7;">
+      ✅ <b style="color:var(--vip-gold);">Binary decoder supports:</b> Text · PDF content · Image data — paste the 01010101 bits below.<br>
+      🚫 <b style="color:#ff6666;">Cannot decode:</b> Video, audio or any non-text binary format — the output will be unreadable characters.
+    </div>
+    <textarea class="g-inp" id="vB64DecIn" placeholder="Paste Base64 string here…" style="min-height:70px;margin-top:8px;resize:vertical;font-family:monospace;font-size:11px;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();vDecodeB64();}"></textarea>
+    <button class="btn-vip btn-vip-solid" style="margin-top:8px;width:100%;" id="vB64DecBtn" onclick="vDecodeB64()">🔄 Decode to Image</button>
+    <div id="vB64DecWrap" style="display:none;margin-top:10px;"></div>
+  </div>
+
+  <!-- COLOR PALETTE EXTRACTOR -->
+  <div class="vip-card">
+    <span class="vip-tag">EXCLUSIVE</span>
+    <span class="vip-card-icon">🎨</span>
+    <div class="vip-card-title">Color Palette Extractor</div>
+    <div class="vip-card-desc">Extract the dominant colors from any image. Shows HEX + RGB codes. Click any swatch to copy.</div>
+    <label class="g-upload" for="vPalIn">
+      <span style="font-size:30px;">🎨</span>
+      <p>Upload image to extract colors</p>
+      <input type="file" id="vPalIn" accept="image/*" hidden onchange="vExtractPalette(this)">
     </label>
-
-<div id="ocrStatus" style="margin-top:10px; font-size:14px; color:var(--purple)">
-    <span id="fileCountText">No files chosen</span>
-</div>
-
-
-    <button class="btn-primary" onclick="processOCR()">Analyze & Extract Text</button>
-    
-    <div id="ocrStatus" style="margin-top:15px; font-size:14px;"></div>
-   
-    <textarea id="ocrResult" placeholder="Extracted text will appear here..." style="margin-top: 20px;"></textarea>
-    
-    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px">
-        <button class="btn-primary" onclick="copyOCRText(event)">📋 Copy</button>
-        <button class="btn-primary" onclick="downloadText()">📄 .TXT</button>
-        <button class="btn-primary" onclick="downloadOCRPDF()">📕 .PDF</button>
+    <div id="vPalResult" style="display:none;margin-top:14px;">
+      <div style="font-size:10px;color:#7a5a0a;margin-bottom:10px;font-weight:700;letter-spacing:1px;">DOMINANT COLORS — CLICK TO COPY HEX</div>
+      <div id="vPalSwatches" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
     </div>
-</div><br> <br>
+  </div>
 
-
-<h2 id="unlocker" class="section-title">Remove PDF Password</h2>  <a href="#unlocker"></a>
-<div class="card">
-    <p class="subtitle" style="text-align:left; margin-bottom:15px">Upload a locked PDF to create a decrypted version.</p>
-    
-    <label class="upload-area" for="unlockInput">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--purple)"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        <p style="margin-top:5px; font-weight:600">Click to upload Locked PDF</p>
-        <input type="file" id="unlockInput" accept="application/pdf" hidden onchange="document.getElementById('unlockName').innerText = this.files[0].name">
+  <!-- PDF PAGE EXTRACTOR -->
+  <div class="vip-card">
+    <span class="vip-tag">EXCLUSIVE</span>
+    <span class="vip-card-icon">✂️</span>
+    <div class="vip-card-title">PDF Page Extractor</div>
+    <div class="vip-card-desc">Extract specific pages from any PDF as image files. Supports page ranges like 1,3,5-8.</div>
+    <label class="g-upload" for="vSplitIn">
+      <span style="font-size:30px;">📄</span>
+      <p>Upload PDF to extract pages</p>
+      <input type="file" id="vSplitIn" accept="application/pdf" hidden onchange="vLoadSplitPdf(this)">
     </label>
-    
-    <div id="unlockName" style="font-size:12px; color:var(--purple-neon); margin-top:10px; text-align:center;"></div>
-
-    <div style="margin-top:20px;">
-        <input id="unlockPass" type="password" placeholder="Enter Current PDF Password">
+    <div id="vSplitInfo" style="display:none;margin-top:12px;">
+      <div style="font-size:12px;color:var(--vip-gold);margin-bottom:10px;" id="vSplitCount"></div>
+      <span class="g-lbl">Pages to Extract (e.g. 1,3,5-8)</span>
+      <input class="g-inp" id="vSplitPages" placeholder="e.g. 1,2,4-6" onkeydown="if(event.key==='Enter') vExtractPages()">
+      <span class="g-lbl">Image Format</span>
+      <select class="g-sel" id="vSplitFmt">
+        <option value="image/png">PNG</option>
+        <option value="image/jpeg">JPG</option>
+      </select>
+      <div class="g-prog-wrap" id="vSplitProg" style="margin-top:10px;"><div class="g-prog-bar" id="vSplitBar"></div></div>
+      <div class="g-status" id="vSplitStat"></div>
+      <button class="btn-vip btn-vip-solid" style="margin-top:12px;" onclick="vExtractPages()">✂️ Extract Pages</button>
     </div>
-    <button class="btn-primary" onclick="removePassword()">Decrypt & Download PDF</button>
-    <div id="unlockStatus" style="margin-top:10px; font-size:14px; text-align:center;"></div>
+  </div>
 
-
-
+  <!-- IMAGE COMPRESSOR -->
+  <div class="vip-card">
+    <span class="vip-tag">EXCLUSIVE</span>
+    <span class="vip-card-icon">🗜️</span>
+    <div class="vip-card-title">Image Compressor</div>
+    <div class="vip-card-desc">Compress images to reduce file size while maintaining visual quality. Supports JPG, PNG, and WEBP output.</div>
+    <label class="g-upload" for="vImgCompIn">
+      <span style="font-size:30px;">🖼️</span>
+      <p>Upload image to compress</p>
+      <input type="file" id="vImgCompIn" accept="image/*" hidden onchange="vLoadImgComp(this)">
+    </label>
+    <div id="vImgCompPreview" style="display:none;margin-top:10px;text-align:center;">
+      <img id="vImgCompThumb" style="max-width:100%;max-height:160px;border-radius:10px;border:1px solid var(--vip-gold-border);" alt="Preview">
+      <div id="vImgCompOrigSize" style="font-size:11px;color:#7a5a0a;margin-top:5px;"></div>
     </div>
+    <span class="g-lbl">Quality (1–100)</span>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+      <input type="range" id="vImgCompQuality" min="1" max="100" value="75" style="flex:1;accent-color:var(--vip-gold);background:transparent;cursor:pointer;" oninput="document.getElementById('vImgCompQualVal').textContent=this.value+'%'">
+      <span id="vImgCompQualVal" style="font-size:13px;color:var(--vip-gold);font-weight:700;min-width:40px;">75%</span>
+    </div>
+    <span class="g-lbl">Output Format</span>
+    <select class="g-sel" id="vImgCompFmt">
+      <option value="image/jpeg">JPG (best compression)</option>
+      <option value="image/webp">WEBP (modern & small)</option>
+      <option value="image/png">PNG (lossless)</option>
+    </select>
+    <div id="vImgCompResult" style="display:none;margin-top:12px;padding:12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.15);border-radius:11px;">
+      <div style="font-size:11px;color:#7a5a0a;font-weight:700;letter-spacing:0.5px;margin-bottom:6px;">COMPRESSION RESULT</div>
+      <div id="vImgCompStats" style="font-size:12px;color:#f5f0dc;line-height:1.8;"></div>
+    </div>
+    <button class="btn-vip btn-vip-solid" style="margin-top:14px;" onclick="vCompressImage()">🗜️ Compress &amp; Download</button>
+  </div>
 
-    <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no data is transmitted, monitored, or stored on external servers.</footer>
-</div>
+  <!-- PDF COMPRESSOR -->
+  <div class="vip-card">
+    <span class="vip-tag">EXCLUSIVE</span>
+    <span class="vip-card-icon">📦</span>
+    <div class="vip-card-title">PDF Compressor</div>
+    <div class="vip-card-desc">Reduce PDF file size by re-rendering pages at lower resolution. Choose compression level to balance quality vs size.</div>
+    <label class="g-upload" for="vPdfCompIn">
+      <span style="font-size:30px;">📄</span>
+      <p>Upload PDF to compress</p>
+      <input type="file" id="vPdfCompIn" accept="application/pdf" hidden onchange="vLoadPdfComp(this)">
+    </label>
+    <div id="vPdfCompInfo" style="display:none;margin-top:8px;">
+      <div id="vPdfCompName" style="font-size:11px;color:var(--vip-gold);font-weight:600;text-align:center;margin-bottom:10px;"></div>
+      <span class="g-lbl">Compression Level</span>
+      <select class="g-sel" id="vPdfCompLevel">
+        <option value="1.5">Low — High Quality (slight size reduction)</option>
+        <option value="1.0" selected>Medium — Balanced (recommended)</option>
+        <option value="0.6">High — Smaller File (lower quality)</option>
+        <option value="0.3">Maximum — Smallest File (low quality)</option>
+      </select>
+      <div class="g-prog-wrap" id="vPdfCompProg" style="margin-top:10px;"><div class="g-prog-bar" id="vPdfCompBar"></div></div>
+      <div class="g-status" id="vPdfCompStat"></div>
+      <div id="vPdfCompResult" style="display:none;margin-top:10px;padding:10px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.15);border-radius:11px;">
+        <div style="font-size:11px;color:#7a5a0a;font-weight:700;letter-spacing:0.5px;margin-bottom:6px;">COMPRESSION RESULT</div>
+        <div id="vPdfCompStats" style="font-size:12px;color:#f5f0dc;line-height:1.8;"></div>
+      </div>
+      <button class="btn-vip btn-vip-solid" style="margin-top:14px;" onclick="vCompressPdf()">📦 Compress &amp; Download</button>
+    </div>
+  </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+</div><!-- end vip-content -->
+
+<div class="vip-divider"></div>
+<footer style="position:relative;z-index:1;text-align:center;padding:60px 20px 40px;color:#5a4a2a;font-size:13px;line-height:1.8;">
+  <strong style="color:var(--vip-gold);font-family:'Cinzel',serif;letter-spacing:1px;">© 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no data is transmitted, monitored, or stored on external servers.</strong><br>
+  All processing is 100% local — your files never leave your browser.<br>
+  <span style="color:rgba(255,215,0,0.25);font-size:10px;letter-spacing:1px;">✦ ULTRA PREMIUM MEMBER ✦</span>
+</footer>
+
+<!-- ====== ALL SCRIPTS ====== -->
+<script>
+// ============================================================
+//  TOOL TAB BAR + MORE MODAL
+// ============================================================
+
+// Map tab keys to the card IDs / section anchors they should scroll to
+var _toolSectionMap = {
+  'converter': 'vImgIn',        // Ultra HD Batch Converter
+  'pdf':       'vPdfIn',        // Pro PDF Builder
+  'ocr':       'vOcrIn',        // Smart OCR
+  'pdfunlock': 'vUnlockIn',     // PDF Unlocker
+  'palette':   'vPalIn',        // Color Palette
+  'imgcomp':   'vImgCompIn',    // Image Compressor
+  'pdfcomp':   'vPdfCompIn',    // PDF Compressor
+  'meta':      'vMetaIn',       // Metadata Inspector
+  'resizer':   'vResizeIn',     // Bulk Resizer
+  'base64':    'vB64In',        // Base64
+  'pdfextract':'vSplitIn'       // PDF Page Extractor
+};
+
+function toolTabClick(btn, key) {
+  // Update active state on tab bar
+  document.querySelectorAll('.tool-tab').forEach(function(t){ t.classList.remove('active'); });
+  btn.classList.add('active');
+  // Scroll to the relevant section
+  _scrollToTool(key);
+}
+
+function toolTabClickFromModal(key) {
+  closeMoreModal();
+  // Give modal close animation a moment then scroll
+  setTimeout(function(){
+    // Mark matching tab active if it exists
+    document.querySelectorAll('.tool-tab').forEach(function(t){
+      t.classList.remove('active');
+      if(t.getAttribute('onclick') && t.getAttribute('onclick').indexOf("'"+key+"'") > -1){
+        t.classList.add('active');
+      }
+    });
+    _scrollToTool(key);
+  }, 180);
+}
+
+function _scrollToTool(key) {
+  var targetId = _toolSectionMap[key];
+  if (!targetId) return;
+  // Find the card that contains this input
+  var el = document.getElementById(targetId);
+  if (!el) return;
+  // Walk up to the vip-card ancestor
+  var card = el.closest ? el.closest('.vip-card') : el.parentElement;
+  while (card && !card.classList.contains('vip-card')) { card = card.parentElement; }
+  var scrollTarget = card || el;
+  var offset = 160; // account for nav + tab bar
+  var top = scrollTarget.getBoundingClientRect().top + window.pageYOffset - offset;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+  // Briefly highlight the card
+  if (card) {
+    card.style.transition = 'box-shadow 0.3s';
+    card.style.boxShadow = '0 0 0 2px var(--vip-gold), 0 0 32px rgba(255,215,0,0.25)';
+    setTimeout(function(){ card.style.boxShadow = ''; }, 1600);
+  }
+}
+
+function openMoreModal() {
+    document.getElementById('moreModalOverlay').classList.add('open');
+    lockScroll();
+}
+
+function closeMoreModal() {
+    document.getElementById('moreModalOverlay').classList.remove('open');
+    unlockScroll();
+
+
+  // 🔓 unlock background scroll
+  document.body.classList.remove("modal-open");
+}
+
+
 // --- SETTINGS MODAL ---
 // --- SETTINGS FEEDBACK ---
 var _fbRating = 0;
@@ -2334,12 +3631,15 @@ async function submitSettingsFeedback() {
 
 function openSettings() {
     document.getElementById("settingsOverlay").classList.add("open");
-    document.body.classList.add("modal-open"); // 🔒 lock
+    lockScroll();
 }
 
 function closeSettings() {
     document.getElementById("settingsOverlay").classList.remove("open");
-    document.body.classList.remove("modal-open"); // 🔓 unlock
+    // Don't unlock if switch mode card is open or about to open
+    if (!document.getElementById('switchModeOverlay').classList.contains('open')) {
+        unlockScroll();
+    }
 }
 function closeSettingsOutside(e) {
     if (e.target === document.getElementById('settingsOverlay')) closeSettings();
@@ -2369,6 +3669,19 @@ function updateThemeCards() {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeSettings();
 });
+
+// ── SCROLL-AWARE NAV ──────────────────────────────────────────
+(function() {
+    const navEls = document.querySelectorAll('nav');
+    function onScroll() {
+        const scrolled = window.scrollY > 30;
+        navEls.forEach(nav => {
+            nav.classList.toggle('nav-scrolled', scrolled);
+        });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // run once on load
+})();
 
 // --- GLOBAL UTILS ---
 const redirectToFeedback = () => {
@@ -3214,7 +4527,8 @@ window.addEventListener("load", () => {
 
 </script>
 
-<!-- Bridge: allows inline HTML onclick to call module-scoped functions -->
+</script>
+<script>
 <script>
 
 /* ==============================
@@ -3234,25 +4548,23 @@ function unlockBodyScroll() {
 ============================== */
 
 function openPDFReaderGate() {
-    if (window._prGate) { 
-        window._prGate(); 
-        lockBodyScroll();   // 🔒 LOCK
-        return; 
+    var saved = localStorage.getItem('pr_user_name');
+    if (saved) {
+        // Already has a name — open reader directly
+        document.getElementById('prUserName').textContent = saved;
+        document.getElementById('pdfReaderView').classList.add('open');
+        document.body.classList.add('modal-open');
+        if (window._loadHistory) window._loadHistory();
+        return;
     }
-
-    const saved = localStorage.getItem('pr_user_name');
-    if (saved) { 
-        openPDFReaderDirect(saved); 
-        return; 
-    }
-
+    // No name yet — show auth screen
+    document.getElementById('prNameInput').value = '';
     document.getElementById('prAuthOverlay').classList.add('open');
-    lockBodyScroll();   // 🔒 LOCK
-
-    setTimeout(() => { 
-        const el = document.getElementById('prNameInput'); 
-        if(el) el.focus(); 
-    }, 200);
+    document.body.classList.add('modal-open');
+    setTimeout(function() {
+        var el = document.getElementById('prNameInput');
+        if (el) el.focus();
+    }, 150);
 }
 
 
@@ -3277,7 +4589,8 @@ function openPDFReaderDirect(name) {
 
 function closePRAuth() {
     document.getElementById('prAuthOverlay').classList.remove('open');
-    unlockBodyScroll();   // 🔓 UNLOCK
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
 }
 
 
@@ -3287,7 +4600,8 @@ function closePRAuth() {
 
 function closePDFReader() {
     document.getElementById('pdfReaderView').classList.remove('open');
-    unlockBodyScroll();   // 🔓 UNLOCK
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
 }
 
 
@@ -3788,6 +5102,8 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
 })();
 
 
+</script>
+<script>
 
 
 
@@ -3828,11 +5144,12 @@ db.ref("updates").on("value", snapshot => {
         <div style="
             padding:20px;
             border-radius:18px;
-            background:rgba(124,58,237,0.08);
-            border:1px solid rgba(124,58,237,0.3);
+            background:rgba(255,215,0,0.06);
+            border:1px solid rgba(255,215,0,0.4);
             margin-top:10px;
+            box-shadow:0 0 18px rgba(255,215,0,0.15);
         ">
-            <div style="font-size:12px;color:#a78bfa;margin-bottom:6px;">
+            <div style="font-size:12px;color:#ffd700;margin-bottom:6px;">
                 ${latestUpdate.label} • ${latestUpdate.type}
             </div>
             <div style="font-size:15px;">
@@ -3908,46 +5225,1200 @@ document.getElementById("closeUpdatesBtn").addEventListener("click", function(){
 
 
 </script>
+</script>
 
 <script>
 // ============================================================
-//  SWITCH TO VIP LOADER
+//  VIP PAGE INIT & HELPERS
 // ============================================================
-function launchVipLoader() {
-  var loader = document.getElementById('vipLoader');
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+// Particles
+(function(){
+  var c=document.getElementById('vipParticles');
+  var cols=['#ffd700','#ffe566','#fff8dc','#ffb300'];
+  for(var i=0;i<50;i++){
+    var p=document.createElement('div');
+    p.className='vip-particle';
+    p.style.left=Math.random()*100+'vw';
+    p.style.width=p.style.height=(1+Math.random()*3)+'px';
+    p.style.setProperty('--d',(4+Math.random()*5)+'s');
+    p.style.setProperty('--dl',(Math.random()*8)+'s');
+    p.style.background=cols[Math.floor(Math.random()*cols.length)];
+    c.appendChild(p);
+  }
+})();
+
+// Stats
+var _vStats=JSON.parse(localStorage.getItem('mgp_vip_stats')||'{"converted":0}');
+document.getElementById('vStatConverted').textContent=_vStats.converted;
+function _incConv(n){_vStats.converted=(_vStats.converted||0)+(n||1);localStorage.setItem('mgp_vip_stats',JSON.stringify(_vStats));document.getElementById('vStatConverted').textContent=_vStats.converted;}
+
+// Toast
+function vToast(msg){var t=document.getElementById('vipToast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2600);}
+
+// Back button
+function goBack() {
+  // Show choice card first
+  document.getElementById('backChoiceOverlay').classList.add('open');
+  document.body.classList.add('modal-open');
+}
+
+function closeBackChoice() {
+  document.getElementById('backChoiceOverlay').classList.remove('open');
+  if (!document.getElementById('settingsOverlay').classList.contains('open') &&
+      !document.getElementById('moreModalOverlay') ||
+      !document.getElementById('moreModalOverlay').classList.contains('open')) {
+    document.body.classList.remove('modal-open');
+  }
+}
+
+function bcOutsideClick(e) {
+  if (e.target === document.getElementById('backChoiceOverlay')) closeBackChoice();
+}
+
+function bcSetDefault() {
+  localStorage.setItem('mgp_vip_default', '1');
+  var backBtn = document.querySelector('.vip-back-btn');
+  if (backBtn) backBtn.style.display = 'none';
+  closeBackChoice();
+  vToast('✦ VIP set as default! Use Settings to go back.');
+}
+
+function bcGoOriginal() {
+  closeBackChoice();
+  setTimeout(launchBackLoader, 180);
+}
+
+function launchBackLoader() {
+  var loader = document.getElementById('backLoader');
   loader.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  var bar = document.getElementById('vlBar');
+  document.body.classList.add('modal-open');
+  var bar = document.getElementById('blBar');
   var pct = 0;
   var iv = setInterval(function() {
-    pct += (100 - pct) * 0.035;
+    pct += (100 - pct) * 0.038;
     bar.style.width = Math.min(pct, 97) + '%';
   }, 80);
   setTimeout(function() {
     clearInterval(iv);
     bar.style.width = '100%';
     setTimeout(function() {
-      window.location.href = 'index (3).html';
+      window.location.href = 'index.html';
     }, 300);
   }, 5000);
 }
 
+// VIP status in settings - already VIP
+document.addEventListener('DOMContentLoaded', function() {
+  // Restore default mode
+  if (localStorage.getItem('mgp_vip_default') === '1') {
+    var backBtn = document.querySelector('.vip-back-btn');
+    if (backBtn) backBtn.style.display = 'none';
+  }
+});
+document.addEventListener('DOMContentLoaded',function(){
+  localStorage.setItem('mgp_vip','1');
+  var ub=document.getElementById('vipUpgradeBlock');
+  var fb=document.getElementById('vipFeaturesBlock');
+  if(ub)ub.style.display='none';
+  if(fb)fb.style.display='block';
+});
 
-console.log(
-"%cWarning!",
-"color:red;font-size:60px;font-weight:bold;text-shadow:2px 2px black;"
-);
+// Keep switchToVIP on this page as a no-op (already VIP)
+function switchToVIP(){vToast('👑 You are already VIP!');}
 
-console.log(
-"%cUsing this console may give potential attackers access to your microphone and camera using an attack called Self-XSS. Do not paste any code shared in the chat or elsewhere in this console.",
-"font-size:16px;color:black;"
-);
+// ============================================================
+//  IMAGE CONVERTER
+// ============================================================
+var _vImgs=[];
+function vHandleImgs(inp){_vImgs=Array.from(inp.files);_renderVImgList();}
+function _renderVImgList(){
+  var l=document.getElementById('vImgList');l.innerHTML='';
+  _vImgs.forEach(function(f,i){
+    var d=document.createElement('div');d.className='g-fitem';
+    d.innerHTML='<span class="g-fname">📄 '+f.name+'</span><button class="g-fdel" onclick="_rmVImg('+i+')">✕</button>';
+    l.appendChild(d);
+  });
+}
+function _rmVImg(i){_vImgs.splice(i,1);_renderVImgList();}
+async function vConvertAll(){
+  if(!_vImgs.length){vToast('⚠ Upload images first');return;}
+  var fmt=document.getElementById('vImgFmt').value;
+  var qual=parseInt(document.getElementById('vQual').value)/100;
+  var ext=fmt.split('/')[1].replace('jpeg','jpg').replace('svg+xml','svg');
+  var btn=event.target;btn.disabled=true;
+  var prog=document.getElementById('vImgProg');var bar=document.getElementById('vImgBar');var stat=document.getElementById('vImgStat');
+  prog.style.display='block';
+  for(var i=0;i<_vImgs.length;i++){
+    var f=_vImgs[i];
+    stat.textContent='Processing '+(i+1)+' / '+_vImgs.length+': '+f.name;
+    bar.style.width=((i/_vImgs.length)*100)+'%';
+    try{
+      var blobIn=f;
+      if(f.name.toLowerCase().match(/\.heic|\.heif/)){blobIn=await heic2any({blob:f,toType:'image/jpeg'});}
+      var url=URL.createObjectURL(blobIn);
+      var img=new Image();
+      await new Promise(function(res,rej){img.onload=res;img.onerror=rej;img.src=url;});
+      URL.revokeObjectURL(url);
+      var cv=document.getElementById('_hiddenCv');cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+      var ctx=cv.getContext('2d');
+      if(fmt==='image/jpeg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);}
+      ctx.drawImage(img,0,0);
+      var outBlob=await new Promise(function(res){cv.toBlob(res,fmt,qual);});
+      var a=document.createElement('a');a.href=URL.createObjectURL(outBlob);
+      a.download=f.name.replace(/\.[^.]+$/,'')+'_vip.'+ext;a.click();URL.revokeObjectURL(a.href);
+      _incConv(1);await new Promise(function(r){setTimeout(r,200);});
+    }catch(e){stat.textContent='Error on '+f.name;}
+  }
+  bar.style.width='100%';stat.textContent='✦ All '+_vImgs.length+' files converted!';
+  btn.disabled=false;vToast('✦ Converted '+_vImgs.length+' files!');
+  setTimeout(function(){prog.style.display='none';},3000);
+}
+
+// ============================================================
+//  PDF BUILDER
+// ============================================================
+var _vPdfFiles=[];
+function vHandlePdf(inp){_vPdfFiles=Array.from(inp.files);_renderVPdfList();}
+function _renderVPdfList(){
+  var l=document.getElementById('vPdfList');l.innerHTML='';
+  _vPdfFiles.forEach(function(f,i){
+    var d=document.createElement('div');d.className='g-fitem';
+    d.innerHTML='<span class="g-fname">🖼️ '+f.name+'</span><button class="g-fdel" onclick="_rmVPdf('+i+')">✕</button>';
+    l.appendChild(d);
+  });
+}
+function _rmVPdf(i){_vPdfFiles.splice(i,1);_renderVPdfList();}
+async function vBuildPDF(){
+  if(!_vPdfFiles.length){vToast('⚠ Upload images first');return;}
+  var stat=document.getElementById('vPdfStat');var btn=event.target;btn.disabled=true;
+  stat.textContent='⏳ Building VIP PDF...';
+  var pageSizes={a4:[595.28,841.89],letter:[612,792],a3:[841.89,1190.55]};
+  var ps=pageSizes[document.getElementById('vPageSize').value]||pageSizes.a4;
+  var docName=document.getElementById('vPdfName').value.trim()||'VIP_Document';
+  var pass=document.getElementById('vPdfPass').value.trim();
+  try{
+    var {jsPDF}=window.jspdf;
+    var doc=new jsPDF({unit:'pt',format:[ps[0],ps[1]],encryption:pass?{userPassword:pass,ownerPassword:pass,userPermissions:['print','modify','copy','annot-forms']}:undefined});
+    doc.setProperties({title:docName,author:'MediaGrabber VIP',creator:'MediaGrabber VIP'});
+    for(var i=0;i<_vPdfFiles.length;i++){
+      stat.textContent='Adding image '+(i+1)+' / '+_vPdfFiles.length;
+      var f=_vPdfFiles[i];
+      var dataUrl=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result);};r.onerror=rej;r.readAsDataURL(f);});
+      var img=new Image();
+      await new Promise(function(res,rej){img.onload=res;img.onerror=rej;img.src=dataUrl;});
+      if(i>0)doc.addPage([ps[0],ps[1]]);
+      var ratio=Math.min(ps[0]/img.naturalWidth,ps[1]/img.naturalHeight);
+      var w=img.naturalWidth*ratio,h=img.naturalHeight*ratio;
+      doc.addImage(dataUrl,f.type==='image/jpeg'?'JPEG':'PNG',(ps[0]-w)/2,(ps[1]-h)/2,w,h);
+    }
+    doc.save(docName+'.pdf');
+    stat.textContent='✦ PDF built successfully!';vToast('✦ PDF ready!');_incConv(_vPdfFiles.length);
+  }catch(e){stat.textContent='⚠ Error: '+e.message;}
+  btn.disabled=false;
+}
+
+// ============================================================
+//  OCR PRO
+// ============================================================
+var _vOcrFile=null;
+function vHandleOcr(inp){_vOcrFile=inp.files[0];document.getElementById('vOcrFile').textContent=_vOcrFile?'📄 '+_vOcrFile.name:'';}
+async function vRunOcr(){
+  if(!_vOcrFile){vToast('⚠ Upload a file first');return;}
+  var lang=document.getElementById('vOcrLang').value;
+  var prog=document.getElementById('vOcrProg');var bar=document.getElementById('vOcrBar');
+  var stat=document.getElementById('vOcrStat');var result=document.getElementById('vOcrResult');
+  var btn=event.target;btn.disabled=true;prog.style.display='block';
+  stat.textContent='⏳ Initializing OCR...';result.value='';
+  try{
+    var worker=await Tesseract.createWorker(lang,1,{
+      logger:function(m){if(m.status==='recognizing text'){bar.style.width=Math.round(m.progress*100)+'%';stat.textContent='🔍 Recognizing... '+Math.round(m.progress*100)+'%';}}
+    });
+    var imageData;
+    if(_vOcrFile.type==='application/pdf'){
+      var arrayBuf=await _vOcrFile.arrayBuffer();
+      var pdfDoc=await pdfjsLib.getDocument({data:arrayBuf}).promise;
+      var page=await pdfDoc.getPage(1);
+      var vp=page.getViewport({scale:2.0});
+      var cv=document.getElementById('_hiddenCv');cv.width=vp.width;cv.height=vp.height;
+      await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
+      imageData=cv.toDataURL('image/png');
+    }else{
+      imageData=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result);};r.onerror=rej;r.readAsDataURL(_vOcrFile);});
+    }
+    var {data:{text}}=await worker.recognize(imageData);
+    await worker.terminate();
+    result.value=text;bar.style.width='100%';
+    stat.textContent='✦ Extracted '+text.length+' characters';vToast('✦ OCR complete!');
+  }catch(e){stat.textContent='⚠ OCR failed: '+e.message;}
+  btn.disabled=false;
+}
+function vCopyOcr(e){var t=document.getElementById('vOcrResult').value;if(!t)return;_vCopyText(t,e.currentTarget,'📋 Copy');}
+function vDlOcrTxt(){var t=document.getElementById('vOcrResult').value;if(!t)return;var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='ocr_vip.txt';a.click();}
+function vDlOcrPdf(){var t=document.getElementById('vOcrResult').value;if(!t)return;var {jsPDF}=window.jspdf;var doc=new jsPDF();doc.setFontSize(12);var lines=doc.splitTextToSize(t,180);doc.text(lines,15,20);doc.save('ocr_vip.pdf');}
+
+// ============================================================
+//  UNIVERSAL COPY HELPER (HTTP + HTTPS)
+// ============================================================
+function _vCopyText(text, btn, label){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      _vCopyDone(btn,label);
+    }).catch(function(){ _vCopyFallback(text,btn,label); });
+  } else { _vCopyFallback(text,btn,label); }
+}
+function _vCopyFallback(text,btn,label){
+  var ta=document.createElement('textarea');
+  ta.value=text;
+  ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{ document.execCommand('copy'); _vCopyDone(btn,label); }
+  catch(e){ vToast('⚠ Copy failed — select manually'); }
+  document.body.removeChild(ta);
+}
+function _vCopyDone(btn,label){
+  vToast('✦ Copied!');
+  if(btn){ btn.textContent='✓ Copied!'; if(label) setTimeout(function(){ btn.textContent=label; },2000); }
+}
+
+// ============================================================
+//  PDF UNLOCKER
+// ============================================================
+async function vRemovePass(){
+  var file=document.getElementById('vUnlockIn').files[0];
+  var password=document.getElementById('vUnlockPass').value.trim();
+  var stat=document.getElementById('vUnlockStat');
+  var btn=event.target;
+  if(!file){vToast('⚠ Upload a PDF first');return;}
+  btn.disabled=true;
+  stat.style.color='#7a5a0a';stat.textContent='🔍 Reading PDF...';
+  try{
+    var fileBytes=await file.arrayBuffer();
+    var pdf;
+    try{
+      pdf=await pdfjsLib.getDocument({data:fileBytes.slice(0)}).promise;
+      stat.style.color='#ffd700';stat.textContent='💡 This PDF has no password — downloading original.';
+      var dl=document.createElement('a');
+      dl.href=URL.createObjectURL(new Blob([fileBytes],{type:'application/pdf'}));
+      dl.download='unlocked_'+file.name;
+      document.body.appendChild(dl);dl.click();document.body.removeChild(dl);
+      btn.disabled=false;vToast('✦ PDF downloaded!');return;
+    }catch(e1){
+      if(e1.name!=='PasswordException'){throw e1;}
+      if(!password){
+        stat.style.color='#ef4444';
+        stat.textContent='🔑 Password protected — enter the password above then click again.';
+        btn.disabled=false;return;
+      }
+    }
+    stat.textContent='🔑 Unlocking with password...';
+    try{
+      pdf=await pdfjsLib.getDocument({data:fileBytes.slice(0),password:password}).promise;
+    }catch(e2){
+      stat.style.color='#ef4444';stat.textContent='❌ Wrong password — please try again.';
+      btn.disabled=false;vToast('⚠ Wrong password');return;
+    }
+    var jsPDF=window.jspdf.jsPDF;var outPdf=null;
+    for(var i=1;i<=pdf.numPages;i++){
+      stat.textContent='⏳ Page '+i+' of '+pdf.numPages+'...';
+      await new Promise(function(r){setTimeout(r,20);});
+      var page=await pdf.getPage(i);
+      var orig=page.getViewport({scale:1});
+      var vp=page.getViewport({scale:2});
+      var cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;
+      await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
+      var imgData=cv.toDataURL('image/jpeg',0.92);
+      var wMm=orig.width*0.352778,hMm=orig.height*0.352778;
+      var orient=wMm>hMm?'l':'p';
+      if(!outPdf){outPdf=new jsPDF({orientation:orient,unit:'mm',format:[wMm,hMm],compress:true});}
+      else{outPdf.addPage([wMm,hMm],orient);}
+      outPdf.addImage(imgData,'JPEG',0,0,wMm,hMm,'','FAST');
+    }
+    outPdf.save('unlocked_'+file.name);
+    stat.style.color='#4ade80';stat.textContent='✅ Unlocked & downloaded!';vToast('✦ PDF Unlocked!');
+  }catch(e){
+    stat.style.color='#ef4444';stat.textContent='❌ Error: '+(e.message||'Could not process this PDF.');
+    console.error('vRemovePass',e);
+  }
+  btn.disabled=false;
+}
+
+// ============================================================
+//  METADATA INSPECTOR
+// ============================================================
+function vInspectMeta(inp){
+  var f=inp.files[0];if(!f)return;
+  var img=new Image();var url=URL.createObjectURL(f);
+  img.onload=function(){
+    URL.revokeObjectURL(url);
+    function gcd(a,b){while(b){var t=b;b=a%b;a=t;}return a;}
+    function fmtBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB';}
+    var g=gcd(img.naturalWidth,img.naturalHeight);
+    var data={
+      'File Name':f.name,'File Size':fmtBytes(f.size),'MIME Type':f.type||'Unknown',
+      'Width':img.naturalWidth+' px','Height':img.naturalHeight+' px',
+      'Aspect Ratio':(img.naturalWidth/g)+' : '+(img.naturalHeight/g),
+      'Megapixels':((img.naturalWidth*img.naturalHeight)/1e6).toFixed(2)+' MP',
+      'Last Modified':new Date(f.lastModified).toLocaleString()
+    };
+    var grid=document.getElementById('vMetaGrid');grid.innerHTML='';
+    Object.entries(data).forEach(function(e){
+      var item=document.createElement('div');item.className='meta-item';
+      item.title='Tap to copy '+e[0];item.style.cursor='pointer';
+      item.innerHTML='<div class="meta-key">'+e[0]+'</div><div class="meta-val">'+e[1]+'</div>'
+        +'<div style="font-size:9px;color:rgba(255,215,0,0.35);margin-top:4px;">Tap to copy</div>';
+      item.addEventListener('click',function(){
+        _vCopyText(e[0]+': '+e[1],null,null);vToast('✦ '+e[0]+': '+e[1]+' copied!');
+      });
+      grid.appendChild(item);
+    });
+    window._vMetaData=data;
+    document.getElementById('vMetaResult').style.display='block';vToast('✦ Metadata loaded!');
+  };
+  img.src=url;
+}
+
+function vCopyAllMeta(){
+  if(!window._vMetaData){vToast('⚠ No metadata loaded');return;}
+  var text=Object.entries(window._vMetaData).map(function(e){return e[0]+': '+e[1];}).join('\n');
+  _vCopyText(text,null,null);vToast('✦ All metadata copied!');
+}
+
+// ============================================================
+//  BULK RESIZER
+// ============================================================
+var _vResFiles=[];
+function vHandleResize(inp){_vResFiles=Array.from(inp.files);document.getElementById('vResizeNames').textContent=_vResFiles.length+' file(s) selected';}
+async function vBulkResize(){
+  if(!_vResFiles.length){vToast('⚠ Upload images first');return;}
+  var w=parseInt(document.getElementById('vResW').value)||800;
+  var h=parseInt(document.getElementById('vResH').value)||600;
+  var mode=document.getElementById('vResMode').value;
+  var fmt=document.getElementById('vResFmt').value;
+  var ext=fmt.split('/')[1].replace('jpeg','jpg');
+  var btn=event.target;btn.disabled=true;
+  var prog=document.getElementById('vResProg');var bar=document.getElementById('vResBar');var stat=document.getElementById('vResStat');
+  prog.style.display='block';
+  for(var i=0;i<_vResFiles.length;i++){
+    var f=_vResFiles[i];stat.textContent='Resizing '+(i+1)+' / '+_vResFiles.length;
+    bar.style.width=((i/_vResFiles.length)*100)+'%';
+    try{
+      var url=URL.createObjectURL(f);var img=new Image();
+      await new Promise(function(res,rej){img.onload=res;img.onerror=rej;img.src=url;});
+      URL.revokeObjectURL(url);
+      var cv=document.getElementById('_hiddenCv');cv.width=w;cv.height=h;
+      var ctx=cv.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+      if(mode==='stretch'){ctx.drawImage(img,0,0,w,h);}
+      else if(mode==='fit'){var r=Math.min(w/img.naturalWidth,h/img.naturalHeight);var nw=img.naturalWidth*r,nh=img.naturalHeight*r;ctx.drawImage(img,(w-nw)/2,(h-nh)/2,nw,nh);}
+      else{var r=Math.max(w/img.naturalWidth,h/img.naturalHeight);var nw=img.naturalWidth*r,nh=img.naturalHeight*r;ctx.drawImage(img,(w-nw)/2,(h-nh)/2,nw,nh);}
+      var blob=await new Promise(function(res){cv.toBlob(res,fmt,0.95);});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download=f.name.replace(/\.[^.]+$/,'')+'_'+w+'x'+h+'.'+ext;a.click();URL.revokeObjectURL(a.href);
+      _incConv(1);await new Promise(function(r){setTimeout(r,130);});
+    }catch(e){}
+  }
+  bar.style.width='100%';stat.textContent='✦ All '+_vResFiles.length+' images resized!';
+  vToast('✦ Resized '+_vResFiles.length+' images!');btn.disabled=false;
+}
+
+// ============================================================
+//  BASE64 ENCODER/DECODER
+// ============================================================
+var _MGP_KEY='MGP-VIP-2026-MEDIAGRABBER-SECRET-KEY';
+var _MGP_START='MGP::';var _MGP_END='::MGP';
+function _mgpXor(s,k){var o='';for(var i=0;i<s.length;i++)o+=String.fromCharCode(s.charCodeAt(i)^k.charCodeAt(i%k.length));return o;}
+function _mgpEncode(d){var s=_mgpXor(d,_MGP_KEY);return _MGP_START+btoa(unescape(encodeURIComponent(s)))+_MGP_END;}
+function _mgpDecode(s){var inner=s.slice(_MGP_START.length,s.length-_MGP_END.length);return _mgpXor(decodeURIComponent(escape(atob(inner))),_MGP_KEY);}
+
+// ── Dropdown engine ──
+function vB64DDToggle(id){
+  var dd=document.getElementById(id);
+  if(!dd)return;
+  var isOpen=dd.classList.contains('open');
+  // close all
+  document.querySelectorAll('.vB64DD.open').forEach(function(d){d.classList.remove('open');});
+  if(!isOpen) dd.classList.add('open');
+}
+document.addEventListener('click',function(e){
+  document.querySelectorAll('.vB64DD.open').forEach(function(d){
+    if(!d.contains(e.target)) d.classList.remove('open');
+  });
+});
+function vB64DDSetLabel(ddId, text){
+  var lbl=document.getElementById(ddId+'_label');
+  if(lbl) lbl.textContent=text;
+  var dd=document.getElementById(ddId);
+  if(dd) dd.classList.remove('open');
+}
+function vB64DDSetActive(ddId, val){
+  document.querySelectorAll('#'+ddId+' .vB64DD-item').forEach(function(el){
+    el.classList.toggle('selected', el.id===ddId+'_item_'+val);
+  });
+}
+// Enc selector
+function vB64DDSelectEnc(val, ddId){
+  var labels={image:'🖼️ Image', text:'📝 Text', contact:'👤 Contact', binary:'⚙️ Binary'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  window._vB64EncType = val;
+  vB64SelectType(val);
+}
+// Dec selector
+function vB64DDSelectDec(val, ddId){
+  var labels={image:'🖼️ Decode to Image', text:'📝 Decode to Text', contact:'👤 Decode to Contact', binary:'⚙️ Binary Bits to Text'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  vB64SetDecType(val);
+}
+// Contact fields selector
+function vB64DDSelectCF(val, ddId){
+  var labels={phone:'📞 Phone only', email:'📧 Email only', both:'📞 Phone & Email', trio:'📞 Trio', all:'👤 All fields'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  vB64SetContactFields(val);
+}
+// Binary mode selector
+function vB64DDSelectBM(val, ddId){
+  var labels={file:'📁 File', text:'📝 Text → Bits'};
+  vB64DDSetLabel(ddId, labels[val]||val);
+  vB64DDSetActive(ddId, val);
+  vB64SetBinaryMode(val);
+}
+// Country code pills
+function vB64SetCC(val){
+  document.querySelectorAll('.vB64CCPill').forEach(function(p){p.classList.remove('active');});
+  var idc=val==='custom'?'custom':val.replace('+','p');
+  var pill=document.getElementById('cc_'+idc)||document.querySelector('.vB64CCPill[onclick*="'+val+'"]');
+  if(pill) pill.classList.add('active');
+  var cw=document.getElementById('vB64CCCustomWrap');
+  if(val==='custom'){_vB64CCIsCustom=true;if(cw)cw.style.display='block';}
+  else{_vB64CCIsCustom=false;_vB64CC=val;if(cw)cw.style.display='none';}
+}
+
+var _vB64CC='+1', _vB64CCIsCustom=false, _vB64DecType='image';
+window._vB64EncType='image';
+window._vB64BinSubMode='file';
+
+function vB64SetActiveCard(){}
+function vB64ResetCard(){}
+
+function vB64SelectType(type){
+  vB64SetActiveCard('vB64EncPicker', type);
+  ['Image','Text','Contact','Binary'].forEach(function(p){
+    var el=document.getElementById('vB64Panel'+p);
+    if(el) el.style.display=(p.toLowerCase()===type)?'block':'none';
+  });
+  var sob=document.getElementById('vB64SiteOnlyBtn');
+  if(sob) sob.style.display=(type==='image')?'inline-flex':'none';
+  var out=document.getElementById('vB64Out');
+  if(out){out.style.display='none';out.value='';}
+  var btns=document.getElementById('vB64Btns');
+  if(btns) btns.style.display='none';
+
+}
+
+function vB64SetContactFields(mode){
+  vB64SetActiveCard('vB64CFPicker', mode);
+  var showPhone=['phone','both','trio','all'].indexOf(mode)!==-1;
+  var showEmail=['email','both','trio','all'].indexOf(mode)!==-1;
+  var showOrg=['trio','all'].indexOf(mode)!==-1;
+  var pr=document.getElementById('vB64ContactPhoneRow');
+  var er=document.getElementById('vB64ContactEmailRow');
+  var or2=document.getElementById('vB64ContactOrgRow');
+  if(pr) pr.style.display=showPhone?'block':'none';
+  if(er) er.style.display=showEmail?'block':'none';
+  if(or2) or2.style.display=showOrg?'block':'none';
+}
+
+function vB64SetCCFromSelect(val){ vB64SetCC(val); }
+function _vB64SetCCFromSelect_ORIG(val){
+  // Highlight selected pill
+  var picker=document.getElementById('vB64CCPicker');
+  if(picker){
+    picker.querySelectorAll('div').forEach(function(d){
+      d.classList.remove('ccActive');
+      d.style.background='rgba(255,215,0,0.04)';
+      d.style.color='#f5f0dc';
+      d.style.borderColor='rgba(255,215,0,0.18)';
+    });
+    var active=document.getElementById('vB64CC__'+(val==='custom'?'custom':val.replace('+','p')));
+    if(active){
+      active.classList.add('ccActive');
+      active.style.background='rgba(255,215,0,0.18)';
+      active.style.color='var(--vip-gold)';
+      active.style.borderColor='rgba(255,215,0,0.6)';
+    }
+  }
+  var cw=document.getElementById('vB64CCCustomWrap');
+  if(val==='custom'){_vB64CCIsCustom=true;if(cw)cw.style.display='block';}
+  else{_vB64CCIsCustom=false;_vB64CC=val;if(cw)cw.style.display='none';}
+}
+
+function vB64SetBinaryMode(mode){
+  vB64SetActiveCard('vB64BMPicker', mode);
+  window._vB64BinSubMode = mode;
+  var fp=document.getElementById('vB64BinFilePanel');
+  var tp=document.getElementById('vB64BinTextPanel');
+  if(fp) fp.style.display=(mode==='file')?'block':'none';
+  if(tp) tp.style.display=(mode==='text')?'block':'none';
+}
+
+function vB64SetDecType(type){
+  _vB64DecType=type;
+  var notice=document.getElementById('vB64DecNotice');
+  if(notice) notice.style.display=(type==='binary')?'block':'none';
+  vB64SetActiveCard('vB64DecPicker', type);
+  var lbl={image:'Decode to Image',text:'Decode to Text',contact:'Decode to Contact',binary:'Binary Bits to Text'};
+  var btn=document.getElementById('vB64DecBtn');
+  if(btn) btn.textContent='Decode: '+(lbl[type]||type);
+  var inp=document.getElementById('vB64DecIn');
+  if(inp){
+    var ph={image:'Paste Base64 string here...',text:'Paste Base64 string here...',contact:'Paste Base64 vCard string here...',binary:'Paste binary bits here e.g. 01001000 01100101 01101100 01101100 01101111'};
+    inp.placeholder=ph[type]||'Paste here...';
+  }
+  var wrap=document.getElementById('vB64DecWrap');
+  if(wrap){wrap.style.display='none';wrap.innerHTML='';}
+}
+
+function _vB64ShowResult(str){
+  var isBinaryText = (window._vB64EncType==='binary' && window._vB64BinSubMode==='text');
+  var isBinaryFile = (window._vB64EncType==='binary' && window._vB64BinSubMode==='file');
+  var isBinary = isBinaryText || isBinaryFile;
+  var out=document.getElementById('vB64Out');
+  out.style.display='block'; out.value=str;
+  if(isBinaryText){
+    out.placeholder='10101010 binary bits...';
+    out.style.color='#4ade80';
+  } else if(isBinaryFile){
+    out.placeholder='Binary file encoded as Base64...';
+    out.style.color='#4ade80';
+  } else {
+    out.placeholder='Base64 string...';
+    out.style.color='';
+  }
+  out.style.fontFamily='monospace';
+  // copy button label
+  var cpBtn=document.getElementById('vB64CopyBtn');
+  if(cpBtn) cpBtn.textContent = isBinary ? '\uD83D\uDCCB Copy Binary' : '\uD83D\uDCCB Copy Base64';
+  document.getElementById('vB64Btns').style.display='flex';
+  var sob=document.getElementById('vB64SiteOnlyBtn');
+  if(sob) sob.style.display=(window._vB64EncType==='image')?'inline-flex':'none';
+
+  var warn=document.getElementById('vB64OneTimeWarn');
+  if(warn) warn.style.display='none';
+  vToast(isBinary ? 'Binary encoded!' : 'Encoded!');
+}
+
+function vEncodeB64(inp){
+  var f=inp.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){_vB64ShowResult(e.target.result);};
+  r.readAsDataURL(f);
+}
+
+function vEncodeText(){
+  var txt=document.getElementById('vB64TextIn').value;
+  if(!txt){vToast('Enter some text');return;}
+  _vB64ShowResult(btoa(unescape(encodeURIComponent(txt))));
+}
+
+function vEncodeContact(){
+  var name=document.getElementById('vB64ContactName').value.trim();
+  var pr=document.getElementById('vB64ContactPhoneRow');
+  var er=document.getElementById('vB64ContactEmailRow');
+  var or2=document.getElementById('vB64ContactOrgRow');
+  var phone=(pr&&pr.style.display!=='none')?document.getElementById('vB64ContactPhone').value.trim():'';
+  var email=(er&&er.style.display!=='none')?document.getElementById('vB64ContactEmail').value.trim():'';
+  var org=(or2&&or2.style.display!=='none')?document.getElementById('vB64ContactOrg').value.trim():'';
+  if(!name){vToast('Enter a name');return;}
+  var cc=_vB64CCIsCustom?(document.getElementById('vB64CCCustom').value.trim()||''):_vB64CC;
+  var fullPhone=phone?(cc+phone):'';
+  var vcard='BEGIN:VCARD\nVERSION:3.0\nFN:'+name+'\n';
+  if(org) vcard+='ORG:'+org+'\n';
+  if(fullPhone) vcard+='TEL:'+fullPhone+'\n';
+  if(email) vcard+='EMAIL:'+email+'\n';
+  vcard+='END:VCARD';
+  _vB64ShowResult(btoa(unescape(encodeURIComponent(vcard))));
+}
+
+function vEncodeBinary(inp){
+  var f=inp.files[0];if(!f)return;
+  // Block unsupported file types
+  var allowed=['application/pdf','text/plain','image/png','image/jpeg','image/jpg','image/webp','image/gif','image/bmp','image/svg+xml'];
+  var ext=f.name.split('.').pop().toLowerCase();
+  var allowedExt=['pdf','txt','png','jpg','jpeg','webp','gif','bmp','svg'];
+  if(allowed.indexOf(f.type)===-1 && allowedExt.indexOf(ext)===-1){
+    var nm=document.getElementById('vB64BinaryName');
+    nm.innerHTML='<span style="color:#ff4444;font-weight:700;">🚫 Unsupported format: '+f.name+'</span><br><span style="color:#7a5a0a;font-size:10px;">Only PDF, TXT, PNG, JPG, WEBP, GIF, BMP and SVG files are supported. Videos, audio and executables cannot be encoded.</span>';
+    inp.value='';
+    return;
+  }
+  document.getElementById('vB64BinaryName').textContent=f.name+' ('+(f.size/1024).toFixed(1)+' KB)';
+  var r=new FileReader();
+  r.onload=function(e){
+    var bytes=new Uint8Array(e.target.result);
+    var bits='';
+    for(var i=0;i<bytes.byteLength;i++){
+      var b=bytes[i].toString(2);
+      while(b.length<8) b='0'+b;
+      bits+=b+' ';
+    }
+    _vB64ShowResult(bits.trim());
+  };
+  r.readAsArrayBuffer(f);
+}
+
+function vEncodeBinaryText(){
+  var txt=document.getElementById('vB64BinTextIn').value;
+  if(!txt){vToast('Enter some text');return;}
+  window._vB64BinSubMode='text';
+  var bits='';
+  for(var i=0;i<txt.length;i++){var b=txt.charCodeAt(i).toString(2);while(b.length<8)b='0'+b;bits+=b+' ';}
+  _vB64ShowResult(bits.trim());
+}
+
+function vCopyB64(e){
+  var v=document.getElementById('vB64Out').value;if(!v)return;
+  var isBinary=(window._vB64EncType==='binary');
+  _vCopyText(v,e.currentTarget,isBinary?'Copy Binary':'Copy Base64');
+}
+function vCopySiteOnly(e){
+  var v=document.getElementById('vB64Out').value;
+  if(!v){vToast('Encode an image first');return;}
+  // Generate unique token
+  var token='T'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+  localStorage.setItem(token,'1');
+  // Bake token INSIDE the data before scrambling — completely invisible
+  var payload=token+'|SPLIT|'+v;
+  var encoded=_mgpEncode(payload);
+  _vCopyText(encoded,e.currentTarget,'Copy for This Site Only');
+  var warn=document.getElementById('vB64OneTimeWarn');
+  if(warn) warn.style.display='block';
+}
+function vDlB64Txt(){
+  var v=document.getElementById('vB64Out').value;if(!v)return;
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([v],{type:'text/plain'}));
+  a.download='base64.txt';a.click();
+}
+
+function vDecodeB64(){
+  var input=document.getElementById('vB64DecIn').value.trim();
+  if(!input){vToast('Paste a Base64 string');return;}
+
+  // ── One-time-use: token is baked INSIDE the scrambled payload ──
+  if(_vB64DecType!=='binary' && input.startsWith(_MGP_START)&&input.endsWith(_MGP_END)){
+    var decrypted;
+    try{decrypted=_mgpDecode(input);}catch(e){vToast('Invalid or tampered code');return;}
+    // Check if it has a token baked in
+    var splitIdx=decrypted.indexOf('|SPLIT|');
+    if(splitIdx!==-1){
+      var token=decrypted.slice(0,splitIdx);
+      var uses=localStorage.getItem(token);
+      var wrap2=document.getElementById('vB64DecWrap');
+      if(uses===null){
+        // Already used — show error, clear textarea, keep it fully editable
+        var decInp0=document.getElementById('vB64DecIn');
+        if(decInp0){
+          decInp0.value='';
+          decInp0.readOnly=false;
+          decInp0.style.color='';
+          decInp0.style.fontStyle='';
+          decInp0.placeholder='This code has already been used. Please generate a new code.';
+        }
+        wrap2.style.display='block';
+        wrap2.innerHTML='<div style="padding:16px;background:rgba(180,0,0,0.1);border:1.5px solid rgba(220,50,50,0.5);border-radius:12px;text-align:center;">'
+          +'<div style="font-size:26px;margin-bottom:7px;">🔒</div>'
+          +'<div style="color:#ff4444;font-size:13px;font-weight:800;letter-spacing:0.5px;">ACCESS DENIED</div>'
+          +'<div style="color:#c8a0a0;font-size:11px;margin-top:8px;line-height:1.7;">This one-time code has already been used and is now permanently invalidated.<br>A new code must be generated to access this content.</div>'
+          +'</div>';
+        vToast('This code has already been used!');
+        return;
+      }
+      // Valid — burn the token immediately
+      localStorage.removeItem(token);
+      input=decrypted.slice(splitIdx+7); // extract actual image data
+      // Clear the textarea and show a clean message — keep it fully responsive
+      var decInp=document.getElementById('vB64DecIn');
+      if(decInp){
+        decInp.value='';
+        decInp.placeholder='This code has been used and is now permanently invalidated. Generate a new code to decode again.';
+        decInp.style.color='';
+        decInp.style.fontStyle='';
+        decInp.readOnly=false;
+        decInp.title='';
+      }
+    } else {
+      input=decrypted; // regular site-only string without token
+    }
+  }
+  var wrap=document.getElementById('vB64DecWrap');
+  wrap.style.display='none';wrap.innerHTML='';
+
+  if(_vB64DecType==='image'){
+    var imgEl=document.createElement('img');
+    imgEl.id='vB64DecImg';
+    imgEl.style.cssText='max-width:100%;max-height:200px;border-radius:11px;border:1px solid rgba(255,215,0,0.2);display:block;margin:0 auto;';
+    var dlBtn=document.createElement('button');
+    dlBtn.className='btn-vip';dlBtn.style.cssText='margin-top:8px;width:100%;';
+    dlBtn.textContent='Download Image';dlBtn.onclick=vDlDecImg;
+    wrap.appendChild(imgEl);wrap.appendChild(dlBtn);
+    var onOk=function(){
+      wrap.style.display='block';
+      vToast('Image decoded!');
+      // Textarea stays clean and responsive
+      var decInp2=document.getElementById('vB64DecIn');
+      if(decInp2){
+        decInp2.value='';
+        decInp2.placeholder='Code used. Generate a new code to decode again.';
+        decInp2.readOnly=false;
+      }
+    };
+    if(input.startsWith('data:')){
+      imgEl.onload=onOk;imgEl.onerror=function(){vToast('Invalid image');};imgEl.src=input;
+    } else {
+      var types=['image/png','image/jpeg','image/webp','image/gif','image/bmp'],tried=0;
+      function tryNext(){
+        if(tried>=types.length){vToast('Could not decode as image');return;}
+        var mime=types[tried++];imgEl.onerror=tryNext;imgEl.onload=onOk;
+        imgEl.src='data:'+mime+';base64,'+input;
+      }
+      tryNext();
+    }
+
+  } else if(_vB64DecType==='text'){
+    try{
+      var decoded=decodeURIComponent(escape(atob(input)));
+      var ta=document.createElement('textarea');
+      ta.style.cssText='width:100%;min-height:80px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,215,0,0.03);color:#f5f0dc;font-size:12px;font-family:monospace;resize:vertical;box-sizing:border-box;';
+      ta.readOnly=true;ta.value=decoded;
+      var cpBtn=document.createElement('button');
+      cpBtn.className='btn-vip';cpBtn.style.cssText='margin-top:8px;width:100%;';
+      cpBtn.textContent='Copy Text';
+      cpBtn.onclick=function(){_vCopyText(ta.value,cpBtn,'Copy Text');};
+      wrap.appendChild(ta);wrap.appendChild(cpBtn);
+      wrap.style.display='block';vToast('Text decoded!');
+    } catch(e){vToast('Could not decode as text');}
+
+  } else if(_vB64DecType==='contact'){
+    try{
+      var vcard=decodeURIComponent(escape(atob(input)));
+      var lines=vcard.split('\n');
+      var box=document.createElement('div');
+      box.style.cssText='padding:12px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:10px;line-height:1.9;font-size:13px;color:#f5f0dc;';
+      lines.forEach(function(l){
+        var row=document.createElement('div');
+        if(l.startsWith('FN:'))    row.innerHTML='<b style="color:var(--vip-gold);">Name:</b> '+l.slice(3);
+        else if(l.startsWith('TEL:'))   row.innerHTML='<b style="color:var(--vip-gold);">Phone:</b> '+l.slice(4);
+        else if(l.startsWith('EMAIL:')) row.innerHTML='<b style="color:var(--vip-gold);">Email:</b> '+l.slice(6);
+        else if(l.startsWith('ORG:'))   row.innerHTML='<b style="color:var(--vip-gold);">Org:</b> '+l.slice(4);
+        else return;
+        box.appendChild(row);
+      });
+      if(!box.children.length) box.textContent='No contact fields found';
+      wrap.appendChild(box);wrap.style.display='block';vToast('Contact decoded!');
+    } catch(e){vToast('Could not decode as contact');}
+
+  } else if(_vB64DecType==='binary'){
+    // Input is binary bits like "01001000 01100101 01101100 01101100 01101111"
+    var cleanBits = input.replace(/[^01]/g,'');
+    if(!cleanBits || cleanBits.length % 8 !== 0){
+      vToast('Invalid binary — must be groups of 8 bits e.g. 01001000 01101001');
+      return;
+    }
+    // Convert bits to byte array
+    var bytes2 = [];
+    for(var i=0;i<cleanBits.length;i+=8){
+      bytes2.push(parseInt(cleanBits.slice(i,i+8),2));
+    }
+    // Detect file type from magic bytes
+    function detectType(b){
+      if(b[0]===0xFF&&b[1]===0xD8&&b[2]===0xFF) return 'image/jpeg';
+      if(b[0]===0x89&&b[1]===0x50&&b[2]===0x4E&&b[3]===0x47) return 'image/png';
+      if(b[0]===0x47&&b[1]===0x49&&b[2]===0x46) return 'image/gif';
+      if(b[0]===0x52&&b[1]===0x49&&b[2]===0x46&&b[3]===0x46) return 'image/webp';
+      if(b[0]===0x42&&b[1]===0x4D) return 'image/bmp';
+      // SVG: check for "<svg" or "<?xml" text
+      var head='';for(var x=0;x<Math.min(50,b.length);x++) head+=String.fromCharCode(b[x]);
+      if(head.indexOf('<svg')!==-1||head.indexOf('<?xml')!==-1) return 'image/svg+xml';
+      // PDF
+      if(b[0]===0x25&&b[1]===0x50&&b[2]===0x44&&b[3]===0x46) return 'application/pdf';
+      return 'text';
+    }
+    var mime = detectType(bytes2);
+    // Build binary string and base64
+    var binStr='';
+    for(var j=0;j<bytes2.length;j++) binStr+=String.fromCharCode(bytes2[j]);
+    var b64 = btoa(binStr);
+
+    if(mime.startsWith('image/')){
+      // Show as image
+      if(mime==='image/svg+xml'){
+        // SVG: show inline as text rendered
+        var svgStr = '';
+        for(var k=0;k<bytes2.length;k++) svgStr+=String.fromCharCode(bytes2[k]);
+        var blob = new Blob([svgStr],{type:'image/svg+xml'});
+        var url = URL.createObjectURL(blob);
+        var imgSvg=document.createElement('img');
+        imgSvg.style.cssText='max-width:100%;max-height:220px;border-radius:11px;border:1px solid rgba(255,215,0,0.2);display:block;margin:0 auto;';
+        imgSvg.src=url;
+        var dlSvg=document.createElement('button');
+        dlSvg.className='btn-vip';dlSvg.style.cssText='margin-top:8px;width:100%;';
+        dlSvg.textContent='Download SVG';
+        dlSvg.onclick=function(){var a=document.createElement('a');a.href=url;a.download='decoded.svg';a.click();};
+        var lbl=document.createElement('div');
+        lbl.style.cssText='font-size:10px;color:#7a5a0a;text-align:center;margin-top:4px;';
+        lbl.textContent='SVG Image detected';
+        wrap.appendChild(imgSvg);wrap.appendChild(lbl);wrap.appendChild(dlSvg);
+        wrap.style.display='block';vToast('SVG image decoded!');
+      } else {
+        var imgEl2=document.createElement('img');
+        imgEl2.style.cssText='max-width:100%;max-height:220px;border-radius:11px;border:1px solid rgba(255,215,0,0.2);display:block;margin:0 auto;';
+        imgEl2.src='data:'+mime+';base64,'+b64;
+        var dlImg2=document.createElement('button');
+        dlImg2.className='btn-vip';dlImg2.style.cssText='margin-top:8px;width:100%;';
+        dlImg2.textContent='Download Image';
+        var extMap={'image/jpeg':'jpg','image/png':'png','image/gif':'gif','image/webp':'webp','image/bmp':'bmp'};
+        dlImg2.onclick=function(){var a=document.createElement('a');a.href=imgEl2.src;a.download='decoded.'+(extMap[mime]||'png');a.click();};
+        var lbl2=document.createElement('div');
+        lbl2.style.cssText='font-size:10px;color:#7a5a0a;text-align:center;margin-top:4px;';
+        lbl2.textContent='Image detected ('+mime+')';
+        wrap.appendChild(imgEl2);wrap.appendChild(lbl2);wrap.appendChild(dlImg2);
+        imgEl2.onload=function(){wrap.style.display='block';vToast('Image decoded from binary!');};
+        imgEl2.onerror=function(){vToast('Could not render image');};
+      }
+    } else if(mime==='application/pdf'){
+      // PDF: offer download
+      var pdfBlob=new Blob([new Uint8Array(bytes2)],{type:'application/pdf'});
+      var pdfUrl=URL.createObjectURL(pdfBlob);
+      var pdfDiv=document.createElement('div');
+      pdfDiv.style.cssText='padding:14px;background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.2);border-radius:10px;text-align:center;';
+      pdfDiv.innerHTML='<div style="font-size:24px;margin-bottom:8px;">📄</div><div style="color:var(--vip-gold);font-size:12px;font-weight:700;">PDF file detected</div>';
+      var dlPdf=document.createElement('button');
+      dlPdf.className='btn-vip';dlPdf.style.cssText='margin-top:10px;width:100%;';
+      dlPdf.textContent='Download PDF';
+      dlPdf.onclick=function(){var a=document.createElement('a');a.href=pdfUrl;a.download='decoded.pdf';a.click();};
+      wrap.appendChild(pdfDiv);wrap.appendChild(dlPdf);
+      wrap.style.display='block';vToast('PDF decoded from binary!');
+    } else {
+      // Plain text
+      var textStr='';
+      for(var t=0;t<bytes2.length;t++) textStr+=String.fromCharCode(bytes2[t]);
+      var ta2=document.createElement('textarea');
+      ta2.style.cssText='width:100%;min-height:80px;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.2);background:rgba(255,215,0,0.03);color:#f5f0dc;font-size:13px;font-family:monospace;resize:vertical;box-sizing:border-box;';
+      ta2.readOnly=true;ta2.value=textStr;
+      var cpBtn2=document.createElement('button');
+      cpBtn2.className='btn-vip';cpBtn2.style.cssText='margin-top:8px;width:100%;';
+      cpBtn2.textContent='Copy Text';
+      cpBtn2.onclick=function(){_vCopyText(ta2.value,cpBtn2,'Copy Text');};
+      wrap.appendChild(ta2);wrap.appendChild(cpBtn2);
+      wrap.style.display='block';vToast('Binary decoded to text!');
+    }
+  }
+}
+function vDlDecImg(){
+  var img=document.getElementById('vB64DecImg');
+  if(!img||!img.src)return;
+  var a=document.createElement('a');a.href=img.src;a.download='decoded_image.png';a.click();
+}
+
+// Init: highlight default selected cards
+document.addEventListener('DOMContentLoaded',function(){
+  vB64DDSetActive('vB64EncDD','image');
+  vB64DDSetActive('vB64DecDD','image');
+  vB64DDSetActive('vB64CFDD','phone');
+  vB64DDSetActive('vB64BMDD','file');
+  vB64SetCC('+1');
+});
+
+// auto-highlight default cards on load
+document.addEventListener('DOMContentLoaded', function(){
+  vB64DDSetActive('vB64EncDD','image');
+  vB64DDSetActive('vB64DecDD','image');
+  vB64DDSetActive('vB64CFDD','phone');
+  vB64DDSetActive('vB64BMDD','file');
+  vB64SetCC('+1');
+});
+
+// ============================================================
+//  COLOR PALETTE EXTRACTOR
+// ============================================================
+function vExtractPalette(inp){
+  var f=inp.files[0];if(!f)return;
+  var url=URL.createObjectURL(f);var img=new Image();img.crossOrigin='Anonymous';
+  img.onload=function(){
+    URL.revokeObjectURL(url);
+    var cv=document.getElementById('_hiddenCv');var size=80;cv.width=size;cv.height=size;
+    var ctx=cv.getContext('2d');ctx.drawImage(img,0,0,size,size);
+    var data=ctx.getImageData(0,0,size,size).data;
+    var colors={};var step=16;
+    for(var i=0;i<data.length;i+=step*4){
+      var r=Math.round(data[i]/32)*32,g=Math.round(data[i+1]/32)*32,b=Math.round(data[i+2]/32)*32;
+      if(data[i+3]<128)continue;
+      var k=r+','+g+','+b;colors[k]=(colors[k]||0)+1;
+    }
+    var sorted=Object.entries(colors).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
+    var sw=document.getElementById('vPalSwatches');sw.innerHTML='';
+    sorted.forEach(function(entry){
+      var rgb=entry[0].split(',').map(Number);
+      var hex='#'+rgb.map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+      var s=document.createElement('div');s.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;';
+      s.innerHTML='<div style="width:46px;height:46px;border-radius:11px;background:'+hex+';border:1px solid rgba(255,215,0,0.2);box-shadow:0 3px 10px rgba(0,0,0,0.3);"></div>'+
+        '<div style="font-size:9px;color:var(--vip-gold-dark);font-weight:700;font-family:monospace;">'+hex.toUpperCase()+'</div>'+
+        '<div style="font-size:9px;color:#5a4a2a;">rgb('+rgb.join(',')+')</div>';
+      s.addEventListener('click',function(){_vCopyText(hex.toUpperCase(),null,null);vToast('✦ '+hex.toUpperCase()+' copied!');});
+      sw.appendChild(s);
+    });
+    document.getElementById('vPalResult').style.display='block';vToast('✦ '+sorted.length+' colors extracted!');
+  };
+  img.src=url;
+}
+
+// ============================================================
+//  PDF PAGE EXTRACTOR
+// ============================================================
+var _vSplitDoc=null;
+async function vLoadSplitPdf(inp){
+  var f=inp.files[0];if(!f)return;
+  try{
+    var ab=await f.arrayBuffer();
+    _vSplitDoc=await pdfjsLib.getDocument({data:ab}).promise;
+    document.getElementById('vSplitCount').textContent='✦ '+f.name+' — '+_vSplitDoc.numPages+' pages';
+    document.getElementById('vSplitInfo').style.display='block';vToast('✦ PDF loaded — '+_vSplitDoc.numPages+' pages');
+  }catch(e){vToast('⚠ Could not load PDF');}
+}
+async function vExtractPages(){
+  if(!_vSplitDoc){vToast('⚠ Load a PDF first');return;}
+  var pagesInput=document.getElementById('vSplitPages').value.trim();
+  var fmt=document.getElementById('vSplitFmt').value;var ext=fmt==='image/jpeg'?'jpg':'png';
+  var pages=[];
+  pagesInput.split(',').forEach(function(part){
+    part=part.trim();
+    if(part.includes('-')){var range=part.split('-').map(Number);for(var i=range[0];i<=range[1];i++)pages.push(i);}
+    else{var n=parseInt(part);if(!isNaN(n))pages.push(n);}
+  });
+  pages=[...new Set(pages)].filter(function(n){return n>=1&&n<=_vSplitDoc.numPages;});
+  if(!pages.length){vToast('⚠ No valid pages');return;}
+  var btn=event.target;btn.disabled=true;
+  var prog=document.getElementById('vSplitProg');var bar=document.getElementById('vSplitBar');var stat=document.getElementById('vSplitStat');
+  prog.style.display='block';
+  for(var i=0;i<pages.length;i++){
+    var pn=pages[i];stat.textContent='Extracting page '+pn+' ('+(i+1)+'/'+pages.length+')';
+    bar.style.width=((i/pages.length)*100)+'%';
+    try{
+      var page=await _vSplitDoc.getPage(pn);var vp=page.getViewport({scale:2.0});
+      var cv=document.getElementById('_hiddenCv');cv.width=vp.width;cv.height=vp.height;
+      await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
+      var blob=await new Promise(function(res){cv.toBlob(res,fmt,0.95);});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='page_'+pn+'.'+ext;a.click();URL.revokeObjectURL(a.href);
+      await new Promise(function(r){setTimeout(r,200);});
+    }catch(e){}
+  }
+  bar.style.width='100%';stat.textContent='✦ Extracted '+pages.length+' page(s)!';
+  vToast('✦ '+pages.length+' pages extracted!');btn.disabled=false;
+}
 
 
 
+window.addEventListener("scroll", function(){
+
+    const nav = document.getElementById("glassNav");
+
+    if(window.scrollY > 20){
+        nav.classList.add("scrolled");
+    } else{
+        nav.classList.remove("scrolled");
+    }
+
+});
+
+// ============================================================
+//  IMAGE COMPRESSOR
+// ============================================================
+var _vImgCompFile = null;
+function vLoadImgComp(inp) {
+  var f = inp.files[0]; if (!f) return;
+  _vImgCompFile = f;
+  var url = URL.createObjectURL(f);
+  var thumb = document.getElementById('vImgCompThumb');
+  thumb.onload = function() { URL.revokeObjectURL(url); };
+  thumb.src = url;
+  function fmtBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB';}
+  document.getElementById('vImgCompOrigSize').textContent = '📁 Original: ' + f.name + ' — ' + fmtBytes(f.size);
+  document.getElementById('vImgCompPreview').style.display = 'block';
+  document.getElementById('vImgCompResult').style.display = 'none';
+  vToast('✦ Image loaded!');
+}
+async function vCompressImage() {
+  if (!_vImgCompFile) { vToast('⚠ Upload an image first'); return; }
+  var quality = parseInt(document.getElementById('vImgCompQuality').value) / 100;
+  var fmt = document.getElementById('vImgCompFmt').value;
+  var ext = fmt === 'image/jpeg' ? 'jpg' : fmt === 'image/webp' ? 'webp' : 'png';
+  var url = URL.createObjectURL(_vImgCompFile);
+  var img = new Image();
+  await new Promise(function(res, rej) { img.onload = res; img.onerror = rej; img.src = url; });
+  URL.revokeObjectURL(url);
+  var cv = document.getElementById('_hiddenCv');
+  cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+  var ctx = cv.getContext('2d'); ctx.drawImage(img, 0, 0);
+  var blob = await new Promise(function(res) { cv.toBlob(res, fmt, quality); });
+  function fmtBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB';}
+  var saved = Math.max(0, (1 - blob.size / _vImgCompFile.size) * 100);
+  document.getElementById('vImgCompStats').innerHTML =
+    '📁 Original: <b style="color:var(--vip-gold)">' + fmtBytes(_vImgCompFile.size) + '</b><br>' +
+    '📦 Compressed: <b style="color:#4ade80">' + fmtBytes(blob.size) + '</b><br>' +
+    '✂️ Saved: <b style="color:#4ade80">' + saved.toFixed(1) + '%</b>';
+  document.getElementById('vImgCompResult').style.display = 'block';
+  var fname = _vImgCompFile.name.replace(/\.[^.]+$/, '') + '_compressed.' + ext;
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname; a.click(); URL.revokeObjectURL(a.href);
+  _incConv(1);
+  vToast('✦ Image compressed & downloaded!');
+}
+
+// ============================================================
+//  PDF COMPRESSOR
+// ============================================================
+var _vPdfCompDoc = null;
+var _vPdfCompOrigSize = 0;
+async function vLoadPdfComp(inp) {
+  var f = inp.files[0]; if (!f) return;
+  _vPdfCompOrigSize = f.size;
+  try {
+    var ab = await f.arrayBuffer();
+    _vPdfCompDoc = await pdfjsLib.getDocument({data: ab}).promise;
+    function fmtBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB';}
+    document.getElementById('vPdfCompName').textContent = '📄 ' + f.name + ' — ' + _vPdfCompDoc.numPages + ' pages — ' + fmtBytes(f.size);
+    document.getElementById('vPdfCompInfo').style.display = 'block';
+    document.getElementById('vPdfCompResult').style.display = 'none';
+    document.getElementById('vPdfCompStat').textContent = '';
+    vToast('✦ PDF loaded — ' + _vPdfCompDoc.numPages + ' pages');
+  } catch(e) { vToast('⚠ Could not load PDF'); }
+}
+async function vCompressPdf() {
+  if (!_vPdfCompDoc) { vToast('⚠ Load a PDF first'); return; }
+  var scale = parseFloat(document.getElementById('vPdfCompLevel').value);
+  var btn = event.target; btn.disabled = true;
+  var bar = document.getElementById('vPdfCompBar');
+  var stat = document.getElementById('vPdfCompStat');
+  document.getElementById('vPdfCompProg').style.display = 'block';
+  var { jsPDF } = window.jspdf;
+  var pdf = null;
+  for (var i = 1; i <= _vPdfCompDoc.numPages; i++) {
+    stat.textContent = 'Processing page ' + i + ' / ' + _vPdfCompDoc.numPages;
+    bar.style.width = ((i - 1) / _vPdfCompDoc.numPages * 100) + '%';
+    var page = await _vPdfCompDoc.getPage(i);
+    var vp = page.getViewport({scale: scale});
+    var cv = document.getElementById('_hiddenCv');
+    cv.width = vp.width; cv.height = vp.height;
+    await page.render({canvasContext: cv.getContext('2d'), viewport: vp}).promise;
+    var imgData = cv.toDataURL('image/jpeg', 0.82);
+    var orientation = vp.width > vp.height ? 'l' : 'p';
+    if (!pdf) {
+      pdf = new jsPDF({orientation: orientation, unit: 'px', format: [vp.width, vp.height], compress: true});
+    } else {
+      pdf.addPage([vp.width, vp.height], orientation);
+    }
+    pdf.addImage(imgData, 'JPEG', 0, 0, vp.width, vp.height, '', 'FAST');
+    await new Promise(function(r){setTimeout(r,80);});
+  }
+  bar.style.width = '100%';
+  var outBytes = pdf.output('arraybuffer');
+  function fmtBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB';}
+  var saved = Math.max(0, (1 - outBytes.byteLength / _vPdfCompOrigSize) * 100);
+  document.getElementById('vPdfCompStats').innerHTML =
+    '📁 Original: <b style="color:var(--vip-gold)">' + fmtBytes(_vPdfCompOrigSize) + '</b><br>' +
+    '📦 Compressed: <b style="color:#4ade80">' + fmtBytes(outBytes.byteLength) + '</b><br>' +
+    '✂️ Saved: <b style="color:#4ade80">' + saved.toFixed(1) + '%</b>';
+  document.getElementById('vPdfCompResult').style.display = 'block';
+  stat.textContent = '✦ Compression complete!';
+  pdf.save('compressed.pdf');
+  _incConv(1);
+  vToast('✦ PDF compressed & downloaded!');
+  btn.disabled = false;
+}
+
+let scrollPosition = 0;
+
+function lockScroll(){
+    document.body.classList.add("modal-open");
+}
+
+function unlockScroll(){
+    document.body.classList.remove("modal-open");
+}
 
 </script>
 
+<script>
+// ============================================================
+//  SCROLL TO TOP — show when Pro PDF Builder is visible
+// ============================================================
+(function() {
+  var btn = document.getElementById('scrollTopBtn');
+  var target = document.getElementById('proPdfBuilderCard');
+  if (!btn || !target) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        btn.classList.add('visible');
+      } else {
+        var cardTop = target.getBoundingClientRect().top + window.scrollY;
+        if (window.scrollY < cardTop) {
+          btn.classList.remove('visible');
+        }
+      }
+    });
+  }, { threshold: 0.1 });
+  observer.observe(target);
+})();
+</script>
+
+<script>
+// ============================================================
+//  SWITCH MODE CARD
+// ============================================================
+function openSwitchModeOrLoader() {
+  // From settings: always show the card if VIP is default, else go straight to loader
+  if (localStorage.getItem('mgp_vip_default') === '1') {
+    var overlay = document.getElementById('switchModeOverlay');
+    overlay.classList.add('open');
+    overlay.style.display = 'flex';
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    launchBackLoader();
+  }
+}
+
+function closeSwitchMode() {
+  var overlay = document.getElementById('switchModeOverlay');
+  overlay.classList.remove('open');
+  overlay.style.display = '';
+  document.body.classList.remove('modal-open');
+  document.body.style.overflow = '';
+}
+
+function smcOutsideClick(e) {
+  if (e.target === document.getElementById('switchModeOverlay')) closeSwitchMode();
+}
+
+function smcOnce() {
+  // Set a one-time flag so index.html skips the VIP redirect just this once
+  localStorage.setItem('mgp_skip_once', '1');
+  closeSwitchMode();
+  setTimeout(launchBackLoader, 180);
+}
+
+function smcForever() {
+  // Clear default — main site will open next time
+  localStorage.removeItem('mgp_vip_default');
+  // Also restore the nav Back to App button
+  var backBtn = document.querySelector('.vip-back-btn');
+  if (backBtn) backBtn.style.display = '';
+  closeSwitchMode();
+  setTimeout(launchBackLoader, 180);
+}
+</script>
 </body>
 </html>
-
