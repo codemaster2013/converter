@@ -1,5 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
+<meta property="og:image" content="https://codemaster2013.github.io/converter/og-image1.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://codemaster2013.github.io/converter/index%20(3).html">
+<meta name="twitter:title" content="MediaGrabber Pro">
+<meta name="twitter:description" content="Professional-grade media tools that never leave your browser.">
+<meta name="twitter:image" content="https://codemaster2013.github.io/converter/og-image1.png">
+
+    
+
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -827,9 +840,12 @@ body.light-mode .neon-select:hover {
     background: linear-gradient(145deg, #0d0626, #1a1033, #0b1020);
     border: 1px solid rgba(124,58,237,0.4);
     border-radius: 28px;
-    padding: 40px;
     width: 90%;
     max-width: 480px;
+    max-height: 88vh;
+    /* overflow hidden so scrollbar is clipped by border-radius */
+    overflow: hidden;
+    box-sizing: border-box;
     box-shadow:
         0 0 60px rgba(124,58,237,0.3),
         0 0 120px rgba(67,97,238,0.15),
@@ -838,10 +854,41 @@ body.light-mode .neon-select:hover {
     animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
 }
 
+/* Inner scroll container — scrollbar lives here, clipped by parent radius */
+#settingsModalInner {
+    padding: 36px;
+    max-height: 88vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,215,0,0.5) #05030a;
+}
+#settingsModalInner::-webkit-scrollbar {
+    width: 6px;
+}
+#settingsModalInner::-webkit-scrollbar-track {
+    background: #05030a;
+    border-radius: 99px;
+    margin: 14px 0;
+}
+#settingsModalInner::-webkit-scrollbar-thumb {
+    background: rgba(255,215,0,0.45);
+    border-radius: 99px;
+}
+#settingsModalInner::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,215,0,0.65);
+}
+
 body.light-mode #settingsModal {
     background: linear-gradient(145deg, #f9fafb, #ffffff, #f0f0ff);
     border-color: rgba(124,58,237,0.3);
 }
+body.light-mode #settingsModalInner {
+    scrollbar-color: rgba(124,58,237,0.4) #f0f0f5;
+}
+body.light-mode #settingsModalInner::-webkit-scrollbar-track { background: #f0f0f5; }
+body.light-mode #settingsModalInner::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.35); }
 
 @keyframes modalIn {
     from { opacity: 0; transform: scale(0.85) translateY(20px); }
@@ -2766,10 +2813,27 @@ var db = firebase.database();
 <!-- ====== SETTINGS MODAL ====== -->
 <div id="settingsOverlay" onclick="closeSettingsOutside(event)">
     <div id="settingsModal">
+      <div id="settingsModalInner">
         <div class="settings-modal-header">
             <span class="settings-modal-title">⚙️ Settings <span class="premium-tag">✦ Ultra Premium</span></span>
             <button class="settings-close-btn" onclick="closeSettings()">✕</button>
         </div>
+
+        <div class="settings-section-label">🎨 Appearance</div>
+        <div class="theme-cards">
+            <div class="theme-card dark-card active" id="darkCard" onclick="setTheme('dark')">
+                <span class="theme-card-icon">🌙</span>
+                <span class="theme-card-name">Dark</span>
+                <span class="active-badge">ACTIVE</span>
+            </div>
+            <div class="theme-card light-card" id="lightCard" onclick="setTheme('light')">
+                <span class="theme-card-icon">☀️</span>
+                <span class="theme-card-name">Light</span>
+                <span class="active-badge">ACTIVE</span>
+            </div>
+        </div>
+
+        <div class="settings-divider"></div>
 <div class="settings-section-label">🔔 Updates</div>
 
 <div class="updates-row" onclick="this.classList.add('tapped'); openUpdates()">
@@ -2850,6 +2914,32 @@ var db = firebase.database();
         " onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.3),rgba(67,97,238,0.2))';this.style.boxShadow='0 0 16px rgba(255,215,0,0.35)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1))';this.style.boxShadow='none'">
             💬 Give Feedback
         </button>
+
+        <div class="settings-divider"></div>
+        <div class="settings-section-label">🔗 Share</div>
+        <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Enjoying MediaGrabber? Share it with your friends!</p>
+        <button onclick="shareWebsite()" id="shareBtn" style="
+            width:100%;
+            padding:13px;
+            border-radius:12px;
+            border:1px solid rgba(255,215,0,0.45);
+            background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(180,110,0,0.18));
+            color:#ffd700;
+            font-size:14px;
+            font-weight:700;
+            cursor:pointer;
+            transition:all 0.2s;
+            font-family:inherit;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:9px;
+            box-shadow:0 0 12px rgba(255,215,0,0.1);
+        " onmouseover="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.22),rgba(180,110,0,0.32))';this.style.boxShadow='0 0 22px rgba(255,215,0,0.35)';this.style.borderColor='rgba(255,215,0,0.75)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.1),rgba(180,110,0,0.18))';this.style.boxShadow='0 0 12px rgba(255,215,0,0.1)';this.style.borderColor='rgba(255,215,0,0.45)'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share the Website
+        </button>
+      </div><!-- end settingsModalInner -->
     </div>
 </div>
 
@@ -3659,6 +3749,7 @@ function openSettings() {
     document.getElementById("settingsOverlay").classList.add("open");
     lockScroll();
     _initBetaToggle();
+    updateThemeCards();
 }
 
 function _initBetaToggle(){
@@ -3694,6 +3785,30 @@ function toggleBeta(){
     _initBetaToggle();
     vToast('Beta disabled');
   }
+}
+
+function shareWebsite() {
+    var url = 'https://codemaster2013.github.io/converter/index%20(3).html';
+    var text = 'Check out MediaGrabber — a free all-in-one file converter & media tool!';
+    if (navigator.share) {
+        navigator.share({ title: 'MediaGrabber', text: text, url: url })
+            .catch(function(){});
+    } else {
+        navigator.clipboard.writeText(url).then(function(){
+            var btn = document.getElementById('shareBtn');
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Link Copied!';
+            btn.style.borderColor = 'rgba(74,222,128,0.6)';
+            btn.style.color = '#4ade80';
+            setTimeout(function(){
+                btn.innerHTML = orig;
+                btn.style.borderColor = 'rgba(255,215,0,0.45)';
+                btn.style.color = '#ffd700';
+            }, 2500);
+        }).catch(function(){
+            window.open(url, '_blank');
+        });
+    }
 }
 
 function closeSettings() {
