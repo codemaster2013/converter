@@ -1723,6 +1723,93 @@ line-height:1.5;
   font-family: 'Inter', sans-serif;
   margin-top: 4px;
 }
+/* ===========================
+   ADVERTISEMENT BANNER
+=========================== */
+.ad-banner-wrap {
+    max-width: 1000px;
+    margin: 32px auto 0;
+    padding: 0 20px;
+    position: relative;
+}
+.ad-banner {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(145deg, #0d0626, #130a2e, #0b0f28);
+    border: 1.5px solid rgba(139, 92, 246, 0.5);
+    padding: 20px 26px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow:
+        0 0 18px rgba(139, 92, 246, 0.45),
+        0 0 40px rgba(124, 58, 237, 0.25),
+        0 0 80px rgba(99, 40, 220, 0.12),
+        inset 0 0 30px rgba(139, 92, 246, 0.04);
+    animation: adPurpleGlow 2.5s ease-in-out infinite alternate;
+}
+@keyframes adPurpleGlow {
+    from {
+        box-shadow: 0 0 18px rgba(139,92,246,0.45), 0 0 40px rgba(124,58,237,0.25), 0 0 80px rgba(99,40,220,0.12);
+        border-color: rgba(139, 92, 246, 0.5);
+    }
+    to {
+        box-shadow: 0 0 32px rgba(167,139,250,0.85), 0 0 70px rgba(139,92,246,0.55), 0 0 130px rgba(124,58,237,0.3);
+        border-color: rgba(167, 139, 250, 0.9);
+    }
+}
+.ad-banner:hover { transform: translateY(-3px) scale(1.008); }
+.ad-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 5%; right: 5%;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(167,139,250,0.9), #a78bfa, rgba(167,139,250,0.9), transparent);
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.8);
+}
+.ad-label {
+    font-size: 8px; font-weight: 900; letter-spacing: 2px;
+    text-transform: uppercase;
+    background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.4);
+    color: #a78bfa; padding: 2px 8px; border-radius: 99px; flex-shrink: 0;
+}
+.ad-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(99,40,220,0.35));
+    border: 1px solid rgba(139,92,246,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+    box-shadow: 0 0 18px rgba(139, 92, 246, 0.3);
+}
+.ad-content { flex: 1; }
+.ad-title { font-size: 15px; font-weight: 800; color: #e5e7eb; margin-bottom: 4px; }
+.ad-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+.ad-cta {
+    flex-shrink: 0; padding: 9px 20px; border-radius: 99px;
+    background: linear-gradient(135deg, #7c3aed, #4361ee);
+    color: #fff; font-size: 12px; font-weight: 800; border: none; cursor: pointer;
+    letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(124,58,237,0.5);
+    transition: all 0.2s; white-space: nowrap;
+}
+.ad-cta:hover { transform: scale(1.07); box-shadow: 0 0 32px rgba(124,58,237,0.8); }
+.ad-close-btn {
+    position: absolute; top: 10px; right: 12px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: #6b7280; width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; cursor: pointer; transition: all 0.2s; line-height: 1;
+}
+.ad-close-btn:hover { background: rgba(239,68,68,0.2); color: #ef4444; border-color: #ef4444; }
+body.light-mode .ad-banner {
+    background: linear-gradient(145deg, #f3f0ff, #ede9ff, #f5f3ff);
+    border-color: rgba(124,58,237,0.4);
+}
+body.light-mode .ad-title { color: #111827; }
+@media(max-width:550px){ .ad-cta { display:none; } .ad-icon { width:40px; height:40px; font-size:20px; } .ad-title { font-size:13px; } }
+
 #vipLoader .vl-tap:hover { color: rgba(255,255,255,0.55); }
 
     </style>
@@ -1885,7 +1972,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
 
         <div class="settings-divider"></div>
         <div class="settings-section-label">👑 VIP Access</div>
-        <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Unlock all exclusive tools, HD exports, and the full VIP experience.</p>
+        <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Unlock all exclusive tools, HD exports, <strong style="color:#ffd700;">🚫 Ad-Free experience</strong>, and the full VIP experience.</p>
         <button onclick="launchVipLoader()" style="
             width:100%;
             padding:14px;
@@ -2231,6 +2318,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
                 <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">🔬 Metadata</span>
                 <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">⚡ Binary</span>
                 <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">🎨 Palette</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.4);backdrop-filter:blur(5px);color:#ffd700;">🚫 Ad-Free</span>
               </div>
             </div>
           </div>
@@ -2287,6 +2375,27 @@ if(update !== updatesArray[updatesArray.length - 1]){
       draw();
     })();
     </script>
+
+<!-- ====== ADVERTISEMENT BANNER ====== -->
+<div class="ad-banner-wrap" id="adBannerWrap">
+  <div class="ad-banner" onclick="window.open('https://codemaster2013.github.io/zip/','_blank')">
+    <!-- Purple orbs -->
+    <div class="ad-orb" style="width:120px;height:120px;background:radial-gradient(circle,rgba(139,92,246,0.4),transparent 70%);top:-20px;right:60px;"></div>
+    <div class="ad-orb" style="width:80px;height:80px;background:radial-gradient(circle,rgba(99,40,220,0.3),transparent 70%);bottom:-10px;left:80px;"></div>
+    <!-- Close button -->
+    <button class="ad-close-btn" onclick="event.stopPropagation();document.getElementById('adBannerWrap').style.display='none'" title="Close Ad">✕</button>
+    <!-- AD label -->
+    <span class="ad-label">AD</span>
+    <!-- Icon -->
+    <div class="ad-icon">🚀</div>
+    <!-- Content -->
+    <div class="ad-content">
+     <div class="ad-title">ZIP — Today's Puzzle is Waiting 🧩</div>
+<div class="ad-desc">🔥 Players are climbing the leaderboard right now · Easy to learn · Hard to master · Play free today</div> <br>
+    <!-- CTA -->
+    <button class="ad-cta" onclick="event.stopPropagation();window.open('https://codemaster2013.github.io/zip/','_blank')">View in Browser →</button>
+  </div>
+</div>
 
  <h2 id="converter" class="section-title">Image Converter</h2>
 <div class="card">
