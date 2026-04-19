@@ -215,6 +215,45 @@ body.light-mode select#format option {
             --nav-bg: rgba(255, 255, 255, 0.9);
         }
 
+        /* TRUE BLACK MODE */
+        body.black-mode {
+            --bg: #0A0A0A;
+            --card: rgba(255,255,255,0.03);
+            --text: #F5F5F5;
+            --border: rgba(212,175,55,0.25);
+            --nav-bg: rgba(10,10,10,0.92);
+            --purple: #D4AF37;
+            --purple-light: #ffe599;
+            background: #0A0A0A !important;
+        }
+        body.black-mode nav { background: rgba(10,10,10,0.95); border-bottom: 1px solid rgba(212,175,55,0.2); }
+        body.black-mode .card { background: linear-gradient(180deg,#141414 0%,#0A0A0A 100%); border: 1px solid rgba(212,175,55,0.18); box-shadow: 0 0 30px rgba(212,175,55,0.06); }
+        body.black-mode .upload-area { border-color: #D4AF37; background: rgba(212,175,55,0.04); }
+        body.black-mode .btn-primary { background: linear-gradient(180deg,#D4AF37 0%,#b8960c 100%); color: #0A0A0A; font-weight: 800; box-shadow: 0 0 20px rgba(212,175,55,0.35); }
+        body.black-mode select, body.black-mode input, body.black-mode textarea { background: #111111; border-color: rgba(212,175,55,0.2); color: #F5F5F5; }
+        body.black-mode select#format { background-color: #111111; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); }
+        body.black-mode .subtitle { color: #A0A0A0; }
+        body.black-mode footer { color: #555; }
+        body.black-mode .nav-links a { color: #A0A0A0; }
+        body.black-mode .nav-links a:hover { color: #D4AF37; background: rgba(212,175,55,0.1); }
+        body.black-mode .badge { background: rgba(212,175,55,0.12); color: #D4AF37; border-color: rgba(212,175,55,0.35); }
+        body.black-mode .hero-title { background: linear-gradient(90deg,#fff,#D4AF37,#f0cc50,#D4AF37,#fff); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; }
+        body.black-mode #settingsModal { background: linear-gradient(145deg,#111111,#0A0A0A,#0d0d0d); border: 1px solid rgba(212,175,55,0.35); box-shadow: 0 0 60px rgba(212,175,55,0.15), inset 0 1px 0 rgba(212,175,55,0.08); }
+        body.black-mode .settings-modal-title { background: linear-gradient(90deg,#fff,#D4AF37,#f0cc50); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; }
+        body.black-mode .settings-divider { background: linear-gradient(90deg,transparent,rgba(212,175,55,0.4),transparent); }
+        body.black-mode input:focus, body.black-mode select:focus, body.black-mode textarea:focus { border-color: #D4AF37 !important; box-shadow: 0 0 15px rgba(212,175,55,0.5), 0 0 5px rgba(212,175,55,0.7) !important; background: rgba(212,175,55,0.06) !important; }
+        body.black-mode .neon-select { background: #111111; border-color: rgba(212,175,55,0.2); color: #F5F5F5; }
+        body.black-mode .neon-select:hover { border-color: #D4AF37; box-shadow: 0 0 15px rgba(212,175,55,0.4); }
+        body.black-mode .neon-select option { background-color: #111111; color: #F5F5F5; }
+        body.black-mode .settings-btn { background: linear-gradient(135deg,rgba(212,175,55,0.15),rgba(180,140,30,0.08)); border-color: rgba(212,175,55,0.4); }
+        body.black-mode .settings-btn:hover { background: linear-gradient(135deg,rgba(212,175,55,0.3),rgba(180,140,30,0.2)); box-shadow: 0 0 20px rgba(212,175,55,0.4); border-color: #D4AF37; }
+        body.black-mode .updates-row { border-color: rgba(212,175,55,0.2); color: #F5F5F5; }
+        body.black-mode .updates-row:hover { background: rgba(212,175,55,0.06); }
+        body.black-mode .settings-section-label { color: #A0A0A0; }
+        .theme-card.black-card { background: linear-gradient(180deg,#2C2C2C 0%,#0A0A0A 100%); border: 1px solid rgba(212,175,55,0.3); color: #D4AF37; }
+        .theme-card.black-card:hover { border-color: #D4AF37; box-shadow: 0 0 18px rgba(212,175,55,0.5); transform: translateY(-2px); }
+        .theme-card.black-card.active { border-color: #D4AF37; box-shadow: 0 0 24px rgba(212,175,55,0.6); }
+
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background 0.3s, color 0.3s; }
         
         body { 
@@ -681,9 +720,11 @@ body.light-mode .neon-select:hover {
     background: linear-gradient(145deg, #0d0626, #1a1033, #0b1020);
     border: 1px solid rgba(124,58,237,0.4);
     border-radius: 28px;
-    padding: 40px;
     width: 90%;
     max-width: 480px;
+    max-height: 88vh;
+    overflow: hidden;
+    box-sizing: border-box;
     box-shadow:
         0 0 60px rgba(124,58,237,0.3),
         0 0 120px rgba(67,97,238,0.15),
@@ -692,10 +733,29 @@ body.light-mode .neon-select:hover {
     animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
 }
 
+#settingsModalInner {
+    padding: 36px;
+    max-height: 88vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124,58,237,0.5) #05030a;
+}
+#settingsModalInner::-webkit-scrollbar { width: 6px; }
+#settingsModalInner::-webkit-scrollbar-track { background: #05030a; border-radius: 99px; margin: 14px 0; }
+#settingsModalInner::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.45); border-radius: 99px; }
+#settingsModalInner::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,0.7); }
+
 body.light-mode #settingsModal {
     background: linear-gradient(145deg, #f9fafb, #ffffff, #f0f0ff);
     border-color: rgba(124,58,237,0.3);
 }
+body.light-mode #settingsModalInner {
+    scrollbar-color: rgba(124,58,237,0.4) #f0f0f5;
+}
+body.light-mode #settingsModalInner::-webkit-scrollbar-track { background: #f0f0f5; }
+body.light-mode #settingsModalInner::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.35); }
 
 @keyframes modalIn {
     from { opacity: 0; transform: scale(0.85) translateY(20px); }
@@ -824,6 +884,120 @@ body.light-mode .settings-modal-title {
     background: linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent);
     margin: 24px 0;
 }
+
+/* ── Settings Section Boxes ── */
+.sett-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+}
+body.light-mode .sett-box {
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.08);
+}
+.sett-box-gold {
+    background: rgba(212,175,55,0.06);
+    border-color: rgba(212,175,55,0.22);
+}
+.sett-box-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+/* ── Settings Row ── */
+.sett-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.sett-row-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.sett-row-icon { font-size: 18px; }
+.sett-row-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.sett-row-sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+
+/* ── Toggle Trackpad ── */
+.sett-trackpad-wrap { flex-shrink: 0; }
+.sett-trackpad { position: relative; display: inline-block; width: 48px; height: 26px; cursor: pointer; }
+.sett-trackpad input { opacity: 0; width: 0; height: 0; position: absolute; }
+.sett-track {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 2px 3px;
+}
+body.light-mode .sett-track {
+    background: rgba(0,0,0,0.1);
+    border-color: rgba(0,0,0,0.15);
+}
+.sett-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6b7280;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    flex-shrink: 0;
+}
+.sett-trackpad input:checked ~ .sett-track {
+    background: rgba(124,58,237,0.35);
+    border-color: rgba(124,58,237,0.6);
+    box-shadow: 0 0 12px rgba(124,58,237,0.4);
+}
+.sett-trackpad input:checked ~ .sett-track .sett-thumb {
+    background: #a78bfa;
+    transform: translateX(22px);
+    box-shadow: 0 0 10px rgba(124,58,237,0.7);
+}
+/* Gold trackpad variant */
+.sett-trackpad-gold input:checked ~ .sett-track.sett-track-gold {
+    background: rgba(212,175,55,0.25);
+    border-color: rgba(212,175,55,0.6);
+    box-shadow: 0 0 12px rgba(212,175,55,0.4);
+}
+.sett-trackpad-gold input:checked ~ .sett-track.sett-track-gold .sett-thumb {
+    background: #D4AF37;
+    transform: translateX(22px);
+    box-shadow: 0 0 10px rgba(212,175,55,0.7);
+}
+
+/* ── VIP button inside box ── */
+.sett-vip-btn {
+    width: 100%; margin-top: 12px; padding: 12px;
+    border-radius: 10px; border: 1px solid rgba(255,215,0,0.4);
+    background: linear-gradient(135deg,rgba(255,215,0,0.12),rgba(180,110,0,0.18));
+    color: #ffd700; font-size: 14px; font-weight: 800;
+    cursor: pointer; transition: all 0.25s; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: 0.5px;
+}
+.sett-vip-btn:hover { background: linear-gradient(135deg,rgba(255,215,0,0.25),rgba(180,110,0,0.32)); box-shadow: 0 0 22px rgba(255,215,0,0.3); transform: translateY(-1px); }
+
+/* ── Feedback button inside box ── */
+.sett-feedback-btn {
+    width: 100%; padding: 11px;
+    border-radius: 10px; border: 1px solid rgba(124,58,237,0.3);
+    background: linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1));
+    color: #a78bfa; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.sett-feedback-btn:hover { background: linear-gradient(135deg,rgba(124,58,237,0.28),rgba(67,97,238,0.2)); box-shadow: 0 0 14px rgba(124,58,237,0.3); }
 
 .premium-tag {
     display: inline-flex;
@@ -2019,82 +2193,57 @@ if(update !== updatesArray[updatesArray.length - 1]){
 <!-- ====== SETTINGS MODAL ====== -->
 <div id="settingsOverlay" onclick="closeSettingsOutside(event)">
     <div id="settingsModal">
+      <div id="settingsModalInner">
         <div class="settings-modal-header">
             <span class="settings-modal-title">⚙️ Settings <span class="premium-tag">✦ Ultra Premium</span></span>
             <button class="settings-close-btn" onclick="closeSettings()">✕</button>
         </div>
-        <div class="settings-section-label">🎨 Appearance — Theme</div>
-        <div class="theme-cards">
-            <div class="theme-card dark-card active" id="darkCard" onclick="setTheme('dark')">
-                <span class="theme-card-icon">🌑</span>
-                <span class="theme-card-name">Dark Mode</span>
-                <span class="active-badge">✦ On</span>
-            </div>
-            <div class="theme-card light-card" id="lightCard" onclick="setTheme('light')">
-                <span class="theme-card-icon">☀️</span>
-                <span class="theme-card-name">Light Mode</span>
-                <span class="active-badge">✦ On</span>
+
+        <!-- APPEARANCE -->
+        <div class="sett-box">
+            <div class="sett-box-label">🎨 Appearance — Theme</div>
+            <div class="theme-cards">
+                <div class="theme-card dark-card active" id="darkCard" onclick="setTheme('dark')">
+                    <span class="theme-card-icon">🌙</span>
+                    <span class="theme-card-name">Dark Mode</span>
+                    <span class="active-badge">✦ On</span>
+                </div>
+                <div class="theme-card light-card" id="lightCard" onclick="setTheme('light')">
+                    <span class="theme-card-icon">☀️</span>
+                    <span class="theme-card-name">Light Mode</span>
+                    <span class="active-badge">✦ On</span>
+                </div>
             </div>
         </div>
-        <div class="settings-divider"></div>
 
-<div class="settings-section-label">🔔 Updates</div>
+        <!-- UPDATES -->
+        <div class="sett-box">
+            <div class="sett-box-label">🔔 Updates</div>
+            <div class="sett-row" onclick="openUpdates()" style="cursor:pointer;">
+                <div class="sett-row-left">
+                    <div class="sett-row-title">App Updates</div>
+                </div>
+                <div class="bell-wrapper" style="margin-left:auto; flex-shrink:0;">
+                    🔔<span id="updateDot" class="blue-dot"></span>
+                </div>
+            </div>
+        </div>
 
-<div class="updates-row" onclick="openUpdates()">
-    <span>App Updates</span>
-    <div class="bell-wrapper">
-        🔔
-        <span id="updateDot" class="blue-dot"></span>
-    </div>
-</div>
+        <!-- VIP ACCESS -->
+        <div class="sett-box sett-box-gold">
+            <div class="sett-box-label" style="color:#D4AF37;">👑 VIP Access</div>
+            <p style="font-size:13px; color:#6b7280; margin:0 0 14px 0;">Unlock all exclusive tools, HD exports, <strong style="color:#ffd700;">🚫 Ad-Free experience</strong>, and the full VIP experience.</p>
+            <button onclick="launchVipLoader()" class="sett-vip-btn">👑 Switch to VIP</button>
+        </div>
 
-        <div class="settings-divider"></div>
-        <div class="settings-section-label">👑 VIP Access</div>
-        <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Unlock all exclusive tools, HD exports, <strong style="color:#ffd700;">🚫 Ad-Free experience</strong>, and the full VIP experience.</p>
-        <button onclick="launchVipLoader()" style="
-            width:100%;
-            padding:14px;
-            border-radius:12px;
-            border:1px solid rgba(255,215,0,0.5);
-            background:linear-gradient(135deg,rgba(255,215,0,0.15),rgba(180,110,0,0.2));
-            color:#ffd700;
-            font-size:15px;
-            font-weight:800;
-            cursor:pointer;
-            transition:all 0.25s;
-            font-family:inherit;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:10px;
-            letter-spacing:0.5px;
-            box-shadow: 0 0 18px rgba(255,215,0,0.12);
-        " onmouseover="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.28),rgba(180,110,0,0.35))';this.style.boxShadow='0 0 28px rgba(255,215,0,0.35)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(255,215,0,0.15),rgba(180,110,0,0.2))';this.style.boxShadow='0 0 18px rgba(255,215,0,0.12)';this.style.transform='translateY(0)'">
-            👑 Switch to VIP
-        </button>
+        <!-- FEEDBACK -->
+        <div class="sett-box">
+            <div class="sett-box-label">💬 Feedback</div>
+            <p style="font-size:13px; color:#6b7280; margin:0 0 14px 0;">Help us improve MediaGrabber Pro by sharing your thoughts.</p>
+            <button onclick="window.location.href='index (2).html'" class="sett-feedback-btn">💬 Give Feedback</button>
+        </div>
 
-        <div class="settings-divider"></div>
-        <div class="settings-section-label">💬 Feedback</div>
-        <p style="font-size:13px; color:#6b7280; margin:0 0 12px 0;">Help us improve MediaGrabber Pro by sharing your thoughts.</p>
-        <button onclick="window.location.href='index (2).html'" style="
-            width:100%;
-            padding:12px;
-            border-radius:12px;
-            border:1px solid rgba(124,58,237,0.3);
-            background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1));
-            color:#a78bfa;
-            font-size:14px;
-            font-weight:700;
-            cursor:pointer;
-            transition:all 0.2s;
-            font-family:inherit;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:8px;
-        " onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.3),rgba(67,97,238,0.2))';this.style.boxShadow='0 0 16px rgba(124,58,237,0.35)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(67,97,238,0.1))';this.style.boxShadow='none'">
-            💬 Give Feedback
-        </button>
+      </div><!-- end settingsModalInner -->
     </div>
 </div>
 
@@ -2656,7 +2805,9 @@ async function submitSettingsFeedback() {
 
 function openSettings() {
     document.getElementById("settingsOverlay").classList.add("open");
-    document.body.classList.add("modal-open"); // 🔒 lock
+    document.body.classList.add("modal-open");
+    _initBetaToggle();
+    updateThemeCards();
 }
 
 function closeSettings() {
@@ -2671,13 +2822,14 @@ function setTheme(mode) {
     const logoImg = document.getElementById('logoImg');
     const darkLogo = "dark mode.png";
     const lightLogo = "light mode.png";
+    document.body.classList.remove('light-mode', 'black-mode');
     if (mode === 'light') {
         document.body.classList.add('light-mode');
         logoImg.src = lightLogo;
     } else {
-        document.body.classList.remove('light-mode');
         logoImg.src = darkLogo;
     }
+    localStorage.setItem('mgp_theme', mode);
     updateThemeCards();
 }
 
@@ -2685,6 +2837,88 @@ function updateThemeCards() {
     const isLight = document.body.classList.contains('light-mode');
     document.getElementById('darkCard').classList.toggle('active', !isLight);
     document.getElementById('lightCard').classList.toggle('active', isLight);
+}
+
+// Restore saved theme on load
+(function() {
+    const saved = localStorage.getItem('mgp_theme');
+    if (saved === 'light') { document.body.classList.add('light-mode'); }
+    if (typeof updateThemeCards === 'function') updateThemeCards();
+})();
+
+function handleUpdatesToggle(el) {
+    localStorage.setItem('mgp_updates_enabled', el.checked ? '1' : '0');
+}
+
+function handleVipToggle(el) {
+    if (el.checked) { setTimeout(() => launchVipLoader(), 300); }
+    setTimeout(() => { el.checked = false; }, 350);
+}
+
+function handleFeedbackToggle(el) {
+    const panel = document.getElementById('feedbackPanel');
+    if (panel) panel.style.display = el.checked ? 'block' : 'none';
+}
+
+// Restore updates toggle state
+(function() {
+    const saved = localStorage.getItem('mgp_updates_enabled');
+    const tog = document.getElementById('updatesToggle');
+    if (tog && saved === '0') tog.checked = false;
+})();
+
+function _initBetaToggle() {
+    var on = localStorage.getItem('mgp_beta') === '1';
+    var track = document.getElementById('betaToggleTrack');
+    var thumb = document.getElementById('betaToggleThumb');
+    var lbl = document.getElementById('betaOnOff');
+    if (!track) return;
+    if (on) {
+        track.style.background = 'linear-gradient(135deg,#7c3aed,#4361ee)';
+        track.style.borderColor = 'rgba(124,58,237,0.5)';
+        thumb.style.left = '24px';
+        thumb.style.background = '#fff';
+        if (lbl) lbl.textContent = 'enabled';
+    } else {
+        track.style.background = '#1f2937';
+        track.style.borderColor = 'rgba(255,255,255,0.1)';
+        thumb.style.left = '2px';
+        thumb.style.background = '#4b5563';
+        if (lbl) lbl.textContent = 'disabled';
+    }
+}
+
+function toggleBeta() {
+    var on = localStorage.getItem('mgp_beta') === '1';
+    if (!on) {
+        localStorage.setItem('mgp_beta', '1');
+        _initBetaToggle();
+        setTimeout(function() { window.location.href = 'index (4).html'; }, 1200);
+    } else {
+        localStorage.removeItem('mgp_beta');
+        _initBetaToggle();
+    }
+}
+
+function shareWebsite() {
+    var url = 'https://codemaster2013.github.io/converter/';
+    var text = 'Check out MediaGrabber Pro — a free all-in-one file converter & media tool!';
+    if (navigator.share) {
+        navigator.share({ title: 'MediaGrabber Pro', text: text, url: url }).catch(function(){});
+    } else {
+        navigator.clipboard.writeText(url).then(function() {
+            var btn = document.getElementById('shareBtn');
+            var orig = btn.innerHTML;
+            btn.innerHTML = '✅ Link Copied!';
+            btn.style.borderColor = 'rgba(74,222,128,0.6)';
+            btn.style.color = '#4ade80';
+            setTimeout(function() {
+                btn.innerHTML = orig;
+                btn.style.borderColor = 'rgba(255,215,0,0.45)';
+                btn.style.color = '#ffd700';
+            }, 2500);
+        }).catch(function() { window.open(url, '_blank'); });
+    }
 }
 
 // Keyboard ESC to close settings
