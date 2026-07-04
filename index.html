@@ -11,6 +11,27 @@
   }
 })();
 </script>
+<!-- PAGE LOADING OVERLAY -->
+<div id="pageLoader">
+    <div class="loader-dots">
+        <div class="loader-dot-wrapper"><div class="loader-dot"></div><div class="loader-dot-shadow"></div></div>
+        <div class="loader-dot-wrapper"><div class="loader-dot"></div><div class="loader-dot-shadow"></div></div>
+        <div class="loader-dot-wrapper"><div class="loader-dot"></div><div class="loader-dot-shadow"></div></div>
+        <div class="loader-dot-wrapper"><div class="loader-dot"></div><div class="loader-dot-shadow"></div></div>
+    </div>
+    <div class="loader-text-row">
+        <span class="loader-word">Loading</span>
+        <span class="loader-trail-dots">
+            <span class="trail-dot">.</span>
+            <span class="trail-dot">.</span>
+            <span class="trail-dot">.</span>
+            <span class="trail-dot">.</span>
+            <span class="trail-dot">.</span>
+        </span>
+    </div>
+</div>
+<!-- END PAGE LOADING OVERLAY -->
+
     <link rel="sitemap" type="application/xml" title="Sitemap" href="https://codemaster2013.github.io/converter/sitemap.xml" />
     <meta name="google-site-verification" content="KbFDykQbzWuFYw1MOPvcTvgaYO6rS5zBdLwHbdtZpB0" />
     
@@ -135,6 +156,148 @@
 <link rel="manifest" href="site.webmanifest">
 
 <style>
+
+/* ===== PAGE LOADING OVERLAY ===== */
+#pageLoader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: radial-gradient(circle at top, #1a1033, #05070f);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(20px, 5vw, 40px);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#pageLoader.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Big bouncing circles */
+.loader-dots {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(12px, 4vw, 24px);
+    height: clamp(90px, 18vw, 140px);
+}
+
+.loader-dot-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(6px, 1.5vw, 12px);
+}
+
+.loader-dot {
+    width: clamp(18px, 6vw, 34px);
+    height: clamp(18px, 6vw, 34px);
+    border-radius: 50%;
+    animation: bounceDot 0.9s ease-in-out infinite;
+}
+
+.loader-dot-shadow {
+    width: clamp(18px, 6vw, 34px);
+    height: clamp(4px, 1.2vw, 8px);
+    border-radius: 50%;
+    background: rgba(124, 58, 237, 0.4);
+    filter: blur(4px);
+    animation: shadowPulse 0.9s ease-in-out infinite;
+}
+
+.loader-dot-wrapper:nth-child(1) .loader-dot        { animation-delay: 0s;    background: #a78bfa; box-shadow: 0 0 18px rgba(167,139,250,1), 0 0 36px rgba(167,139,250,0.5); }
+.loader-dot-wrapper:nth-child(2) .loader-dot        { animation-delay: 0.18s; background: #8b5cf6; box-shadow: 0 0 18px rgba(139,92,246,1),  0 0 36px rgba(139,92,246,0.5); }
+.loader-dot-wrapper:nth-child(3) .loader-dot        { animation-delay: 0.36s; background: #7c3aed; box-shadow: 0 0 18px rgba(124,58,237,1),  0 0 36px rgba(124,58,237,0.5); }
+.loader-dot-wrapper:nth-child(4) .loader-dot        { animation-delay: 0.54s; background: #6d28d9; box-shadow: 0 0 18px rgba(109,40,217,1),  0 0 36px rgba(109,40,217,0.5); }
+
+.loader-dot-wrapper:nth-child(1) .loader-dot-shadow { animation-delay: 0s; }
+.loader-dot-wrapper:nth-child(2) .loader-dot-shadow { animation-delay: 0.18s; }
+.loader-dot-wrapper:nth-child(3) .loader-dot-shadow { animation-delay: 0.36s; }
+.loader-dot-wrapper:nth-child(4) .loader-dot-shadow { animation-delay: 0.54s; }
+
+@keyframes bounceDot {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    45%       { transform: translateY(clamp(-40px, -10vw, -65px)) scale(1.2); opacity: 1; box-shadow: 0 0 28px rgba(167,139,250,1), 0 0 55px rgba(124,58,237,0.7); }
+    65%       { transform: translateY(clamp(-30px, -7vw, -48px)) scale(1.1); }
+}
+
+@keyframes shadowPulse {
+    0%, 100% { transform: scaleX(1);   opacity: 0.5; }
+    45%       { transform: scaleX(0.4); opacity: 0.15; }
+    65%       { transform: scaleX(0.6); opacity: 0.25; }
+}
+
+/* Loading text with moving dots */
+.loader-text-row {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+}
+
+.loader-word {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(16px, 5vw, 26px);
+    font-weight: 700;
+    color: #8b5cf6;
+    letter-spacing: 1px;
+}
+
+.loader-trail-dots {
+    display: flex;
+    align-items: baseline;
+    gap: 1px;
+}
+
+.trail-dot {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(20px, 6vw, 32px);
+    font-weight: 700;
+    color: #8b5cf6;
+    opacity: 0;
+    animation: dotAppear 1.25s ease-in-out infinite;
+}
+
+.trail-dot:nth-child(1) { animation-delay: 0s; }
+.trail-dot:nth-child(2) { animation-delay: 0.25s; }
+.trail-dot:nth-child(3) { animation-delay: 0.5s; }
+.trail-dot:nth-child(4) { animation-delay: 0.75s; }
+.trail-dot:nth-child(5) { animation-delay: 1.0s; }
+
+@keyframes dotAppear {
+    0%   { opacity: 0; }
+    20%  { opacity: 1; color: #a78bfa; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* ── Responsive tweaks ── */
+@media (max-width: 480px) {
+    #pageLoader { gap: 24px; }
+    .loader-dots { gap: 14px; height: 90px; }
+    .loader-dot  { width: 22px; height: 22px; }
+    .loader-dot-shadow { width: 22px; height: 5px; }
+    .loader-word { font-size: 18px; }
+    .trail-dot   { font-size: 22px; }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .loader-dot  { width: 26px; height: 26px; }
+    .loader-dot-shadow { width: 26px; }
+    .loader-word { font-size: 20px; }
+}
+
+@media (min-width: 1200px) {
+    .loader-dot  { width: 36px; height: 36px; }
+    .loader-dot-shadow { width: 36px; height: 9px; }
+    .loader-word { font-size: 28px; }
+    .trail-dot   { font-size: 34px; }
+}
+/* ===== END PAGE LOADING OVERLAY ===== */
 
 /* --- THE BRIGHTER PURPLE NEON GLOW --- */
 input:focus, select:focus, textarea:focus {
@@ -4488,6 +4651,17 @@ function launchVipLoader() {
   }, 5000);
 }
 
+
+// ===== PAGE LOADER: show for 5 seconds =====
+(function () {
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () {
+        var loader = document.getElementById('pageLoader');
+        if (loader) loader.classList.add('hide');
+        document.body.style.overflow = '';
+    }, 5000);
+})();
+// ===== END PAGE LOADER =====
 
 console.log(
 "%cWarning!",
