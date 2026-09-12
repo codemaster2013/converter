@@ -1146,14 +1146,21 @@ html, body {
     </div>
   </div>
 
-  <!-- Go back button -->
-  <div class="btn-wrap">
-    <div class="btn-halo"></div>
-    <button class="go-back-btn" onclick="goBackAndDisable()">
+  <!-- Leave / Back buttons -->
+  <div class="btn-wrap" style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+    <div style="position:relative;">
+      <div class="btn-halo"></div>
+      <button class="go-back-btn" onclick="leaveBeta()">
+        <span class="btn-label">
+          <span class="btn-arrow">✕</span>
+          Leave
+        </span>
+      </button>
+    </div>
+    <button class="go-back-btn" onclick="goBackOnly()" style="background:transparent; border-color:rgba(255,215,0,0.3); color:#ffec80;">
       <span class="btn-label">
         <span class="btn-arrow">←</span>
-        Go Back
-        <span class="btn-star">✦</span>
+        Back
       </span>
     </button>
   </div>
@@ -1404,11 +1411,19 @@ html, body {
   draw();
 })();
 
-/* ── Go Back ── */
-function goBackAndDisable(){
+/* ── Leave — leaves the beta programme and returns to VIP ── */
+function leaveBeta(){
   localStorage.removeItem('mgp_beta');
-  history.back();
-  setTimeout(function(){ window.location.href = 'index (3).html'; }, 300);
+  window.location.href = 'index (3).html';
+}
+
+/* ── Back — just returns to whichever MediaGrabber VIP page the user came from ── */
+function goBackOnly(){
+  if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+    history.back();
+  } else {
+    window.location.href = 'index (3).html';
+  }
 }
 
 window.addEventListener('DOMContentLoaded', function(){

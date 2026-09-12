@@ -2943,6 +2943,19 @@ var db = firebase.database();
     </div>
 </div>
 
+<!-- ====== BETA WELCOME MODAL ====== -->
+<div id="betaWelcomeOverlay" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(2,1,0,0.8); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px;">
+  <div style="max-width:400px; width:100%; background:linear-gradient(145deg,#12080a,#020100); border:1px solid rgba(255,215,0,0.4); border-radius:20px; padding:30px 26px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.7), 0 0 40px rgba(255,215,0,0.15);">
+    <div style="font-size:38px; margin-bottom:12px;">👑</div>
+    <div style="font-size:19px; font-weight:800; color:#ffd700; margin-bottom:12px; font-family:'Cinzel',serif;">You're a Beta Tester!</div>
+    <div style="font-size:13.5px; line-height:1.75; color:#9ca3af; margin-bottom:24px;">
+      You'll see new features before the public does. Give your feedback to the developers to help them improve. You can leave the beta test at any time.
+    </div>
+    <button onclick="confirmBetaWelcome()" style="width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg,#ffd700,#b8860b); color:#1a0f00; font-weight:800; font-size:14px; cursor:pointer; font-family:inherit; box-shadow:0 8px 20px rgba(255,215,0,0.3);">Continue to Beta →</button>
+    <button onclick="cancelBetaWelcome()" style="width:100%; margin-top:10px; padding:11px; border-radius:12px; border:1px solid rgba(255,215,0,0.2); background:transparent; color:#9ca3af; font-weight:600; font-size:13px; cursor:pointer; font-family:inherit;">Not now</button>
+  </div>
+</div>
+
 <div id="updatesOverlay">
   <div id="updatesModal">
       <div class="updates-header">
@@ -3776,15 +3789,27 @@ function _initBetaToggle(){
 function toggleBeta(){
   var on = localStorage.getItem('mgp_beta')==='1';
   if(!on){
-    localStorage.setItem('mgp_beta','1');
-    _initBetaToggle();
-    vToast('🧪 Beta enabled — redirecting...');
-    setTimeout(function(){ window.location.href='index (4).html'; }, 1200);
+    var ov = document.getElementById('betaWelcomeOverlay');
+    if(ov) ov.style.display = 'flex';
   } else {
     localStorage.removeItem('mgp_beta');
     _initBetaToggle();
     vToast('Beta disabled');
   }
+}
+
+function cancelBetaWelcome(){
+  var ov = document.getElementById('betaWelcomeOverlay');
+  if(ov) ov.style.display = 'none';
+}
+
+function confirmBetaWelcome(){
+  localStorage.setItem('mgp_beta','1');
+  _initBetaToggle();
+  var ov = document.getElementById('betaWelcomeOverlay');
+  if(ov) ov.style.display = 'none';
+  vToast('🧪 Beta enabled — redirecting...');
+  setTimeout(function(){ window.location.href='index (4).html'; }, 900);
 }
 
 function shareWebsite() {

@@ -2399,6 +2399,34 @@ if(update !== updatesArray[updatesArray.length - 1]){
             <button onclick="launchVipLoader()" class="sett-vip-btn">👑 Switch to VIP</button>
         </div>
 
+        <!-- BETA -->
+        <div class="sett-box">
+            <div class="sett-box-label">🧪 Beta</div>
+            <div style="padding:14px 16px;border-radius:14px;border:1px solid rgba(124,58,237,0.25);background:rgba(124,58,237,0.05);margin-bottom:4px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:800;color:var(--purple-light);margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+                    <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:linear-gradient(135deg,#7c3aed,#4361ee);color:#fff;font-weight:900;letter-spacing:0.5px;">BETA</span>
+                    Enable Beta
+                  </div>
+                  <div style="font-size:11px;color:#6b7280;line-height:1.6;">A pre-release version of the site open to everyone for testing, feedback, and bug reports before the official launch.</div>
+                  <div id="betaStatusText" style="font-size:10px;margin-top:6px;font-weight:700;color:#6b7280;">Beta is currently <span id="betaOnOff">disabled</span></div>
+                </div>
+                <div id="betaToggleTrack" onclick="toggleBeta()" style="
+                  width:46px;height:26px;border-radius:99px;flex-shrink:0;
+                  background:#1f2937;border:1px solid rgba(255,255,255,0.1);
+                  position:relative;cursor:pointer;transition:all 0.3s;
+                ">
+                  <div id="betaToggleThumb" style="
+                    width:20px;height:20px;border-radius:50%;
+                    background:#4b5563;position:absolute;top:2px;left:2px;
+                    transition:all 0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.4);
+                  "></div>
+                </div>
+              </div>
+            </div>
+        </div>
+
         <!-- FEEDBACK -->
         <div class="sett-box">
             <div class="sett-box-label">💬 Feedback</div>
@@ -2408,6 +2436,19 @@ if(update !== updatesArray[updatesArray.length - 1]){
 
       </div><!-- end settingsModalInner -->
     </div>
+</div>
+
+<!-- ====== BETA WELCOME MODAL ====== -->
+<div id="betaWelcomeOverlay" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(5,7,15,0.75); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px;">
+  <div style="max-width:400px; width:100%; background:linear-gradient(145deg,#0d0f1c,#05070f); border:1px solid rgba(124,58,237,0.35); border-radius:20px; padding:30px 26px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(124,58,237,0.18);">
+    <div style="font-size:38px; margin-bottom:12px;">🧪</div>
+    <div style="font-size:19px; font-weight:800; color:#e9d5ff; margin-bottom:12px;">You're a Beta Tester!</div>
+    <div style="font-size:13.5px; line-height:1.75; color:#9ca3af; margin-bottom:24px;">
+      You'll see new features before the public does. Give your feedback to the developers to help them improve. You can leave the beta test at any time.
+    </div>
+    <button onclick="confirmBetaWelcome()" style="width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg,#7c3aed,#4361ee); color:#fff; font-weight:800; font-size:14px; cursor:pointer; font-family:inherit; box-shadow:0 8px 20px rgba(124,58,237,0.35);">Continue to Beta →</button>
+    <button onclick="cancelBetaWelcome()" style="width:100%; margin-top:10px; padding:11px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:transparent; color:#9ca3af; font-weight:600; font-size:13px; cursor:pointer; font-family:inherit;">Not now</button>
+  </div>
 </div>
 
 <div id="updatesOverlay">
@@ -3054,13 +3095,25 @@ function _initBetaToggle() {
 function toggleBeta() {
     var on = localStorage.getItem('mgp_beta') === '1';
     if (!on) {
-        localStorage.setItem('mgp_beta', '1');
-        _initBetaToggle();
-        setTimeout(function() { window.location.href = 'index (4).html'; }, 1200);
+        var ov = document.getElementById('betaWelcomeOverlay');
+        if (ov) ov.style.display = 'flex';
     } else {
         localStorage.removeItem('mgp_beta');
         _initBetaToggle();
     }
+}
+
+function cancelBetaWelcome() {
+    var ov = document.getElementById('betaWelcomeOverlay');
+    if (ov) ov.style.display = 'none';
+}
+
+function confirmBetaWelcome() {
+    localStorage.setItem('mgp_beta', '1');
+    _initBetaToggle();
+    var ov = document.getElementById('betaWelcomeOverlay');
+    if (ov) ov.style.display = 'none';
+    setTimeout(function() { window.location.href = 'index (5).html'; }, 300);
 }
 
 function shareWebsite() {
