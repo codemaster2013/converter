@@ -394,7 +394,7 @@ html, body {
 <script>
 /* ── Leave — leaves the beta programme and returns to the MAIN (public) site ── */
 function leaveBeta(){
-  localStorage.removeItem('mgp_beta');
+  localStorage.removeItem('mgp_beta_main');
   window.location.href = 'index.html';
 }
 
@@ -408,7 +408,7 @@ function goBackOnly(){
 }
 
 window.addEventListener('DOMContentLoaded', function(){
-  if(localStorage.getItem('mgp_beta') !== '1'){ /* direct visit — fine */ }
+  if(localStorage.getItem('mgp_beta_main') !== '1'){ /* direct visit — fine */ }
 });
 
 /* ══════════════════════════════

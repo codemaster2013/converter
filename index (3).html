@@ -3766,7 +3766,7 @@ function openSettings() {
 }
 
 function _initBetaToggle(){
-  var on = localStorage.getItem('mgp_beta')==='1';
+  var on = localStorage.getItem('mgp_beta_vip')==='1';
   var track = document.getElementById('betaToggleTrack');
   var thumb = document.getElementById('betaToggleThumb');
   var lbl   = document.getElementById('betaOnOff');
@@ -3787,12 +3787,12 @@ function _initBetaToggle(){
 }
 
 function toggleBeta(){
-  var on = localStorage.getItem('mgp_beta')==='1';
+  var on = localStorage.getItem('mgp_beta_vip')==='1';
   if(!on){
     var ov = document.getElementById('betaWelcomeOverlay');
     if(ov) ov.style.display = 'flex';
   } else {
-    localStorage.removeItem('mgp_beta');
+    localStorage.removeItem('mgp_beta_vip');
     _initBetaToggle();
     vToast('Beta disabled');
   }
@@ -3804,7 +3804,7 @@ function cancelBetaWelcome(){
 }
 
 function confirmBetaWelcome(){
-  localStorage.setItem('mgp_beta','1');
+  localStorage.setItem('mgp_beta_vip','1');
   _initBetaToggle();
   var ov = document.getElementById('betaWelcomeOverlay');
   if(ov) ov.style.display = 'none';

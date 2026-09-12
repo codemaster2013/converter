@@ -1413,7 +1413,7 @@ html, body {
 
 /* ── Leave — leaves the beta programme and returns to VIP ── */
 function leaveBeta(){
-  localStorage.removeItem('mgp_beta');
+  localStorage.removeItem('mgp_beta_vip');
   window.location.href = 'index (3).html';
 }
 
@@ -1427,7 +1427,7 @@ function goBackOnly(){
 }
 
 window.addEventListener('DOMContentLoaded', function(){
-  if(localStorage.getItem('mgp_beta') !== '1'){ /* direct visit — fine */ }
+  if(localStorage.getItem('mgp_beta_vip') !== '1'){ /* direct visit — fine */ }
 });
 
 /* ══════════════════════════════

@@ -2227,6 +2227,92 @@ body.light-mode .ad-title { color: #111827; }
 
 #vipLoader .vl-tap:hover { color: rgba(255,255,255,0.55); }
 
+.ad-icon.ad-icon-video { width:220px; height:300px; border-radius:10px; overflow:hidden; padding:0; flex-shrink:0; }
+
+/* ============================================================
+   MOBILE RESPONSIVE OVERRIDES
+   ============================================================ */
+html, body { overflow-x: hidden; }
+
+@media (max-width: 860px) {
+    .pr-glass-panel { max-width: 96vw; }
+}
+
+@media (max-width: 768px) {
+    /* ── Nav ── */
+    nav { padding: 10px 14px; flex-wrap: wrap; row-gap: 8px; }
+    .logo-group { height: 30px; }
+    .main-logo { height: auto; max-height: 30px; width: auto; max-width: 130px; }
+    .nav-links { order: 3; width: 100%; justify-content: center; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 2px; padding-bottom: 2px; }
+    .nav-links::-webkit-scrollbar { height: 3px; }
+    .nav-links a { font-size: 11.5px; padding: 6px 10px; }
+    .settings-btn span { display: none; }
+    .settings-btn { padding: 9px; }
+
+    /* ── Hero / container ── */
+    .container { padding: 28px 16px; }
+    .hero-title { font-size: 36px; letter-spacing: -1px; }
+    .subtitle { font-size: 14.5px; padding: 0 4px; }
+    .section-title { font-size: 24px; margin-top: 40px; }
+
+    /* ── Cards / upload ── */
+    .card { padding: 22px 16px; margin-top: 26px; border-radius: 18px; }
+    .upload-area { padding: 26px 14px; border-radius: 16px; }
+
+    /* ── Intro splash ── */
+    #introOverlay h1 { font-size: 2.4rem; letter-spacing: 3px; padding: 0 12px; text-align: center; }
+
+    /* ── Settings modal ── */
+    #settingsModalInner { padding: 22px; }
+    .theme-cards { gap: 6px; }
+    .theme-card { padding: 8px 6px; font-size: 11.5px; gap: 5px; }
+
+    /* ── PDF Reader ── */
+    .pr-glass-panel { height: 94vh; border-radius: 18px; }
+    .pr-header { padding: 12px 14px; }
+    .pr-header-title { font-size: 14px; }
+    .pr-body { flex-direction: column; }
+    .pr-sidebar {
+        width: 100%; min-width: 0; max-height: 140px;
+        flex-direction: row; flex-wrap: nowrap;
+        overflow-x: auto; overflow-y: hidden;
+        border-right: none; border-bottom: 1px solid rgba(167,139,250,0.15);
+    }
+    .pr-sidebar-section { min-width: 170px; flex-shrink: 0; }
+    .pr-canvas-area { padding: 16px 10px; }
+    .pr-nav-bar { padding: 10px 12px; gap: 6px; }
+
+    /* ── File rows ── */
+    .file-item { flex-wrap: wrap; row-gap: 8px; }
+
+    /* ── Ad banner ── */
+    .ad-banner { flex-wrap: wrap; justify-content: center; text-align: center; }
+    .ad-icon.ad-icon-video { width: 100%; max-width: 220px; height: 170px; margin: 0 auto; }
+    .ad-content { flex-basis: 100%; }
+
+    /* ── VIP banner ── */
+    #vipGlassBanner { margin: 28px auto 14px; }
+}
+
+@media (max-width: 480px) {
+    .hero-title { font-size: 28px; }
+    .subtitle { font-size: 13.5px; }
+    .badge { font-size: 11px; padding: 5px 12px; }
+    .card { padding: 18px 14px; }
+    .upload-area { padding: 20px 12px; }
+    #introOverlay h1 { font-size: 1.9rem; letter-spacing: 2px; }
+
+    .nav-links a { font-size: 10.5px; padding: 5px 8px; }
+
+    .file-item { padding: 10px !important; gap: 8px !important; }
+    .file-item select { width: 84px !important; font-size: 11px !important; }
+    .file-name { font-size: 12px !important; }
+    .btn-del { padding: 6px 10px !important; font-size: 11px !important; }
+
+    .theme-cards { flex-wrap: wrap; }
+    .theme-card { flex: 1 1 45%; }
+}
+
     </style>
 </head>
 
@@ -2818,7 +2904,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <!-- AD label -->
     <span class="ad-label">AD</span>
     <!-- Video preview instead of icon -->
-    <div class="ad-icon" style="width:220px;height:300px;border-radius:10px;overflow:hidden;padding:0;flex-shrink:0;">
+    <div class="ad-icon ad-icon-video">
      
         <img src="https://etqzwknhswgtrsyjhbvf.supabase.co/storage/v1/object/sign/video/ezgif-frame-025.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hYWE2MzkwZS0zY2U1LTQ0ZDEtOWFmMy0wNmQwMjg1OGY3NWIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlby9lemdpZi1mcmFtZS0wMjUuanBnIiwiaWF0IjoxNzc2NTIxMTYwLCJleHAiOjMxNTUzNDQ5ODUxNjB9.wrRokOW__Jrhu2z9bFfaXbOOno4IJt2BW1OsPSLLZTQ" alt=" Your browser does not support the Image.">
           
@@ -3072,7 +3158,7 @@ function handleFeedbackToggle(el) {
 })();
 
 function _initBetaToggle() {
-    var on = localStorage.getItem('mgp_beta') === '1';
+    var on = localStorage.getItem('mgp_beta_main') === '1';
     var track = document.getElementById('betaToggleTrack');
     var thumb = document.getElementById('betaToggleThumb');
     var lbl = document.getElementById('betaOnOff');
@@ -3093,12 +3179,12 @@ function _initBetaToggle() {
 }
 
 function toggleBeta() {
-    var on = localStorage.getItem('mgp_beta') === '1';
+    var on = localStorage.getItem('mgp_beta_main') === '1';
     if (!on) {
         var ov = document.getElementById('betaWelcomeOverlay');
         if (ov) ov.style.display = 'flex';
     } else {
-        localStorage.removeItem('mgp_beta');
+        localStorage.removeItem('mgp_beta_main');
         _initBetaToggle();
     }
 }
@@ -3109,7 +3195,7 @@ function cancelBetaWelcome() {
 }
 
 function confirmBetaWelcome() {
-    localStorage.setItem('mgp_beta', '1');
+    localStorage.setItem('mgp_beta_main', '1');
     _initBetaToggle();
     var ov = document.getElementById('betaWelcomeOverlay');
     if (ov) ov.style.display = 'none';
