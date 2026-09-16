@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
+<meta charset="UTF-8">
 <!-- VIP AUTO-REDIRECT: runs before anything renders -->
 <script>
 (function(){
@@ -2229,6 +2230,22 @@ body.light-mode .ad-title { color: #111827; }
 
 .ad-icon.ad-icon-video { width:220px; height:300px; border-radius:10px; overflow:hidden; padding:0; flex-shrink:0; }
 
+.beta-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #4361ee);
+    box-shadow: 0 0 10px rgba(124,58,237,0.5);
+    text-transform: uppercase;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
 /* ============================================================
    MOBILE RESPONSIVE OVERRIDES
    ============================================================ */
@@ -2968,6 +2985,25 @@ if(update !== updatesArray[updatesArray.length - 1]){
     </div>
     <button class="btn-primary" onclick="makePDF()">Generate PDF</button>
 </div>
+
+<h2 id="texttopdf" class="section-title beta-only-feature" style="display:none; align-items:center; justify-content:center; gap:10px;">
+    Text to PDF <span class="beta-tag">BETA</span>
+</h2>
+<div class="card beta-only-feature" id="textToPdfSection" style="display:none;">
+    <p class="subtitle" style="text-align:left; margin-bottom:15px">Turn any plain text into a downloadable PDF document. <span class="beta-tag" style="margin-left:6px;">BETA</span></p>
+
+    <textarea id="textToPdfInput" placeholder="Type or paste your text here..." style="min-height:220px;"></textarea>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:15px;">
+        <input id="textToPdfName" placeholder="Document Name">
+        <select id="textToPdfSize">
+            <option value="a4">A4</option>
+            <option value="letter">Letter</option>
+        </select>
+    </div>
+    <button class="btn-primary" onclick="convertTextToPDF()">Generate PDF</button>
+</div>
+
 <h2 id="ocr" class="section-title">Smart OCR</h2>
 <div class="card">
     <label class="upload-area" for="ocrInput" style="border-style: dashed; border-width: 2px;">
@@ -3157,11 +3193,24 @@ function handleFeedbackToggle(el) {
     if (tog && saved === '0') tog.checked = false;
 })();
 
+function _applyBetaFeatures() {
+    var on = localStorage.getItem('mgp_beta_main') === '1';
+    var els = document.querySelectorAll('.beta-only-feature');
+    els.forEach(function(el) {
+        if (on) {
+            el.style.display = el.tagName === 'H2' ? 'flex' : 'block';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+}
+
 function _initBetaToggle() {
     var on = localStorage.getItem('mgp_beta_main') === '1';
     var track = document.getElementById('betaToggleTrack');
     var thumb = document.getElementById('betaToggleThumb');
     var lbl = document.getElementById('betaOnOff');
+    _applyBetaFeatures();
     if (!track) return;
     if (on) {
         track.style.background = 'linear-gradient(135deg,#7c3aed,#4361ee)';
@@ -3177,6 +3226,15 @@ function _initBetaToggle() {
         if (lbl) lbl.textContent = 'disabled';
     }
 }
+
+// Apply beta feature visibility immediately on page load (independent of settings modal)
+(function() {
+    if (typeof document !== 'undefined') {
+        document.addEventListener('DOMContentLoaded', function() {
+            _applyBetaFeatures();
+        });
+    }
+})();
 
 function toggleBeta() {
     var on = localStorage.getItem('mgp_beta_main') === '1';
@@ -3199,7 +3257,11 @@ function confirmBetaWelcome() {
     _initBetaToggle();
     var ov = document.getElementById('betaWelcomeOverlay');
     if (ov) ov.style.display = 'none';
-    setTimeout(function() { window.location.href = 'index (5).html'; }, 300);
+    closeSettings();
+    setTimeout(function() {
+        var target = document.getElementById('texttopdf');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350);
 }
 
 function shareWebsite() {
@@ -3367,6 +3429,45 @@ async function makePDF() {
 
     pdf.save(`${pdfName}.pdf`);
     redirectToFeedback();
+}
+
+// ── BETA: Text to PDF ──
+function convertTextToPDF() {
+    const text = document.getElementById("textToPdfInput").value;
+    if (!text.trim()) { alert("Please type or paste some text first."); return; }
+
+    const docName = document.getElementById("textToPdfName").value.trim() || "document";
+    const size = document.getElementById("textToPdfSize").value || "a4";
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: "pt", format: size });
+
+    const margin = 40;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const maxWidth = pageWidth - margin * 2;
+    const lineHeight = 16;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    const paragraphs = text.split("\n");
+    let y = margin;
+
+    paragraphs.forEach(paragraph => {
+        const wrapped = pdf.splitTextToSize(paragraph === "" ? " " : paragraph, maxWidth);
+        wrapped.forEach(line => {
+            if (y > pageHeight - margin) {
+                pdf.addPage();
+                y = margin;
+            }
+            pdf.text(line, margin, y);
+            y += lineHeight;
+        });
+    });
+
+    pdf.save(`${docName}.pdf`);
+    if (typeof redirectToFeedback === "function") redirectToFeedback();
 }
 
 // PDF.js worker
