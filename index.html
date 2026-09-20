@@ -444,16 +444,29 @@ body.light-mode select#format option {
         }
 
         .logo-group {
+            /* width of the visible wordmark: grows with the screen (60px on small laptops -> 190px on desktops) */
+            --logo-art: clamp(60px, 31.5vw - 233px, 190px);
+            position: relative;
             display: flex;
             align-items: center;
+            flex: 0 0 auto;
+            width: calc(var(--logo-art) + 16px);
             height: 50px;
         }
 
+        /* The logo PNG has a lot of empty transparent space around the wordmark, so it is drawn larger than
+           its box and centred; the empty part overflows invisibly and never pushes the nav links around. */
 .main-logo {
-            height: 26px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: calc(var(--logo-art) / 1.46);
             width: auto;
+            max-width: none;
             object-fit: contain;
-            margin-left: 4%;
+            margin: 0;
+            pointer-events: none;
         }
 
         .nav-links {
@@ -2427,8 +2440,8 @@ html, body { overflow-x: hidden; }
 @media (max-width: 768px) {
     /* ── Nav ── */
     nav { padding: 10px 14px; flex-wrap: wrap; row-gap: 8px; }
-    .logo-group { height: auto; }
-    .main-logo { height: 24px; max-height: none; width: auto; max-width: none; margin-left: 2px; }
+    .logo-group { --logo-art: clamp(110px, 38vw, 150px); height: 34px; }
+    .main-logo { max-height: none; }
     .nav-links { order: 3; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; gap: 4px; }
     .settings-btn span { display: none; }
     .settings-btn { padding: 9px; }
