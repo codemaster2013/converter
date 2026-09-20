@@ -1739,6 +1739,10 @@ body.modal-open {
 #updatesModal{
     width:90%;
     max-width:500px;
+    display:flex;
+    flex-direction:column;
+    max-height:85vh;
+    max-height:85dvh;
     border-radius:28px;
     padding:30px;
     background:rgba(13,6,38,0.55);
@@ -1750,13 +1754,34 @@ body.light-mode #updatesModal{
     background:rgba(255,255,255,0.6);
 }
 
+/* Scrollable container for the announcement cards */
+#updatesContent{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    padding:10px 8px;
+    margin:0 -8px;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,215,0,0.6) transparent;
+}
+#updatesContent::-webkit-scrollbar{ width:6px; }
+#updatesContent::-webkit-scrollbar-track{ background:transparent; }
+#updatesContent::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg,#b8960c,#ffd700);
+    border-radius:99px;
+}
+
 
 /* Header layout */
 .updates-header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:18px;
+margin-bottom:8px;
+flex-shrink:0;
 }
 
 /* Settings-like glass button */
@@ -5337,28 +5362,43 @@ db.ref("updates").on("value", snapshot => {
 
     const latestUpdate = updatesArray[0];
 
-    updatesContent.innerHTML = `
-        <div style="
-            padding:20px;
-            border-radius:18px;
-            background:rgba(255,215,0,0.06);
-            border:1px solid rgba(255,215,0,0.4);
-            margin-top:10px;
-            box-shadow:0 0 18px rgba(255,215,0,0.15);
-        ">
-            <div style="font-size:12px;color:#ffd700;margin-bottom:6px;">
-                ${latestUpdate.label} • ${latestUpdate.type}
+    // Show every announcement (newest first), not just the latest one
+    updatesContent.innerHTML = "";
+
+    updatesArray.forEach((update, i) => {
+
+        const isNew = update.time > lastSeen;
+
+        const card = document.createElement("div");
+        card.className = "update-card" + (isNew ? " new-update" : "");
+
+        card.innerHTML = `
+            <div class="update-header">
+                <span style="color:#ffd700;">
+                    ${update.label} • ${update.type}
+                    ${isNew ? `<span class="new-badge">NEW</span>` : ""}
+                </span>
             </div>
-            <div style="font-size:15px;">
-                ${latestUpdate.message}
+            <div class="update-message">
+                ${update.message}
             </div>
-        </div>
-    `;
+        `;
+
+        updatesContent.appendChild(card);
+
+        if(i < updatesArray.length - 1){
+            const divider = document.createElement("div");
+            divider.className = "update-divider";
+            updatesContent.appendChild(divider);
+        }
+    });
 
     if(latestUpdate.time > lastSeen){
-      if(updateDot) updateDot.classList.add("active");
-      if(bell) bell.classList.add("shake");
-        setTimeout(()=> bell.classList.remove("shake"), 800);
+        if(updateDot) updateDot.classList.add("active");
+        if(bell){
+            bell.classList.add("shake");
+            setTimeout(()=> bell.classList.remove("shake"), 800);
+        }
     }
 
 });
@@ -5389,6 +5429,8 @@ function openUpdates(){
             document.querySelectorAll(".update-card").forEach(card=>{
     card.classList.remove("new-update");
 });
+            lastSeen = updatesArray[0].time;
+            localStorage.setItem("lastSeenUpdateTime", lastSeen);
         }
 
         if(updateDot){
