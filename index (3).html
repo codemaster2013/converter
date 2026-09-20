@@ -89,12 +89,7 @@ body.light-mode select#format option {
             --card: rgba(255, 255, 255, 0.03);
             --text: #e5e7eb;
             --border: rgba(255, 255, 255, 0.1);
-            --nav-bg: --purple: #7c3aed;
-            --purple-light: #ddd6fe;
-            --bg: #05070f;
-            --card: rgba(255, 255, 255, 0.03);
-            --text: #e5e7eb;
-            --border: rgba(255, 255, 255, 0.1);
+            --nav-bg: rgba(5, 7, 15, 0.92);
         }
 
         /* LIGHT MODE OVERRIDES */
@@ -3218,7 +3213,7 @@ var db = firebase.database();
   <div class="vip-tools-grid">
 
     <!-- IMAGE CONVERTER -->
-    <div class="vip-card">
+    <div id="vip-converter" class="vip-card">
       <span class="vip-tag">VIP</span>
       <span class="vip-card-icon">🎨</span>
       <div class="vip-card-title">Ultra HD Batch Converter</div>
@@ -3274,7 +3269,7 @@ var db = firebase.database();
     </div>
 
     <!-- OCR -->
-    <div class="vip-card">
+    <div id="vip-ocr" class="vip-card">
       <span class="vip-tag">VIP</span>
       <span class="vip-card-icon">🔍</span>
       <div class="vip-card-title">Smart OCR Pro</div>
@@ -3310,7 +3305,7 @@ var db = firebase.database();
     </div>
 
     <!-- PDF UNLOCKER -->
-    <div class="vip-card">
+    <div id="vip-unlocker" class="vip-card">
       <span class="vip-tag">VIP</span>
       <span class="vip-card-icon">🔓</span>
       <div class="vip-card-title">PDF Password Remover</div>
@@ -3331,7 +3326,7 @@ var db = firebase.database();
 
   <!-- PDF READER -->
   <div class="vip-section-label">📖 VIP PDF Reader</div>
-  <div class="vip-card" style="padding:20px;max-width:860px;margin-left:auto;margin-right:auto;">
+  <div id="vip-pdf-reader" class="vip-card" style="padding:20px;max-width:860px;margin-left:auto;margin-right:auto;">
     <span class="vip-tag">VIP</span>
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
       <span style="font-size:32px;">📖</span>
@@ -3347,7 +3342,7 @@ var db = firebase.database();
   <div class="vip-section-label" style="margin-top:10px;">🧪 Exclusive VIP-Only Tools</div>
 
   <!-- METADATA INSPECTOR -->
-  <div class="vip-card">
+  <div id="vip-metadata" class="vip-card">
     <span class="vip-tag">EXCLUSIVE</span>
     <span class="vip-card-icon">🔬</span>
     <div class="vip-card-title">Image Metadata Inspector</div>
@@ -3364,7 +3359,7 @@ var db = firebase.database();
   </div>
 
   <!-- BULK RESIZER -->
-  <div class="vip-card">
+  <div id="vip-bulk-resizer" class="vip-card">
     <span class="vip-tag">EXCLUSIVE</span>
     <span class="vip-card-icon">📐</span>
     <div class="vip-card-title">Bulk Image Resizer</div>
@@ -3397,7 +3392,7 @@ var db = firebase.database();
   </div>
 
   <!-- IMAGE TO BASE64 -->
-  <div class="vip-card">
+  <div id="vip-base64" class="vip-card">
     <span class="vip-tag">EXCLUSIVE</span>
     <span class="vip-card-icon">💾</span>
     <div class="vip-card-title">Image ↔ Base64 Encoder</div>
@@ -3494,7 +3489,7 @@ var db = firebase.database();
   </div>
 
   <!-- COLOR PALETTE EXTRACTOR -->
-  <div class="vip-card">
+  <div id="vip-color-palette" class="vip-card">
     <span class="vip-tag">EXCLUSIVE</span>
     <span class="vip-card-icon">🎨</span>
     <div class="vip-card-title">Color Palette Extractor</div>
@@ -3511,7 +3506,7 @@ var db = firebase.database();
   </div>
 
   <!-- PDF PAGE EXTRACTOR -->
-  <div class="vip-card">
+  <div id="vip-page-extractor" class="vip-card">
     <span class="vip-tag">EXCLUSIVE</span>
     <span class="vip-card-icon">✂️</span>
     <div class="vip-card-title">PDF Page Extractor</div>
@@ -3537,7 +3532,7 @@ var db = firebase.database();
   </div>
 
   <!-- IMAGE COMPRESSOR -->
-  <div class="vip-card">
+  <div id="vip-image-compressor" class="vip-card">
     <span class="vip-tag">EXCLUSIVE</span>
     <span class="vip-card-icon">🗜️</span>
     <div class="vip-card-title">Image Compressor</div>
@@ -3570,7 +3565,7 @@ var db = firebase.database();
   </div>
 
   <!-- PDF COMPRESSOR -->
-  <div class="vip-card">
+  <div id="vip-pdf-compressor" class="vip-card">
     <span class="vip-tag">EXCLUSIVE</span>
     <span class="vip-card-icon">📦</span>
     <div class="vip-card-title">PDF Compressor</div>
@@ -3714,11 +3709,11 @@ async function submitSettingsFeedback() {
     var message = document.getElementById('fbMsg').value.trim();
     var btn = document.getElementById('fbSubmitBtn');
 
-    if (_fbRating === 0) { alert('Please select a star rating.'); return; }
+    if (_fbRating === 0) { mgAlert('Please select a star rating.'); return; }
 
     if (_fbRating !== 5) {
-        if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-        if (!message) { alert('Please enter your feedback message.'); return; }
+        if (!email || !email.includes('@')) { mgAlert('Please enter a valid email.'); return; }
+        if (!message) { mgAlert('Please enter your feedback message.'); return; }
     }
 
     btn.disabled = true;
@@ -3752,7 +3747,7 @@ async function submitSettingsFeedback() {
             document.getElementById('fbSuccess').style.display = 'none';
         }, 4000);
     } catch(e) {
-        alert('Submission failed. Please try again.');
+        mgAlert('Submission failed. Please try again.');
         btn.disabled = false;
         btn.textContent = 'Send Feedback ✉️';
     }
@@ -3849,8 +3844,8 @@ function closeSettingsOutside(e) {
 
 function setTheme(mode) {
     const logoImg = document.getElementById('logoImg');
-    const darkLogo = "dark mode.png";
-    const lightLogo = "light mode.png";
+    const darkLogo = "logo-dark.png";
+    const lightLogo = "logo-light.png";
     if (mode === 'light') {
         document.body.classList.add('light-mode');
         logoImg.src = lightLogo;
@@ -3920,7 +3915,7 @@ async function convertImage() {
     const format = document.getElementById("format").value;
     const name = (document.getElementById("fileName").value || "mediagrabber-export");
 
-    if (!uploaded) return alert("Please select a file first");
+    if (!uploaded) return mgAlert("Please select a file first");
 
     const btn = document.querySelector("button[onclick='convertImage()']");
     btn.disabled = true;
@@ -3936,7 +3931,7 @@ async function convertImage() {
             console.error(e);
             btn.disabled = false;
             btn.innerText = "Convert & Download";
-            return alert("❌ Error processing HEIC file. Your browser might not support this conversion.");
+            return mgAlert("❌ Error processing HEIC file. Your browser might not support this conversion.");
         }
     }
 
@@ -3996,7 +3991,7 @@ async function makePDF() {
     const pdfName = document.getElementById("pdfName").value || "merged-doc";
     const password = document.getElementById("pdfPass").value;
 
-    if (!files.length) { alert("Upload images first"); return; }
+    if (!files.length) { mgAlert("Upload images first"); return; }
 
     const { jsPDF } = window.jspdf;
 
@@ -4056,7 +4051,7 @@ async function processOCR() {
     const status = document.getElementById("ocrStatus");
     const output = document.getElementById("ocrResult");
 
-    if (!file) return alert("Please select a file!");
+    if (!file) return mgAlert("Please select a file!");
     status.style.color = "#a78bfa";
     status.innerText = "🔍 Initializing...";
     output.value = "";
@@ -4151,7 +4146,7 @@ function renderLangStats(text) {
 
 function validateOCRAction() {
     const t = document.getElementById("ocrResult").value.trim();
-    if (!t) { alert("No OCR text available"); return false; }
+    if (!t) { mgAlert("No OCR text available"); return false; }
     return true;
 }
 
@@ -4252,7 +4247,7 @@ function removeConvFile(index) {
 }
 
 async function convertAndDownloadOneByOne() {
-    if (filesToConvert.length === 0) return alert("Please select images first!");
+    if (filesToConvert.length === 0) return mgAlert("Please select images first!");
     
     const targetFormat = document.getElementById("format").value;
     const extension = targetFormat.split('/')[1].replace('jpeg', 'jpg').replace('svg+xml', 'svg');
@@ -4373,7 +4368,7 @@ function removePdfFile(index) {
 
 // 5. Updated makePDF function using the pdfFiles array
 async function makePDF() {
-    if (pdfFiles.length === 0) return alert("Please add images for your PDF first!");
+    if (pdfFiles.length === 0) return mgAlert("Please add images for your PDF first!");
 
     const pdfName = document.getElementById("pdfName").value || "merged-doc";
     const password = document.getElementById("pdfPass").value;
@@ -4469,7 +4464,7 @@ function renderConvList() {
 }
 
 async function convertAndDownloadOneByOne() {
-    if (filesToConvert.length === 0) return alert("Please select images first!");
+    if (filesToConvert.length === 0) return mgAlert("Please select images first!");
     
     const btn = document.querySelector("button[onclick='convertAndDownloadOneByOne()']");
     btn.innerText = "⏳ Processing Custom Formats...";
@@ -4603,7 +4598,7 @@ async function removePassword() {
     const status = document.getElementById("unlockStatus");
     const btn = document.querySelector("button[onclick='removePassword()']");
 
-    if (!file) return alert("Please upload a PDF first!");
+    if (!file) return mgAlert("Please upload a PDF first!");
 
     btn.disabled = true;
     btn.innerText = "⏳ Initializing...";
@@ -6622,5 +6617,145 @@ function smcForever() {
   setTimeout(launchBackLoader, 180);
 }
 </script>
+<!-- ═══════════ MG ALERT (custom alert replacement) ═══════════ -->
+<style id="mgAlertStyles">
+#mgAlertOverlay{
+    position:fixed; inset:0; z-index:2147483000;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(5,3,14,0.62);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    opacity:0; visibility:hidden;
+    transition:opacity .22s ease, visibility .22s ease;
+}
+#mgAlertOverlay.mg-show{ opacity:1; visibility:visible; }
+
+#mgAlertCard{
+    position:relative; width:100%; max-width:400px;
+    padding:26px 24px 22px;
+    border-radius:20px;
+    /* purple border, red card */
+    border:2px solid #a855f7;
+    background:linear-gradient(160deg,#dc2626 0%,#b91c1c 55%,#991b1b 100%);
+    color:#fff; text-align:center;
+    font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
+    box-shadow:0 0 0 4px rgba(168,85,247,0.22), 0 0 34px rgba(168,85,247,0.55), 0 24px 60px rgba(0,0,0,0.6);
+    transform:translateY(14px) scale(.94);
+    transition:transform .28s cubic-bezier(.2,1.1,.3,1);
+}
+#mgAlertOverlay.mg-show #mgAlertCard{ transform:translateY(0) scale(1); }
+#mgAlertCard::before{
+    content:''; position:absolute; inset:0; border-radius:18px; pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%, rgba(255,255,255,0.22), transparent 60%);
+}
+#mgAlertIcon{
+    position:relative; width:58px; height:58px; margin:0 auto 14px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.16);
+    border:1.5px solid rgba(255,255,255,0.4);
+}
+#mgAlertIcon svg{ width:30px; height:30px; display:block; }
+#mgAlertTitle{ position:relative; font-size:17px; font-weight:800; letter-spacing:.2px; margin-bottom:6px; }
+#mgAlertMsg{ position:relative; font-size:14.5px; line-height:1.55; color:rgba(255,255,255,0.94); margin-bottom:20px; word-break:break-word; }
+#mgAlertBtn{
+    position:relative; width:100%;
+    padding:12px 18px; border:none; border-radius:12px; cursor:pointer;
+    font:inherit; font-size:14.5px; font-weight:800; letter-spacing:.3px;
+    color:#fff;
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    box-shadow:0 6px 18px rgba(124,58,237,0.5);
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+#mgAlertBtn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+#mgAlertBtn:active{ transform:translateY(0) scale(.98); }
+#mgAlertBtn:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+@media (prefers-reduced-motion:reduce){
+    #mgAlertOverlay, #mgAlertCard{ transition:none; }
+}
+</style>
+
+<div id="mgAlertOverlay" role="alertdialog" aria-modal="true" aria-labelledby="mgAlertTitle" aria-describedby="mgAlertMsg" aria-hidden="true">
+    <div id="mgAlertCard">
+        <div id="mgAlertIcon"></div>
+        <div id="mgAlertTitle"></div>
+        <div id="mgAlertMsg"></div>
+        <button id="mgAlertBtn" type="button">Got it</button>
+    </div>
+</div>
+
+<script id="mgAlertScript">
+(function(){
+    var ICONS = {
+        warn:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+        file:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
+        star:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg>',
+        mail:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>'
+    };
+    var overlay, iconEl, titleEl, msgEl, btn, lastFocus = null, queue = [], open = false;
+
+    function ensure(){
+        if (overlay) return true;
+        overlay = document.getElementById('mgAlertOverlay');
+        if (!overlay) return false;
+        iconEl = document.getElementById('mgAlertIcon');
+        titleEl = document.getElementById('mgAlertTitle');
+        msgEl = document.getElementById('mgAlertMsg');
+        btn = document.getElementById('mgAlertBtn');
+        btn.addEventListener('click', close);
+        overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+        document.addEventListener('keydown', function(e){
+            if (!open) return;
+            if (e.key === 'Escape' || e.key === 'Enter') { e.preventDefault(); close(); }
+            else if (e.key === 'Tab') { e.preventDefault(); btn.focus(); }
+        });
+        return true;
+    }
+
+    // Pick a sensible icon + title from the message text
+    function classify(msg){
+        var m = String(msg).toLowerCase();
+        if (/❌|error|fail|could not|not support/.test(m)) return { icon:'error', title:'Something went wrong' };
+        if (/star|rating/.test(m))                          return { icon:'star',  title:'Rating needed' };
+        if (/email/.test(m))                                return { icon:'mail',  title:'Check your email' };
+        if (/file|pdf|image|upload|select|add|choose|heic/.test(m)) return { icon:'file', title:'File needed' };
+        return { icon:'warn', title:'Heads up' };
+    }
+
+    function render(item){
+        var c = classify(item.msg);
+        iconEl.innerHTML = ICONS[item.icon || c.icon];
+        titleEl.textContent = item.title || c.title;
+        // strip a leading ❌ / ✅ emoji since the SVG icon replaces it
+        msgEl.textContent = String(item.msg).replace(/^\s*[❌✅⚠️]+\s*/u, '');
+        overlay.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('mg-show');
+        open = true;
+        lastFocus = document.activeElement;
+        setTimeout(function(){ btn.focus(); }, 30);
+    }
+
+    function close(){
+        if (!open) return;
+        overlay.classList.remove('mg-show');
+        overlay.setAttribute('aria-hidden', 'true');
+        open = false;
+        if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch(e){} }
+        setTimeout(function(){ if (queue.length) render(queue.shift()); }, 260);
+    }
+
+    // Public API: mgAlert(message, {title, icon})
+    window.mgAlert = function(message, opts){
+        opts = opts || {};
+        var item = { msg: message == null ? '' : message, title: opts.title, icon: opts.icon };
+        if (!ensure()) { return; }   // DOM not ready yet: fail quietly rather than block with alert()
+        if (open) queue.push(item); else render(item);
+    };
+})();
+</script>
+
+<style>.vip-card{scroll-margin-top:90px}.vip-card:target{outline:2px solid rgba(255,215,0,.85);outline-offset:4px}</style>
+<script>window.addEventListener('load',function(){var h=location.hash.slice(1);if(!h)return;setTimeout(function(){var e=document.getElementById(h);if(e)e.scrollIntoView({behavior:'smooth',block:'start'});},600);});</script>
 </body>
 </html>
