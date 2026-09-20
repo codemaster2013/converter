@@ -1947,6 +1947,10 @@ body.modal-open {
 #updatesModal{
     width:90%;
     max-width:500px;
+    display:flex;
+    flex-direction:column;
+    max-height:85vh;
+    max-height:85dvh;
     border-radius:28px;
     padding:30px;
     background:rgba(13,6,38,0.55);
@@ -1958,13 +1962,34 @@ body.light-mode #updatesModal{
     background:rgba(255,255,255,0.6);
 }
 
+/* Scrollable container for the announcement cards */
+#updatesContent{
+    flex:1 1 auto;
+    min-height:0;                 /* lets the flex child shrink so it can scroll */
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;  /* don't scroll the page behind the modal */
+    -webkit-overflow-scrolling:touch;
+    padding:10px 8px;             /* room so card glow/hover isn't clipped */
+    margin:0 -8px;
+    scrollbar-width:thin;
+    scrollbar-color:#7c3aed transparent;
+}
+#updatesContent::-webkit-scrollbar{ width:6px; }
+#updatesContent::-webkit-scrollbar-track{ background:transparent; }
+#updatesContent::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg,#7c3aed,#a78bfa);
+    border-radius:99px;
+}
+
 
 /* Header layout */
 .updates-header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:18px;
+margin-bottom:8px;
+flex-shrink:0;
 }
 
 /* Settings-like glass button */
