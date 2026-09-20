@@ -364,12 +364,7 @@ body.light-mode select#format option {
             --card: rgba(255, 255, 255, 0.03);
             --text: #e5e7eb;
             --border: rgba(255, 255, 255, 0.1);
-            --nav-bg: --purple: #7c3aed;
-            --purple-light: #ddd6fe;
-            --bg: #05070f;
-            --card: rgba(255, 255, 255, 0.03);
-            --text: #e5e7eb;
-            --border: rgba(255, 255, 255, 0.1);
+            --nav-bg: rgba(5, 7, 15, 0.6);
         }
 
         /* LIGHT MODE OVERRIDES */
@@ -378,7 +373,7 @@ body.light-mode select#format option {
             --card: #ffffff;
             --text: #111827;
             --border: rgba(0, 0, 0, 0.1);
-            --nav-bg: rgba(255, 255, 255, 0.9);
+            --nav-bg: rgba(255, 255, 255, 0.78);
         }
 
         /* TRUE BLACK MODE */
@@ -387,7 +382,7 @@ body.light-mode select#format option {
             --card: rgba(255,255,255,0.03);
             --text: #F5F5F5;
             --border: rgba(212,175,55,0.25);
-            --nav-bg: rgba(10,10,10,0.92);
+            --nav-bg: rgba(10,10,10,0.6);
             --purple: #D4AF37;
             --purple-light: #ffe599;
             background: #0A0A0A !important;
@@ -439,7 +434,9 @@ body.light-mode select#format option {
             justify-content: space-between;
             padding: 10px 5% 10px 1%;
             background: var(--nav-bg);
-            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(18px) saturate(1.4);
+            backdrop-filter: blur(18px) saturate(1.4);
+            transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -452,10 +449,11 @@ body.light-mode select#format option {
             height: 50px;
         }
 
-        .main-logo {
-            height: 420%;
+.main-logo {
+            height: 26px;
             width: auto;
             object-fit: contain;
+            margin-left: 4%;
         }
 
         .nav-links {
@@ -840,6 +838,70 @@ body.light-mode .neon-select:hover {
         opacity: 0;
         visibility: hidden;
     }
+}
+
+
+/* ===========================
+   NAV TABS: icons + mobile scrollbar
+=========================== */
+.nav-links a { display: inline-flex; align-items: center; gap: 6px; }
+.nav-links a .nav-ico { flex-shrink: 0; opacity: .85; transition: transform .2s ease, opacity .2s ease; }
+.nav-links a:hover .nav-ico { opacity: 1; transform: translateY(-1px); }
+.nav-links a.nav-reader { font-weight: 700; }
+.nav-links a.nav-active { color: #fff; background: rgba(124,58,237,0.28); box-shadow: inset 0 0 0 1px rgba(167,139,250,0.35); }
+body.light-mode .nav-links a.nav-active { color: #6d28d9; background: rgba(124,58,237,0.12); box-shadow: inset 0 0 0 1px rgba(124,58,237,0.3); }
+
+/* Scrollbar: phones & tablets only. Track = site background, thumb = purple */
+@media (max-width: 768px) {
+    .nav-links {
+        justify-content: flex-start !important;
+        overflow-x: auto; overflow-y: hidden;
+        scroll-behavior: smooth; scroll-snap-type: x proximity;
+        overscroll-behavior-x: contain;
+        padding: 2px 12px 8px !important;
+        margin: 0 -14px;               /* let the row bleed to screen edges */
+        width: calc(100% + 28px) !important;
+        /* soft edge fade = "there is more this way" */
+    }
+    .nav-links a { flex: 0 0 auto; scroll-snap-align: center; font-size: 12.5px !important; padding: 7px 12px !important; gap: 6px; }
+    .nav-links a .nav-ico { width: 15px; height: 15px; }
+    body.black-mode .nav-links::-webkit-scrollbar-track { background: #0A0A0A; }
+    body.black-mode .nav-links::-webkit-scrollbar-thumb { background: linear-gradient(90deg,#b8960c,#D4AF37); }
+    body.black-mode .nav-links a.nav-active { color: #D4AF37; background: rgba(212,175,55,0.14); box-shadow: inset 0 0 0 1px rgba(212,175,55,0.4); }
+}
+
+@media (max-width: 768px) {
+    nav { position: sticky; }
+    nav::before, nav::after {
+        content: ''; position: absolute; bottom: 14px; width: 26px; height: 34px; z-index: 2; pointer-events: none;
+    }
+    nav::before { left: 0;  background: linear-gradient(90deg,  var(--nav-fade, rgba(5,7,15,.96)), transparent); }
+    nav::after  { right: 0; background: linear-gradient(270deg, var(--nav-fade, rgba(5,7,15,.96)), transparent); }
+    body.light-mode nav { --nav-fade: rgba(255,255,255,.95); }
+    body.black-mode nav { --nav-fade: rgba(10,10,10,.96); }
+}
+
+/* Scrollbar for the mobile nav row.
+   Chrome / Edge / Samsung Internet / Safari use the ::-webkit-scrollbar rules (they also let us remove the arrow buttons).
+   Firefox ignores those, so it gets scrollbar-width / scrollbar-color instead. */
+@media (max-width: 768px) {
+    .nav-links::-webkit-scrollbar { height: 5px; }
+    .nav-links::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+    .nav-links::-webkit-scrollbar-track { background: var(--bg); border-radius: 99px; }
+    .nav-links::-webkit-scrollbar-thumb { background: linear-gradient(90deg,#7c3aed,#a78bfa); border-radius: 99px; }
+    body.black-mode .nav-links::-webkit-scrollbar-track { background: #0A0A0A; }
+    body.black-mode .nav-links::-webkit-scrollbar-thumb { background: linear-gradient(90deg,#b8960c,#D4AF37); }
+}
+@-moz-document url-prefix() {
+    @media (max-width: 768px) {
+        .nav-links { scrollbar-width: thin; scrollbar-color: #7c3aed var(--bg); }
+        body.black-mode .nav-links { scrollbar-color: #D4AF37 #0A0A0A; }
+    }
+}
+
+/* Desktop / laptop: no scrollbar at all */
+@media (min-width: 769px) {
+    .nav-links { overflow: visible; }
 }
 
 /* ===========================
@@ -2265,6 +2327,42 @@ body.light-mode .ad-title { color: #111827; }
     transition: all 0.2s ease;
     white-space: nowrap;
 }
+/* inline SVG icons inside buttons/labels */
+
+
+/* ===== Translucent glass nav: clearer at the very top, frosted once you scroll ===== */
+nav.nav-scrolled { box-shadow: 0 8px 30px rgba(0,0,0,0.28); border-bottom-color: rgba(167,139,250,0.22); }
+body.light-mode nav.nav-scrolled { box-shadow: 0 8px 26px rgba(80,60,140,0.14); border-bottom-color: rgba(124,58,237,0.16); }
+/* browsers without backdrop-filter get a slightly denser tint so text stays readable */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    :root { --nav-bg: rgba(5, 7, 15, 0.9); }
+    body.light-mode { --nav-bg: rgba(255,255,255,0.94); }
+}
+
+/* ===== In-button progress (mgBusy) ===== */
+.mg-spin { display:inline-block; width:16px; height:16px; border-radius:50%; flex-shrink:0;
+    border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; animation:mgSpin .7s linear infinite; }
+@keyframes mgSpin { to { transform:rotate(360deg); } }
+button.mg-busy { display:inline-flex !important; align-items:center; justify-content:center; gap:10px;
+    opacity:.92; cursor:progress !important; pointer-events:none; filter:saturate(.9); }
+button.mg-busy .mg-busy-text { font-weight:700; }
+@media (prefers-reduced-motion: reduce) { .mg-spin { animation-duration:1.6s; } }
+
+.btn-ico { flex-shrink: 0; vertical-align: -3px; }
+.settings-modal-title .btn-ico { color: #a78bfa; -webkit-text-fill-color: #a78bfa; margin-right: 8px; vertical-align: -3px; }
+body.light-mode .settings-modal-title .btn-ico { color: #7c3aed; -webkit-text-fill-color: #7c3aed; }
+body.black-mode .settings-modal-title .btn-ico { color: #D4AF37; -webkit-text-fill-color: #D4AF37; }
+.btn-primary:has(.btn-ico), .sett-vip-btn:has(.btn-ico), .sett-feedback-btn:has(.btn-ico),
+.pr-icon-btn:has(.btn-ico), .pr-upload-btn:has(.btn-ico), .sett-box-label:has(.btn-ico),
+.pr-sidebar-section:has(.btn-ico) { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.btn-primary:has(.btn-ico) { display: inline-flex; }
+.theme-card-icon .theme-ico { display: block; margin: 0 auto; }
+.vl-crown .vl-crown-svg { color: #ffd700; filter: drop-shadow(0 0 14px rgba(255,215,0,.65)); }
+.tool-chip .chip-ico { flex-shrink: 0; color: #a78bfa; transition: transform .2s ease, color .2s ease; }
+.tool-chip:hover .chip-ico { color: #c4b5fd; transform: scale(1.12) rotate(-4deg); }
+body.light-mode .tool-chip { color: #3b2f63; background: #fff; border-color: rgba(124,58,237,0.28); box-shadow: 0 1px 2px rgba(60,40,120,0.06); }
+body.light-mode .tool-chip:hover { background: rgba(124,58,237,0.08); border-color: rgba(124,58,237,0.55); }
+body.light-mode .tool-chip .chip-ico { color: #7c3aed; }
 .tool-chip:hover {
     background: rgba(124,58,237,0.14);
     border-color: rgba(124,58,237,0.5);
@@ -2291,6 +2389,11 @@ body.light-mode .ad-title { color: #111827; }
    MOBILE RESPONSIVE OVERRIDES
    ============================================================ */
 html, body { overflow-x: hidden; }
+/* overflow-x:hidden on <body> silently disables position:sticky (nav scrolled away).
+   'clip' hides sideways overflow WITHOUT creating a scroll container, so the nav stays pinned. */
+@supports (overflow: clip) {
+    html, body { overflow-x: clip; }
+}
 
 @media (max-width: 860px) {
     .pr-glass-panel { max-width: 96vw; }
@@ -2299,11 +2402,9 @@ html, body { overflow-x: hidden; }
 @media (max-width: 768px) {
     /* ── Nav ── */
     nav { padding: 10px 14px; flex-wrap: wrap; row-gap: 8px; }
-    .logo-group { height: 30px; }
-    .main-logo { height: auto; max-height: 30px; width: auto; max-width: 130px; }
-    .nav-links { order: 3; width: 100%; justify-content: center; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 2px; padding-bottom: 2px; }
-    .nav-links::-webkit-scrollbar { height: 3px; }
-    .nav-links a { font-size: 11.5px; padding: 6px 10px; }
+    .logo-group { height: auto; }
+    .main-logo { height: 24px; max-height: none; width: auto; max-width: none; margin-left: 2px; }
+    .nav-links { order: 3; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; gap: 4px; }
     .settings-btn span { display: none; }
     .settings-btn { padding: 9px; }
 
@@ -2360,7 +2461,6 @@ html, body { overflow-x: hidden; }
     .upload-area { padding: 20px 12px; }
     #introOverlay h1 { font-size: 1.9rem; letter-spacing: 2px; }
 
-    .nav-links a { font-size: 10.5px; padding: 5px 8px; }
 
     .file-item { padding: 10px !important; gap: 8px !important; }
     .file-item select { width: 84px !important; font-size: 11px !important; }
@@ -2378,7 +2478,7 @@ html, body { overflow-x: hidden; }
 
 <!-- VIP LOADING SCREEN -->
 <div id="vipLoader">
-  <div class="vl-crown">👑</div>
+  <div class="vl-crown"><svg class="vl-crown-svg" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8l4.5 4L12 4l5.5 8L22 8l-2 11H4z"/><line x1="4" y1="22" x2="20" y2="22"/></svg></div>
   <div class="vl-title">Switching to VIP</div>
   <div class="vl-spinner"></div>
   <div class="vl-bar-wrap"><div class="vl-bar" id="vlBar"></div></div>
@@ -2502,21 +2602,21 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <div id="settingsModal">
       <div id="settingsModalInner">
         <div class="settings-modal-header">
-            <span class="settings-modal-title">⚙️ Settings <span class="premium-tag">✦ Ultra Premium</span></span>
+            <span class="settings-modal-title"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span> <span class="premium-tag">✦ Ultra Premium</span></span>
             <button class="settings-close-btn" onclick="closeSettings()">✕</button>
         </div>
 
         <!-- APPEARANCE -->
         <div class="sett-box">
-            <div class="sett-box-label">🎨 Appearance — Theme</div>
+            <div class="sett-box-label"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2a10 10 0 1 0 0 20 2 2 0 0 0 2-2v-1a2 2 0 0 1 2-2h1.5a4.5 4.5 0 0 0 4.5-4.5C22 6 17.5 2 12 2z"/></svg><span>Appearance — Theme</span></div>
             <div class="theme-cards">
                 <div class="theme-card dark-card active" id="darkCard" onclick="setTheme('dark')">
-                    <span class="theme-card-icon">🌙</span>
+                    <span class="theme-card-icon"><svg class="btn-ico theme-ico" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
                     <span class="theme-card-name">Dark Mode</span>
                     <span class="active-badge">✦ On</span>
                 </div>
                 <div class="theme-card light-card" id="lightCard" onclick="setTheme('light')">
-                    <span class="theme-card-icon">☀️</span>
+                    <span class="theme-card-icon"><svg class="btn-ico theme-ico" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
                     <span class="theme-card-name">Light Mode</span>
                     <span class="active-badge">✦ On</span>
                 </div>
@@ -2525,27 +2625,27 @@ if(update !== updatesArray[updatesArray.length - 1]){
 
         <!-- UPDATES -->
         <div class="sett-box">
-            <div class="sett-box-label">🔔 Updates</div>
+            <div class="sett-box-label"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span>Updates</span></div>
             <div class="sett-row" onclick="openUpdates()" style="cursor:pointer;">
                 <div class="sett-row-left">
                     <div class="sett-row-title">App Updates</div>
                 </div>
                 <div class="bell-wrapper" style="margin-left:auto; flex-shrink:0;">
-                    🔔<span id="updateDot" class="blue-dot"></span>
+                    <svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="updateDot" class="blue-dot"></span>
                 </div>
             </div>
         </div>
 
         <!-- VIP ACCESS -->
         <div class="sett-box sett-box-gold">
-            <div class="sett-box-label" style="color:#D4AF37;">👑 VIP Access</div>
-            <p style="font-size:13px; color:#6b7280; margin:0 0 14px 0;">Unlock all exclusive tools, HD exports, <strong style="color:#ffd700;">🚫 Ad-Free experience</strong>, and the full VIP experience.</p>
-            <button onclick="launchVipLoader()" class="sett-vip-btn">👑 Switch to VIP</button>
+            <div class="sett-box-label" style="color:#D4AF37;"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8l4.5 4L12 4l5.5 8L22 8l-2 11H4z"/><line x1="4" y1="22" x2="20" y2="22"/></svg><span>VIP Access</span></div>
+            <p style="font-size:13px; color:#6b7280; margin:0 0 14px 0;">Unlock all exclusive tools, HD exports, <strong style="color:#ffd700;"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/></svg> Ad-Free experience</strong>, and the full VIP experience.</p>
+            <button onclick="launchVipLoader()" class="sett-vip-btn"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8l4.5 4L12 4l5.5 8L22 8l-2 11H4z"/><line x1="4" y1="22" x2="20" y2="22"/></svg><span>Switch to VIP</span></button>
         </div>
 
         <!-- BETA -->
         <div class="sett-box">
-            <div class="sett-box-label">🧪 Beta</div>
+            <div class="sett-box-label"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2h6"/><path d="M10 2v6L4.5 18a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8V2"/></svg><span>Beta</span></div>
             <div style="padding:14px 16px;border-radius:14px;border:1px solid rgba(124,58,237,0.25);background:rgba(124,58,237,0.05);margin-bottom:4px;">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
                 <div style="flex:1;">
@@ -2573,9 +2673,9 @@ if(update !== updatesArray[updatesArray.length - 1]){
 
         <!-- FEEDBACK -->
         <div class="sett-box">
-            <div class="sett-box-label">💬 Feedback</div>
+            <div class="sett-box-label"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Feedback</span></div>
             <p style="font-size:13px; color:#6b7280; margin:0 0 14px 0;">Help us improve MediaGrabber Pro by sharing your thoughts.</p>
-            <button onclick="window.location.href='index (2).html'" class="sett-feedback-btn">💬 Give Feedback</button>
+            <button onclick="window.location.href='index (2).html'" class="sett-feedback-btn"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Give Feedback</span></button>
         </div>
 
       </div><!-- end settingsModalInner -->
@@ -2585,7 +2685,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
 <!-- ====== BETA WELCOME MODAL ====== -->
 <div id="betaWelcomeOverlay" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(5,7,15,0.75); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px;">
   <div style="max-width:400px; width:100%; background:linear-gradient(145deg,#0d0f1c,#05070f); border:1px solid rgba(124,58,237,0.35); border-radius:20px; padding:30px 26px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(124,58,237,0.18);">
-    <div style="font-size:38px; margin-bottom:12px;">🧪</div>
+    <div style="margin-bottom:12px; color:#a78bfa;"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2h6"/><path d="M10 2v6L4.5 18a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8V2"/></svg></div>
     <div style="font-size:19px; font-weight:800; color:#e9d5ff; margin-bottom:12px;">You're a Beta Tester!</div>
     <div style="font-size:13.5px; line-height:1.75; color:#9ca3af; margin-bottom:24px;">
       You'll see new features before the public does. Give your feedback to the developers to help them improve. You can leave the beta test at any time.
@@ -2598,7 +2698,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
 <div id="updatesOverlay">
   <div id="updatesModal">
       <div class="updates-header">
-          <span>🔥 Latest Updates</span>
+          <span><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Latest Updates</span></span>
           <button id="closeUpdatesBtn" class="settings-style-btn">
     ✖
   </button>
@@ -2623,7 +2723,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
             <span class="pr-label">What's your name?</span>
             <input class="pr-input" id="prNameInput" type="text" placeholder="Enter your name to get started" autocomplete="off" onkeydown="if(event.key==='Enter') doEnterName()">
             <button class="pr-btn" onclick="doEnterName()" style="margin-top:14px;">
-                ✨ Enter PDF Reader
+                <svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg><span>Enter PDF Reader</span>
             </button>
         </div>
     </div>
@@ -2635,17 +2735,17 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <div class="pr-header">
         <span class="pr-header-title" style="display:inline-flex;align-items:center;gap:7px;"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> PDF Reader</span>
         <div class="pr-header-user">
-            <span>👤</span><span id="prUserName">Reader</span>
+            <span><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span id="prUserName">Reader</span>
         </div>
         <div class="pr-header-btns">
-            <button class="pr-icon-btn" onclick="document.getElementById('prFileInput').click()">➕ Open PDF</button>
+            <button class="pr-icon-btn" onclick="document.getElementById('prFileInput').click()"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Open PDF</span></button>
             <input type="file" id="prFileInput" accept="application/pdf" hidden onchange="loadPDFFile(this)">
             <!-- Close current PDF — only shown when a PDF is loaded -->
             <button class="pr-icon-btn" id="prClosePdfBtn" onclick="closePDF()" style="display:none; border-color:rgba(251,191,36,0.3); background:rgba(251,191,36,0.08); color:#fbbf24;" title="Close this PDF">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 Close PDF
             </button>
-            <button class="pr-icon-btn danger" onclick="doLogout()" title="Leave PDF Reader">⏏ Logout</button>
+            <button class="pr-icon-btn danger" onclick="doLogout()" title="Leave PDF Reader"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>Logout</span></button>
             <button class="pr-icon-btn" onclick="closePDFReader()" style="border-color:rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#9ca3af;" title="Close PDF Reader">✕ Close Reader</button>
         </div>
     </div>
@@ -2653,11 +2753,11 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <div class="pr-body">
         <!-- SIDEBAR: Continue Reading -->
         <div class="pr-sidebar">
-            <div class="pr-sidebar-section">📚 Continue Reading</div>
+            <div class="pr-sidebar-section"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Continue Reading</span></div>
             <div id="prHistoryList"><p style="font-size:12px;color:#4b5563;line-height:1.6;">No history yet.<br>Open a PDF to start.</p></div>
             <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,0.2),transparent);margin:4px 0;"></div>
             <div class="pr-sidebar-section">Open New</div>
-            <button class="pr-upload-btn" onclick="document.getElementById('prFileInput').click()">📂 Upload PDF</button>
+            <button class="pr-upload-btn" onclick="document.getElementById('prFileInput').click()"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>Upload PDF</span></button>
 
             <!-- spacer pushes toggle to bottom -->
             <div style="flex:1;"></div>
@@ -2672,7 +2772,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
             ">
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
                     <div>
-                        <div style="font-size:11px;font-weight:800;color:#a78bfa;letter-spacing:0.5px;">💾 Save History</div>
+                        <div style="font-size:11px;font-weight:800;color:#a78bfa;letter-spacing:0.5px;"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save History</div>
                         <div style="font-size:10px;color:#4b5563;margin-top:2px;line-height:1.4;" id="prStorageDesc">Stores reading progress locally</div>
                     </div>
                     <div class="pr-toggle-track" id="prStorageTrack" onclick="toggleStorage()">
@@ -2711,16 +2811,16 @@ if(update !== updatesArray[updatesArray.length - 1]){
 
 <nav>
     <div class="logo-group">
-        <img id="logoImg" src="dark mode.png" alt="Media Grabber" class="main-logo">
+        <img id="logoImg" src="dark%20mode.png" alt="Media Grabber" class="main-logo">
     </div>
 
-    <div class="nav-links">
-        <a href="#converter">Converter</a>
-        <a href="#pdf">PDF Tool</a>
-        <a href="#ocr">Smart OCR</a>
-        <a href="#unlocker">PDF Unlocker</a>
-        <a href="#" onclick="openPDFReaderGate(); return false;" style= "font-weight:700; display:inline-flex; align-items:center; gap:5px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> PDF Reader</a>
-        <a href="/blog.html">Blog</a>
+    <div class="nav-links" id="navLinks">
+        <a href="#converter"><svg class="nav-ico" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>Converter</span></a>
+        <a href="#pdf"><svg class="nav-ico" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg><span>PDF Tool</span></a>
+        <a href="#ocr"><svg class="nav-ico" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg><span>Smart OCR</span></a>
+        <a href="#unlocker"><svg class="nav-ico" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><span>PDF Unlocker</span></a>
+        <a href="#" class="nav-reader" onclick="openPDFReaderGate(); return false;"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>PDF Reader</span></a>
+        <a href="https://mgpblog.vercel.app/" target="_blank" rel="noopener"><svg class="nav-ico" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Blog</span></a>
     </div>
 
     <button class="settings-btn" id="settingsBtn" title="Settings" onclick="openSettings()">
@@ -2748,14 +2848,13 @@ if(update !== updatesArray[updatesArray.length - 1]){
 
     <!-- ✦ ALL TOOLS QUICK NAV ✦ -->
     <div id="allToolsGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:10px; margin-top:22px; max-width:760px; margin-left:auto; margin-right:auto;">
-        <a href="#converter" class="tool-chip" onclick="recordToolUse('Image Converter','#converter')">🖼️ Image Converter</a>
-        <a href="#pdf" class="tool-chip" onclick="recordToolUse('Image to PDF','#pdf')">📄 Image to PDF</a>
-        <a href="#pdf2jpg" class="tool-chip" onclick="recordToolUse('PDF to JPG','#pdf2jpg')">🖨️ PDF to JPG</a>
-        <a href="#pdfmerge" class="tool-chip" onclick="recordToolUse('Merge PDF','#pdfmerge')">🧩 Merge PDF</a>
-        <a href="#ocr" class="tool-chip" onclick="recordToolUse('Smart OCR','#ocr')">🔍 Smart OCR</a>
-        <a href="#unlocker" class="tool-chip" onclick="recordToolUse('PDF Unlocker','#unlocker')">🔓 PDF Unlocker</a>
-        <a href="#heic2jpg" class="tool-chip" onclick="recordToolUse('HEIC to JPG','#heic2jpg')">📱 HEIC to JPG</a>
-        <a href="#qrcode" class="tool-chip" onclick="recordToolUse('QR Code Generator','#qrcode')">▦ QR Generator</a>
+        <a href="#converter" class="tool-chip" onclick="recordToolUse('Image Converter','#converter')"><svg class="chip-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-4.6-4.6a1.5 1.5 0 0 0-2.1 0L5 19.5"/></svg><span>Image Converter</span></a>
+        <a href="#pdf" class="tool-chip" onclick="recordToolUse('Image to PDF','#pdf')"><svg class="chip-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="10" cy="13" r="1.4"/><path d="m16 18-2.6-2.6a1 1 0 0 0-1.4 0L8 19"/></svg><span>Image to PDF</span></a>
+        <a href="#pdfmerge" class="tool-chip" onclick="recordToolUse('Merge PDF','#pdfmerge')"><svg class="chip-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h9a2 2 0 0 1 2 2v9"/><path d="m16 3 3 3-3 3"/><path d="M16 18H7a2 2 0 0 1-2-2V7"/><path d="m8 21-3-3 3-3"/></svg><span>Merge PDF</span></a>
+        <a href="#ocr" class="tool-chip" onclick="recordToolUse('Smart OCR','#ocr')"><svg class="chip-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 9h8"/><path d="M8 12.5h8"/><path d="M8 16h5"/></svg><span>Smart OCR</span></a>
+        <a href="#unlocker" class="tool-chip" onclick="recordToolUse('PDF Unlocker','#unlocker')"><svg class="chip-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.6-2"/><circle cx="12" cy="16.5" r="1.2"/></svg><span>PDF Unlocker</span></a>
+        <a href="#heic2jpg" class="tool-chip" onclick="recordToolUse('HEIC to JPG','#heic2jpg')"><svg class="chip-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/><path d="m9 12 2-2.2 1.5 1.6L14 10l2 2.4"/></svg><span>HEIC to JPG</span></a>
+        <a href="#qrcode" class="tool-chip" onclick="recordToolUse('QR Code Generator','#qrcode')"><svg class="chip-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z"/><path d="M20 14v.01"/><path d="M14 20h.01"/><path d="M20 20h1v1"/><path d="M17 17v3h3"/></svg><span>QR Generator</span></a>
     </div>
 
     <!-- ✦ VIP GLASSMORPHISM BANNER ✦ -->
@@ -2891,7 +2990,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
                 display:flex;align-items:center;justify-content:center;font-size:26px;
                 box-shadow:0 0 0 1px rgba(255,255,200,0.3),0 8px 28px rgba(255,215,0,0.65),inset 0 2px 0 rgba(255,255,255,0.38),inset 0 -2px 0 rgba(0,0,0,0.35);
                 animation:vipBadge 3.5s ease-in-out infinite;
-              ">👑
+              "><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="#3a1f00" stroke="#3a1f00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position:relative;filter:drop-shadow(0 1px 0 rgba(255,255,255,.45));"><path d="M2 8l4.5 4L12 4l5.5 8L22 8l-2 11H4z"/><line x1="4" y1="22" x2="20" y2="22"/></svg>
                 <div style="position:absolute;top:5px;left:6px;right:6px;height:30%;background:rgba(255,255,255,0.22);border-radius:9px;pointer-events:none;"></div>
                 <div style="position:absolute;bottom:3px;left:20%;right:20%;height:1px;background:rgba(255,215,0,0.9);box-shadow:0 0 6px #ffd700;"></div>
               </div>
@@ -2908,11 +3007,11 @@ if(update !== updatesArray[updatesArray.length - 1]){
               <div style="font-size:19px;font-weight:900;background:linear-gradient(135deg,#ffd700 0%,#ffec80 20%,#ffa500 45%,#ffe066 65%,#ffd700 100%);background-size:200% auto;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;animation:vipTextGlow 3s ease-in-out infinite,vipRainbow 4s linear infinite;font-family:'Cinzel Decorative',serif;">Wanna Switch to VIP?</div>
               <!-- Feature chips -->
               <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;">
-                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">⚙️ Base64</span>
-                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">🔬 Metadata</span>
-                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">⚡ Binary</span>
-                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);">🎨 Palette</span>
-                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.4);backdrop-filter:blur(5px);color:#ffd700;">🚫 Ad-Free</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:3px;"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg> Base64</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:3px;"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Metadata</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:3px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Binary</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.18);backdrop-filter:blur(5px);"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:3px;"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2a10 10 0 1 0 0 20 2 2 0 0 0 2-2v-1a2 2 0 0 1 2-2h1.5a4.5 4.5 0 0 0 4.5-4.5C22 6 17.5 2 12 2z"/></svg> Palette</span>
+                <span class="vipChip" style="font-size:8px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.4);backdrop-filter:blur(5px);color:#ffd700;"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/></svg> Ad-Free</span>
               </div>
             </div>
           </div>
@@ -2988,8 +3087,8 @@ if(update !== updatesArray[updatesArray.length - 1]){
     </div>
     <!-- Content -->
     <div class="ad-content">
-     <div class="ad-title">ZIP — Connect the Dots, Beat the Clock ⚡</div>
-     <div class="ad-desc">🎯 3 difficulty levels · Daily credits · Win streaks · Compete globally · Free to play forever</div> <br>
+     <div class="ad-title">ZIP — Connect the Dots, Beat the Clock</div>
+     <div class="ad-desc">3 difficulty levels · Daily credits · Win streaks · Compete globally · Free to play forever</div> <br>
     <!-- CTA -->
     <button class="ad-cta" onclick="event.stopPropagation();window.open('https://codemaster2013.github.io/zip/','_blank')">Play Now →</button>
   </div>
@@ -3004,17 +3103,17 @@ if(update !== updatesArray[updatesArray.length - 1]){
     </label>
 
     <div id="globalFormatContainer" style="display:none; margin-top:20px; padding:15px; border: 1px dashed var(--purple); border-radius:12px; background:rgba(124, 58, 237, 0.05);">
-        <p style="margin:0 0 10px 0; font-size:13px; font-weight:700; color:var(--purple-neon);">⚡ BATCH ACTION: Set all files to:</p>
+        <p style="margin:0 0 10px 0; font-size:13px; font-weight:700; color:var(--purple-neon); display:flex; align-items:center; gap:6px;"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>BATCH ACTION: Set all files to:</span></p>
         <select id="globalFormat" onchange="setAllFormats(this.value)" class="neon-select">
             <option value="" disabled selected>Select format for all...</option>
-            <option value="image/png">PNG (MOST USED 👑)</option>
-            <option value="image/jpeg">JPG / JPEG (MOST USED 👑)</option>
+            <option value="image/png">PNG (MOST USED)</option>
+            <option value="image/jpeg">JPG / JPEG (MOST USED)</option>
             <option value="image/webp">WEBP</option> 
             <option value="image/bmp">BMP</option>
             <option value="image/gif">GIF</option>
             <option value="image/tiff">TIFF</option>
             <option value="image/avif">AVIF</option>
-            <option value="image/heif">HEIF (IPHONE 📱)</option>
+            <option value="image/heif">HEIF (iPhone)</option>
             <option value="image/svg+xml">SVG</option>
             <option value="image/vnd.adobe.photoshop">PSD</option>
         </select>
@@ -3046,27 +3145,17 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <button class="btn-primary" onclick="makePDF()">Generate PDF</button>
 </div>
 
-<h2 id="pdf2jpg" class="section-title">PDF to JPG</h2>
-<div class="card">
-    <p class="subtitle" style="text-align:left; margin-bottom:15px">Turn every page of a PDF into a JPG image. Multiple pages download as a ZIP.</p>
-    <label class="upload-area" for="pdf2jpgInput">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--purple)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <p style="margin-top:5px; font-weight:600">Click to upload PDF(s)</p>
-        <input type="file" id="pdf2jpgInput" multiple accept="application/pdf" hidden>
-    </label>
-    <p id="pdf2jpgStatus" style="font-size:12.5px; color:#9ca3af; margin-top:10px; min-height:16px;"></p>
-    <button class="btn-primary" onclick="convertPdfToJpg()">Convert to JPG</button>
-</div>
-
 <h2 id="pdfmerge" class="section-title">Merge PDF</h2>
 <div class="card">
-    <p class="subtitle" style="text-align:left; margin-bottom:15px">Combine multiple PDFs into one — in the order you upload them.</p>
+    <p class="subtitle" style="text-align:left; margin-bottom:15px">Combine multiple PDFs into one. Add files one at a time or together, then reorder as needed.</p>
     <label class="upload-area" for="pdfMergeInput">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--purple)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p style="margin-top:5px; font-weight:600">Click to add 2+ PDFs</p>
-        <input type="file" id="pdfMergeInput" multiple accept="application/pdf" hidden onchange="renderMergeList(this)">
+        <p style="margin-top:4px; font-size:12px; opacity:.7">You can add files one by one or all at once</p>
+        <input type="file" id="pdfMergeInput" multiple accept="application/pdf" hidden onchange="addMergeFiles(this)">
     </label>
-    <div id="pdfMergeList" class="file-list" style="display:none; margin-top:20px;"></div>
+    <div id="pdfMergeCount" style="display:none; margin-top:16px; font-size:12.5px; font-weight:700; letter-spacing:.3px;"></div>
+    <div id="pdfMergeList" class="file-list" style="display:none; margin-top:8px;"></div>
     <input id="pdfMergeName" placeholder="Merged File Name" style="margin-top:15px;">
     <button class="btn-primary" onclick="mergePDFs()">Merge & Download</button>
 </div>
@@ -3099,7 +3188,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
         <input type="file" id="ocrInput" accept="image/*,application/pdf" hidden>
     </label>
 
-<div id="ocrStatus" style="margin-top:10px; font-size:14px; color:var(--purple)">
+<div id="ocrFileCount" style="margin-top:10px; font-size:14px; color:var(--purple)">
     <span id="fileCountText">No files chosen</span>
 </div>
 
@@ -3111,9 +3200,9 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <textarea id="ocrResult" placeholder="Extracted text will appear here..." style="margin-top: 20px;"></textarea>
     
     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px">
-        <button class="btn-primary" onclick="copyOCRText(event)">📋 Copy</button>
-        <button class="btn-primary" onclick="downloadText()">📄 .TXT</button>
-        <button class="btn-primary" onclick="downloadOCRPDF()">📕 .PDF</button>
+        <button class="btn-primary" onclick="copyOCRText(event)"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button>
+        <button class="btn-primary" onclick="downloadText()"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg><span>.TXT</span></button>
+        <button class="btn-primary" onclick="downloadOCRPDF()"><svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h1.5a1.5 1.5 0 0 0 0-3H9v5"/></svg><span>.PDF</span></button>
     </div>
 </div><br> <br>
 
@@ -3149,7 +3238,6 @@ if(update !== updatesArray[updatesArray.length - 1]){
         <input type="file" id="heicInput" multiple accept=".heic,.heif,image/heic,image/heif" hidden onchange="document.getElementById('heicInfo').innerText = this.files.length + ' file(s) selected'">
     </label>
     <p id="heicInfo" style="font-size:12.5px; color:#9ca3af; margin-top:10px;"></p>
-    <p id="heicStatus" style="font-size:12.5px; color:var(--purple-neon); margin-top:6px; min-height:16px;"></p>
     <button class="btn-primary" onclick="convertHeicToJpgTool()">Convert to JPG</button>
 </div>
 
@@ -3194,11 +3282,11 @@ async function submitSettingsFeedback() {
     var message = document.getElementById('fbMsg').value.trim();
     var btn = document.getElementById('fbSubmitBtn');
 
-    if (_fbRating === 0) { alert('Please select a star rating.'); return; }
+    if (_fbRating === 0) { mgAlert('Please select a star rating.'); return; }
 
     if (_fbRating !== 5) {
-        if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-        if (!message) { alert('Please enter your feedback message.'); return; }
+        if (!email || !email.includes('@')) { mgAlert('Please enter a valid email.'); return; }
+        if (!message) { mgAlert('Please enter your feedback message.'); return; }
     }
 
     btn.disabled = true;
@@ -3232,7 +3320,7 @@ async function submitSettingsFeedback() {
             document.getElementById('fbSuccess').style.display = 'none';
         }, 4000);
     } catch(e) {
-        alert('Submission failed. Please try again.');
+        mgAlert('Submission failed. Please try again.');
         btn.disabled = false;
         btn.textContent = 'Send Feedback ✉️';
     }
@@ -3255,8 +3343,8 @@ function closeSettingsOutside(e) {
 
 function setTheme(mode) {
     const logoImg = document.getElementById('logoImg');
-    const darkLogo = "dark mode.png";
-    const lightLogo = "light mode.png";
+    const darkLogo = "dark%20mode.png";
+    const lightLogo = "light%20mode.png";
     document.body.classList.remove('light-mode', 'black-mode');
     if (mode === 'light') {
         document.body.classList.add('light-mode');
@@ -3434,7 +3522,7 @@ async function convertImage() {
     const format = document.getElementById("format").value;
     const name = (document.getElementById("fileName").value || "mediagrabber-export");
 
-    if (!uploaded) return alert("Please select a file first");
+    if (!uploaded) return mgAlert("Please select a file first");
 
     const btn = document.querySelector("button[onclick='convertImage()']");
     btn.disabled = true;
@@ -3450,7 +3538,7 @@ async function convertImage() {
             console.error(e);
             btn.disabled = false;
             btn.innerText = "Convert & Download";
-            return alert("❌ Error processing HEIC file. Your browser might not support this conversion.");
+            return mgAlert("❌ Error processing HEIC file. Your browser might not support this conversion.");
         }
     }
 
@@ -3505,45 +3593,10 @@ function saveAs(blob, filename) {
     if (btn) { btn.disabled = false; btn.innerText = "Convert & Download"; }
 }
 
-async function makePDF() {
-    const files = document.getElementById("pdfImgs").files;
-    const pdfName = document.getElementById("pdfName").value || "merged-doc";
-    const password = document.getElementById("pdfPass").value;
-
-    if (!files.length) { alert("Upload images first"); return; }
-
-    const { jsPDF } = window.jspdf;
-
-    const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        encryption: password ? {
-            userPassword: password,
-            ownerPassword: password,
-            userPermissions: ["print", "modify", "copy", "annot-forms"]
-        } : undefined
-    });
-
-    for (let i = 0; i < files.length; i++) {
-        const imgData = await new Promise(resolve => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(files[i]);
-        });
-
-        if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 10, 10, 190, 270);
-    }
-
-    pdf.save(`${pdfName}.pdf`);
-    redirectToFeedback();
-}
-
 // ── BETA: Text to PDF ──
 function convertTextToPDF() {
     const text = document.getElementById("textToPdfInput").value;
-    if (!text.trim()) { alert("Please type or paste some text first."); return; }
+    if (!text.trim()) { mgAlert("Please type or paste some text first."); return; }
 
     const docName = document.getElementById("textToPdfName").value.trim() || "document";
     const size = document.getElementById("textToPdfSize").value || "a4";
@@ -3615,114 +3668,171 @@ function renderRecentTools() {
 }
 document.addEventListener('DOMContentLoaded', renderRecentTools);
 
-// ══════════════════════════════ PDF TO JPG ══════════════════════════════
-async function convertPdfToJpg() {
-    const input = document.getElementById('pdf2jpgInput');
-    const status = document.getElementById('pdf2jpgStatus');
-    const files = input.files;
-    if (!files.length) { alert('Please choose at least one PDF file.'); return; }
-
-    status.textContent = 'Processing...';
-    const zip = new JSZip();
-    let singleBlob = null, singleName = '', imgCount = 0;
-
-    for (const file of files) {
-        const buf = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-        const baseName = file.name.replace(/\.pdf$/i, '');
-        for (let i = 1; i <= pdf.numPages; i++) {
-            status.textContent = `Rendering ${baseName} — page ${i}/${pdf.numPages}...`;
-            const page = await pdf.getPage(i);
-            const viewport = page.getViewport({ scale: 2 });
-            const canvas = document.createElement('canvas');
-            canvas.width = viewport.width; canvas.height = viewport.height;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-            const base64 = dataUrl.split(',')[1];
-            const fname = pdf.numPages > 1 ? `${baseName}_page${i}.jpg` : `${baseName}.jpg`;
-            zip.file(fname, base64, { base64: true });
-            imgCount++;
-            if (imgCount === 1) {
-                singleBlob = await (await fetch(dataUrl)).blob();
-                singleName = fname;
-            }
-        }
-    }
-
-    if (imgCount === 1) {
-        _downloadBlob(singleBlob, singleName);
-    } else {
-        status.textContent = 'Zipping...';
-        const blob = await zip.generateAsync({ type: 'blob' });
-        _downloadBlob(blob, 'pdf-to-jpg.zip');
-    }
-    status.textContent = `✅ Done — ${imgCount} image(s) converted.`;
-    if (typeof redirectToFeedback === 'function') redirectToFeedback();
-}
-
 // ══════════════════════════════ MERGE PDF ══════════════════════════════
 let _mergeFiles = [];
-function renderMergeList(input) {
-    _mergeFiles = Array.from(input.files);
-    const list = document.getElementById('pdfMergeList');
-    if (!_mergeFiles.length) { list.style.display = 'none'; return; }
+
+function _mergeKey(f) { return f.name + '|' + f.size + '|' + f.lastModified; }
+
+// Adds newly-picked files to the list (keeps the ones already added)
+function addMergeFiles(input) {
+    var picked = Array.from(input.files || []);
+    input.value = '';   // reset so the SAME file can be picked again later, and to allow adding more
+    if (!picked.length) return;
+
+    var seen = {};
+    _mergeFiles.forEach(function(f){ seen[_mergeKey(f)] = true; });
+
+    var added = 0, dupes = 0, notPdf = 0;
+    picked.forEach(function(f){
+        var isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+        if (!isPdf) { notPdf++; return; }
+        if (seen[_mergeKey(f)]) { dupes++; return; }
+        seen[_mergeKey(f)] = true;
+        _mergeFiles.push(f);
+        added++;
+    });
+
+    renderMergeList();
+
+    if (notPdf) mgAlert(notPdf + ' file' + (notPdf > 1 ? 's were' : ' was') + ' skipped because only PDF files can be merged.');
+    else if (dupes && !added) mgAlert('That PDF is already in your list. Add a different one to merge.');
+}
+
+function removeMergeFile(i) {
+    _mergeFiles.splice(i, 1);
+    renderMergeList();
+}
+
+function moveMergeFile(i, dir) {
+    var j = i + dir;
+    if (j < 0 || j >= _mergeFiles.length) return;
+    var t = _mergeFiles[i]; _mergeFiles[i] = _mergeFiles[j]; _mergeFiles[j] = t;
+    renderMergeList();
+}
+
+function _fmtSize(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b / 1024).toFixed(0) + ' KB';
+    return (b / 1048576).toFixed(1) + ' MB';
+}
+function _escHtml(t) { return String(t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+function renderMergeList() {
+    var list  = document.getElementById('pdfMergeList');
+    var count = document.getElementById('pdfMergeCount');
+    if (!_mergeFiles.length) { list.style.display = 'none'; count.style.display = 'none'; list.innerHTML = ''; return; }
+
+    var n = _mergeFiles.length;
+    count.style.display = 'block';
+    if (n === 1) {
+        count.style.color = '#f87171';
+        count.textContent = '1 file added — add 1 or more to merge';
+    } else {
+        count.style.color = '#34d399';
+        count.textContent = n + ' files ready to merge';
+    }
+
+    var ic = 'width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
+    var btn = 'display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:inherit;cursor:pointer;padding:0;';
+
     list.style.display = 'block';
     list.innerHTML = _mergeFiles.map(function(f, i) {
-        return '<div class="file-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">' +
-               '<span style="font-size:13px;">' + (i+1) + '. ' + f.name + '</span></div>';
+        return '<div class="file-item" style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px; border-bottom:1px solid var(--border);">' +
+            '<span style="font-size:13px; min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + _escHtml(f.name) + '">' +
+                '<b style="color:#a78bfa;">' + (i + 1) + '.</b> ' + _escHtml(f.name) +
+                ' <span style="opacity:.55; font-size:11.5px;">· ' + _fmtSize(f.size) + '</span></span>' +
+            '<span style="display:inline-flex; gap:5px; flex-shrink:0;">' +
+                '<button type="button" aria-label="Move up" style="' + btn + (i === 0 ? 'opacity:.35;' : '') + '" onclick="moveMergeFile(' + i + ',-1)"><svg ' + ic + '><polyline points="18 15 12 9 6 15"/></svg></button>' +
+                '<button type="button" aria-label="Move down" style="' + btn + (i === n - 1 ? 'opacity:.35;' : '') + '" onclick="moveMergeFile(' + i + ',1)"><svg ' + ic + '><polyline points="6 9 12 15 18 9"/></svg></button>' +
+                '<button type="button" aria-label="Remove file" style="' + btn + 'color:#f87171;" onclick="removeMergeFile(' + i + ')"><svg ' + ic + '><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+            '</span></div>';
     }).join('');
 }
 
 async function mergePDFs() {
-    if (_mergeFiles.length < 2) { alert('Please add at least 2 PDF files to merge.'); return; }
-    const { PDFDocument } = PDFLib;
-    const merged = await PDFDocument.create();
-    for (const file of _mergeFiles) {
-        const buf = await file.arrayBuffer();
-        const src = await PDFDocument.load(buf);
-        const pages = await merged.copyPages(src, src.getPageIndices());
-        pages.forEach(function(p){ merged.addPage(p); });
+    if (_mergeFiles.length === 0) { mgAlert('Please add 2 or more PDF files to merge.'); return; }
+    if (_mergeFiles.length === 1) { mgAlert('You have added only 1 PDF. Add 1 or more files to merge them together.'); return; }
+
+    var mergeBtn = document.querySelector('#pdfmerge + .card .btn-primary');
+    var done = mgBusy(mergeBtn, 'Merging ' + _mergeFiles.length + ' PDFs...');
+
+    try {
+        const { PDFDocument } = PDFLib;
+        const merged = await PDFDocument.create();
+        for (const file of _mergeFiles) {
+            let src;
+            try {
+                src = await PDFDocument.load(await file.arrayBuffer());
+            } catch (e) {
+                var msg = /encrypt|password/i.test(String(e && e.message))
+                    ? '"' + file.name + '" is password-protected. Unlock it with the PDF Unlocker first.'
+                    : '❌ Could not read "' + file.name + '". The file may be damaged.';
+                mgAlert(msg);
+                return;
+            }
+            const pages = await merged.copyPages(src, src.getPageIndices());
+            pages.forEach(function(p){ merged.addPage(p); });
+        }
+        const bytes = await merged.save();
+        const name = (document.getElementById('pdfMergeName').value.trim() || 'merged') + '.pdf';
+        _downloadBlob(new Blob([bytes], { type: 'application/pdf' }), name);
+        if (typeof redirectToFeedback === 'function') redirectToFeedback();
+    } catch (err) {
+        mgAlert('❌ Merge failed. Please try again.');
+    } finally {
+        done();
     }
-    const bytes = await merged.save();
-    const name = (document.getElementById('pdfMergeName').value.trim() || 'merged') + '.pdf';
-    _downloadBlob(new Blob([bytes], { type: 'application/pdf' }), name);
-    if (typeof redirectToFeedback === 'function') redirectToFeedback();
 }
 
 // ══════════════════════════════ HEIC TO JPG ══════════════════════════════
 async function convertHeicToJpgTool() {
-    const files = document.getElementById('heicInput').files;
-    const status = document.getElementById('heicStatus');
-    if (!files.length) { alert('Please upload at least one HEIC/HEIF file.'); return; }
+    const input = document.getElementById('heicInput');
+    const files = input.files;
+    const btn = document.querySelector("button[onclick='convertHeicToJpgTool()']");
+    if (!files.length) { mgAlert('Please upload at least one HEIC/HEIF file.'); return; }
+    if (typeof heic2any !== 'function') { mgAlert('The HEIC converter is still loading. Please check your internet connection and try again.', { title: 'Not ready yet' }); return; }
 
-    status.textContent = 'Converting...';
-    const zip = new JSZip();
-    let single = null, singleName = '';
-
-    for (const file of files) {
-        try {
-            const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+    const total = files.length;
+    const done = mgBusy(btn, total > 1 ? 'Converting 1 of ' + total + '...' : 'Converting...');
+    try {
+        const zip = new JSZip();
+        let single = null, singleName = '';
+        for (let i = 0; i < total; i++) {
+            const file = files[i];
+            if (total > 1) done.update('Converting ' + (i + 1) + ' of ' + total + '...');
+            let blob;
+            try {
+                blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+            } catch (e) {
+                mgAlert('Could not convert "' + file.name + '". The file may be damaged or is not a real HEIC/HEIF photo.', { title: 'Conversion failed', icon: 'error' });
+                done();
+                return;
+            }
             const outBlob = Array.isArray(blob) ? blob[0] : blob;
             const name = file.name.replace(/\.(heic|heif)$/i, '') + '.jpg';
-            if (files.length === 1) { single = outBlob; singleName = name; }
-            else zip.file(name, outBlob);
-        } catch (e) {
-            status.textContent = '❌ Could not convert ' + file.name + '. Your browser may not support this file.';
-            return;
+            if (total === 1) { single = outBlob; singleName = name; } else zip.file(name, outBlob);
         }
+        if (single) _downloadBlob(single, singleName);
+        else {
+            done.update('Creating ZIP...');
+            _downloadBlob(await zip.generateAsync({ type: 'blob' }), 'heic-to-jpg.zip');
+        }
+        // brief success state, right on the button
+        done('<svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Done! ' + total + ' file' + (total > 1 ? 's' : '') + ' converted</span>');
+        btn.style.display = 'inline-flex';
+        setTimeout(function () { btn.innerHTML = 'Convert to JPG'; btn.style.display = ''; }, 2200);
+        if (typeof redirectToFeedback === 'function') redirectToFeedback();
+    } catch (err) {
+        mgAlert('Something went wrong while converting. Please try again.', { title: 'Conversion failed', icon: 'error' });
+        done();
     }
-
-    if (single) _downloadBlob(single, singleName);
-    else _downloadBlob(await zip.generateAsync({ type: 'blob' }), 'heic-to-jpg.zip');
-    status.textContent = `✅ Done — ${files.length} file(s) converted.`;
-    if (typeof redirectToFeedback === 'function') redirectToFeedback();
 }
 
 // ══════════════════════════════ QR CODE GENERATOR ══════════════════════════════
 let _qrObj = null;
 function generateQRCode() {
     const text = document.getElementById('qrInput').value.trim();
-    if (!text) { alert('Please enter a URL or some text first.'); return; }
+    if (!text) { mgAlert('Please enter a URL or some text first.'); return; }
     const box = document.getElementById('qrCodeBox');
     box.innerHTML = '';
     box.style.display = 'inline-block';
@@ -3776,9 +3886,12 @@ async function processOCR() {
     const status = document.getElementById("ocrStatus");
     const output = document.getElementById("ocrResult");
 
-    if (!file) return alert("Please select a file!");
+    if (!file) return mgAlert("Please select a file!");
+    if (typeof Tesseract === 'undefined') { mgAlert("The OCR engine is still loading. Please check your internet connection and try again.", { title: "Not ready yet" }); return; }
+    const btn = document.querySelector("button[onclick='processOCR()']");
+    const done = mgBusy(btn, "Reading text...");
     status.style.color = "#a78bfa";
-    status.innerText = "🔍 Initializing...";
+    status.innerText = "";
     output.value = "";
 
     try {
@@ -3787,7 +3900,7 @@ async function processOCR() {
         if (file.type === "application/pdf") {
             const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
             for (let i = 1; i <= pdf.numPages; i++) {
-                status.innerText = `🛡️ Privacy Scan: Page ${i}...`;
+                done.update(`Scanning page ${i} of ${pdf.numPages}...`);
                 const page = await pdf.getPage(i);
                 const viewport = page.getViewport({ scale: 2 });
                 const canvas = document.createElement("canvas");
@@ -3796,9 +3909,9 @@ async function processOCR() {
                 canvas.width = viewport.width;
                 await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-                if (!checkPrivacy(canvas, status)) return;
+                if (!checkPrivacy(canvas, status)) { done(); return; }
 
-                status.innerText = `🧠 Extracting Text : Page ${i}...`;
+                done.update(`Reading page ${i} of ${pdf.numPages}...`);
 
                 const ocrCanvas = document.createElement("canvas");
                 ocrCanvas.width = canvas.width; ocrCanvas.height = canvas.height;
@@ -3825,17 +3938,18 @@ async function processOCR() {
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0);
 
-            if (!checkPrivacy(canvas, status)) return;
+            if (!checkPrivacy(canvas, status)) { done(); return; }
 
-            status.innerText = "🧠 Extracting Text...";
+            done.update("Reading text...");
             const res = await Tesseract.recognize(canvas.toDataURL(), 'eng+hin');
             extractedText = res.data.text;
         }
 
         output.value = extractedText;
         status.style.color = "#10b981";
-        status.innerText = "✅ Done!";
+        status.innerText = extractedText.trim() ? "Done! Text extracted successfully." : "Finished, but no readable text was found in this file.";
         renderLangStats(extractedText);
+        done();
     } catch (e) {
         status.style.color = "#ef4444";
         const errMsg = (e && e.message) ? String(e.message) : '';
@@ -3844,10 +3958,11 @@ async function processOCR() {
         if (isPasswordError) {
             status.innerHTML = '❌ <strong>Security Protocol:</strong> This PDF is encrypted. Please utilize our <a href="#unlocker" style="color:var(--purple-neon); text-decoration:underline;">Security Unlocker</a> utility to remove restrictions before extraction.';
         } else {
-            status.style.color = "#10b981";
-            status.innerText = `✅ Done!`;
+            status.style.color = "#ef4444";
+            status.innerText = "Could not read this file. Please try a clearer image or a different file.";
         }
         console.error(e);
+        done();
         return;
     }
 }
@@ -3871,7 +3986,7 @@ function renderLangStats(text) {
 
 function validateOCRAction() {
     const t = document.getElementById("ocrResult").value.trim();
-    if (!t) { alert("No OCR text available"); return false; }
+    if (!t) { mgAlert("No OCR text available"); return false; }
     return true;
 }
 
@@ -3934,127 +4049,8 @@ function downloadOCRPDF() {
 let filesToConvert = [];
 
 // 2. Handle selection & update the List View
-function handleConvFiles(input) {
-    const newFiles = Array.from(input.files);
-    const filesWithFormat = newFiles.map(file => {
-        file.targetFormat = "image/png"; // Default format
-        return file;
-    });
-    filesToConvert = [...filesToConvert, ...filesWithFormat];
-    renderConvList();
-    input.value = ""; // Reset input so you can add the same file again if needed
-}
-
 // 3. Display the files with Name, Size, and Delete button
-function renderConvList() {
-    const listDiv = document.getElementById("convFileList");
-    if (filesToConvert.length === 0) {
-        listDiv.style.display = "none";
-        return;
-    }
-    listDiv.style.display = "block";
-    listDiv.innerHTML = filesToConvert.map((file, index) => `
-        <div class="file-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
-            <div class="file-info">
-                <span class="file-name" style="font-size:14px; font-weight:600;">${file.name}</span>
-                <span class="file-size" style="font-size:11px; color:#9ca3af;">${(file.size / 1024).toFixed(2)} KB</span>
-            </div>
-
-<button class="btn-del" onclick="removeConvFile(${index})">Delete</button>
-        </div>
-    `).join('');
-}
-
 // 4. Remove a specific file from the list
-function removeConvFile(index) {
-    filesToConvert.splice(index, 1);
-    renderConvList();
-}
-
-async function convertAndDownloadOneByOne() {
-    if (filesToConvert.length === 0) return alert("Please select images first!");
-    
-    const targetFormat = document.getElementById("format").value;
-    const extension = targetFormat.split('/')[1].replace('jpeg', 'jpg').replace('svg+xml', 'svg');
-    const btn = document.querySelector("button[onclick='convertAndDownloadOneByOne()']");
-    
-    btn.innerText = "⏳ Processing... Please wait";
-    btn.disabled = true;
-
-    for (let i = 0; i < filesToConvert.length; i++) {
-        try {
-            const blob = await new Promise((resolve, reject) => {
-                const img = new Image();
-                img.src = URL.createObjectURL(filesToConvert[i]);
-                img.onload = () => {
-                    const canvas = document.createElement("canvas");
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext("2d");
-                    
-                    if (targetFormat === "image/jpeg") { 
-                        ctx.fillStyle = "#fff"; 
-                        ctx.fillRect(0, 0, canvas.width, canvas.height); 
-                    }
-                    
-                    ctx.drawImage(img, 0, 0);
-                    canvas.toBlob((b) => {
-                        URL.revokeObjectURL(img.src);
-                        if (b) resolve(b);
-                        else reject("Blob creation failed");
-                    }, targetFormat, 0.95);
-                };
-                img.onerror = () => reject("Image load failed");
-            });
-
-            // CREATE DOWNLOAD LINK
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.style.display = "none";
-            a.href = url;
-            
-            // Generate Filename
-            const originalName = filesToConvert[i].name.split('.').slice(0, -1).join('.');
-            a.download = `${originalName}.${extension}`;
-            
-            // TRIGGER
-            document.body.appendChild(a);
-            a.click();
-            
-            // CLEANUP (Wait before revoking URL)
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 500);
-
-            // Chrome needs a healthy gap between "click" triggers
-            // Increased to 500ms for stability
-            await new Promise(res => setTimeout(res, 500));
-
-        } catch (error) {
-            console.error(`Error processing file  ${i + 1}:`, error);
-        }
-    }
-
-    btn.innerText = "✅ All Files Downloaded";
-    setTimeout(() => {
-        btn.innerText = "Convert & Download All (One by One)";
-        btn.disabled = false;
-    }, 2000);
-    
-    if(typeof redirectToFeedback === "function") redirectToFeedback();
-}
-
-
-
-
-
-
-
-
-
-
-
 // 1. Array to hold PDF files
 let pdfFiles = [];
 
@@ -4093,47 +4089,57 @@ function removePdfFile(index) {
 
 // 5. Updated makePDF function using the pdfFiles array
 async function makePDF() {
-    if (pdfFiles.length === 0) return alert("Please add images for your PDF first!");
+    if (pdfFiles.length === 0) return mgAlert("Please add images for your PDF first!");
+    if (!window.jspdf) { mgAlert("The PDF engine is still loading. Please check your internet connection and try again.", { title: "Not ready yet" }); return; }
 
-    const pdfName = document.getElementById("pdfName").value || "merged-doc";
+    const pdfName = (document.getElementById("pdfName").value || "merged-doc").trim();
     const password = document.getElementById("pdfPass").value;
     const btn = document.querySelector("button[onclick='makePDF()']");
-    
-    btn.disabled = true;
-    btn.innerText = "⏳ Generating PDF...";
+    const done = mgBusy(btn, "Generating PDF...");
 
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        encryption: password ? {
-            userPassword: password,
-            ownerPassword: password,
-            userPermissions: ["print", "modify", "copy", "annot-forms"]
-        } : undefined
-    });
-
-    for (let i = 0; i < pdfFiles.length; i++) {
-        const imgData = await new Promise(resolve => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(pdfFiles[i]);
+    try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: "portrait", unit: "mm", format: "a4",
+            encryption: password ? { userPassword: password, ownerPassword: password,
+                userPermissions: ["print", "modify", "copy", "annot-forms"] } : undefined
         });
+        const pageW = 210, pageH = 297, margin = 10;
+        const maxW = pageW - margin * 2, maxH = pageH - margin * 2;
 
-        if (i > 0) pdf.addPage();
-        
-        // Proper scaling for A4 (210mm x 297mm)
-        // Leaving a 10mm margin
-        pdf.addImage(imgData, "JPEG", 10, 10, 190, 270);
+        for (let i = 0; i < pdfFiles.length; i++) {
+            if (pdfFiles.length > 1) done.update("Adding image " + (i + 1) + " of " + pdfFiles.length + "...");
+            // decode every image to a canvas -> JPEG, so PNG/WEBP/etc. all work and we know the real size
+            const dataUrl = await new Promise((resolve, reject) => {
+                const url = URL.createObjectURL(pdfFiles[i]);
+                const img = new Image();
+                img.onload = () => {
+                    const c = document.createElement("canvas");
+                    c.width = img.naturalWidth; c.height = img.naturalHeight;
+                    const ctx = c.getContext("2d");
+                    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+                    ctx.drawImage(img, 0, 0);
+                    URL.revokeObjectURL(url);
+                    resolve({ data: c.toDataURL("image/jpeg", 0.92), w: c.width, h: c.height });
+                };
+                img.onerror = () => { URL.revokeObjectURL(url); reject(new Error(pdfFiles[i].name)); };
+                img.src = url;
+            });
+            // fit inside the page keeping the original proportions (no stretching), centred
+            const ratio = Math.min(maxW / dataUrl.w, maxH / dataUrl.h);
+            const w = dataUrl.w * ratio, h = dataUrl.h * ratio;
+            if (i > 0) pdf.addPage();
+            pdf.addImage(dataUrl.data, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h);
+        }
+
+        pdf.save((pdfName || "merged-doc") + ".pdf");
+        if (typeof redirectToFeedback === "function") redirectToFeedback();
+    } catch (err) {
+        console.error(err);
+        mgAlert('Could not add "' + ((err && err.message) || 'an image') + '" to the PDF. The file may be damaged or not an image.', { title: "PDF failed", icon: "error" });
+    } finally {
+        done();
     }
-
-    pdf.save(`${pdfName}.pdf`);
-    
-    btn.disabled = false;
-    btn.innerText = "Generate PDF";
-    
-    if(typeof redirectToFeedback === "function") redirectToFeedback();
 }
 
 
@@ -4143,106 +4149,65 @@ async function makePDF() {
 
 
 
-
-function handleConvFiles(input) {
-    const newFiles = Array.from(input.files);
-    // We add a 'targetFormat' property to each file object
-    const filesWithFormat = newFiles.map(file => {
-        file.targetFormat = "image/png"; // Default format
-        return file;
-    });
-    filesToConvert = [...filesToConvert, ...filesWithFormat];
-    renderConvList();
-    input.value = ""; 
-}
 
 // Function to update the format choice for a specific file
-function updateFileFormat(index, format) {
-    filesToConvert[index].targetFormat = format;
-}
-
-function renderConvList() {
-    const listDiv = document.getElementById("convFileList");
-    if (filesToConvert.length === 0) {
-        listDiv.style.display = "none";
-        return;
-    }
-    listDiv.style.display = "block";
-    listDiv.innerHTML = filesToConvert.map((file, index) => `
-        <div class="file-item" style="display:grid; grid-template-columns: 1fr auto auto; gap:15px; align-items:center; padding:15px; border-bottom:1px solid var(--border);">
-            <div class="file-info">
-                <span class="file-name" style="font-size:14px; font-weight:600; display:block; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${file.name}</span>
-                <span class="file-size" style="font-size:11px; color:#9ca3af;">${(file.size / 1024).toFixed(2)} KB</span>
-            </div>
-            
-            <select onchange="updateFileFormat(${index}, this.value)" style="padding:5px; font-size:12px; border-radius:8px; background:rgba(255,255,255,0.05); color:var(--purple); border:1px solid var(--purple); width:130px;">
-                <option value="image/png" ${file.targetFormat === "image/png" ? "selected" : ""}>PNG</option>
-                <option value="image/jpeg" ${file.targetFormat === "image/jpeg" ? "selected" : ""}>JPG</option>
-                <option value="image/webp" ${file.targetFormat === "image/webp" ? "selected" : ""}>WEBP</option>
-                <option value="image/bmp" ${file.targetFormat === "image/bmp" ? "selected" : ""}>BMP</option>
-                <option value="image/tiff" ${file.targetFormat === "image/tiff" ? "selected" : ""}>TIFF</option>
-            </select>
-
-            <button class="btn-del" onclick="removeConvFile(${index})" style="background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;">Delete</button>
-        </div>
-    `).join('');
-}
-
 async function convertAndDownloadOneByOne() {
-    if (filesToConvert.length === 0) return alert("Please select images first!");
-    
+    if (filesToConvert.length === 0) return mgAlert("Please select images first!");
+
     const btn = document.querySelector("button[onclick='convertAndDownloadOneByOne()']");
-    btn.innerText = "⏳ Processing Custom Formats...";
-    btn.disabled = true;
+    const total = filesToConvert.length;
+    const done = mgBusy(btn, total > 1 ? "Converting 1 of " + total + "..." : "Converting...");
+    let okCount = 0, failed = [];
 
-    for (let i = 0; i < filesToConvert.length; i++) {
-        const currentFile = filesToConvert[i];
-        const targetFormat = currentFile.targetFormat; // Get format chosen for THIS file
-        const extension = targetFormat.split('/')[1].replace('jpeg', 'jpg').replace('svg+xml', 'svg');
+    try {
+        for (let i = 0; i < total; i++) {
+            const currentFile = filesToConvert[i];
+            const targetFormat = currentFile.targetFormat || "image/png";
+            const extension = targetFormat.split('/')[1].replace('jpeg', 'jpg').replace('svg+xml', 'svg');
+            if (total > 1) done.update("Converting " + (i + 1) + " of " + total + "...");
 
-        const blob = await new Promise(resolve => {
-            const img = new Image();
-            img.src = URL.createObjectURL(currentFile);
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext("2d");
-                if (targetFormat === "image/jpeg") { ctx.fillStyle = "#fff"; ctx.fillRect(0,0,canvas.width,canvas.height); }
-                ctx.drawImage(img, 0, 0);
-                canvas.toBlob(resolve, targetFormat, 0.9);
-            };
-        });
+            let blob = null;
+            try {
+                blob = await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    const objUrl = URL.createObjectURL(currentFile);
+                    img.onload = () => {
+                        try {
+                            const canvas = document.createElement("canvas");
+                            canvas.width = img.naturalWidth || img.width;
+                            canvas.height = img.naturalHeight || img.height;
+                            const ctx = canvas.getContext("2d");
+                            if (targetFormat === "image/jpeg") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+                            ctx.drawImage(img, 0, 0);
+                            URL.revokeObjectURL(objUrl);
+                            canvas.toBlob(function (b) { b ? resolve(b) : reject(new Error("format not supported")); }, targetFormat, 0.9);
+                        } catch (e) { reject(e); }
+                    };
+                    // previously a missing onerror made this hang forever and froze the button
+                    img.onerror = () => { URL.revokeObjectURL(objUrl); reject(new Error("cannot open image")); };
+                    img.src = objUrl;
+                });
+            } catch (e) { failed.push(currentFile.name); continue; }
 
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        const originalName = currentFile.name.split('.').slice(0, -1).join('.');
-        a.download = `${originalName}.${extension}`;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(() => {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }, 500);
-
-        await new Promise(res => setTimeout(res, 600)); // Delay for stability
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = currentFile.name.split('.').slice(0, -1).join('.') + "." + extension;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => { document.body.removeChild(a); window.URL.revokeObjectURL(url); }, 500);
+            okCount++;
+            await new Promise(res => setTimeout(res, 600));   // delay so the browser allows multiple downloads
+        }
+    } finally {
+        done();
     }
 
-    btn.innerText = "Convert & Download All (Custom Formats)";
-    btn.disabled = false;
+    if (failed.length) {
+        mgAlert(failed.length + ' file' + (failed.length > 1 ? 's' : '') + ' could not be converted: ' + failed.slice(0, 3).join(', ') + (failed.length > 3 ? '...' : '') + '. They may be damaged or an unsupported format.', { title: "Some files failed", icon: "error" });
+    }
+    if (okCount && typeof redirectToFeedback === "function") redirectToFeedback();
 }
-
-
-
-function removeConvFile(index) {
-    filesToConvert.splice(index, 1);
-    renderConvList(); // This refreshes the list after deleting
-}
-
-
-
 
 
 
@@ -4323,85 +4288,73 @@ async function removePassword() {
     const status = document.getElementById("unlockStatus");
     const btn = document.querySelector("button[onclick='removePassword()']");
 
-    if (!file) return alert("Please upload a PDF first!");
+    if (!file) return mgAlert("Please upload a PDF first!");
+    if (typeof pdfjsLib === 'undefined' || !window.jspdf) { mgAlert("The PDF engine is still loading. Please check your internet connection and try again.", { title: "Not ready yet" }); return; }
 
-    btn.disabled = true;
-    btn.innerText = "⏳ Initializing...";
-    status.innerText = "Checking file security...";
+    const done = mgBusy(btn, "Checking file...");
+    status.innerText = "";
     status.style.color = "var(--purple-neon)";
 
     try {
         const arrayBuffer = await file.arrayBuffer();
-        
-        // Step 1: Try loading the PDF without a password first
-        let loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         let pdf;
-        
+
+        // Step 1: try without a password first
         try {
-            pdf = await loadingTask.promise;
-            
-            // If it succeeds here, it means the file is NOT password protected
+            pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+            // opened with no password => the file is not locked
             status.style.color = "#a78bfa";
-            status.innerHTML = "💡 <strong>Notice:</strong> This PDF is already unlocked and does not contain a password.";
-            btn.disabled = false;
-            btn.innerText = "Decrypt & Download PDF";
-            return; // Stop processing since there is no lock
-            
+            status.innerHTML = "<strong>Notice:</strong> This PDF is already unlocked and does not contain a password.";
+            return;
         } catch (err) {
-            // If loadingTask fails with a PasswordException, proceed to unlock
-            if (err.name === "PasswordException") {
+            if (err && err.name === "PasswordException") {
                 if (!password) {
                     status.style.color = "#ef4444";
-                    status.innerText = "🔑 This file is protected. Please enter the password to proceed.";
-                    btn.disabled = false;
-                    btn.innerText = "Decrypt & Download PDF";
+                    status.innerText = "This file is protected. Please enter the password to proceed.";
                     return;
                 }
-                
-                // Re-try with the provided password
-                loadingTask = pdfjsLib.getDocument({
-                    data: arrayBuffer,
-                    password: password
-                });
-                pdf = await loadingTask.promise;
+                done.update("Unlocking...");
+                pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0), password: password }).promise;
             } else {
-                throw err; // Pass other errors to the main catch block
+                throw err;
             }
         }
 
-        // Step 2: Proceed with decryption if a password was successfully used
+        // Step 2: rebuild the PDF without the lock, keeping each page's real size + orientation
         const { jsPDF } = window.jspdf;
-        const outPdf = new jsPDF();
-
+        let outPdf = null;
         for (let i = 1; i <= pdf.numPages; i++) {
-            status.innerText = `Processing Page ${i} of ${pdf.numPages}...`;
+            done.update("Page " + i + " of " + pdf.numPages + "...");
             const page = await pdf.getPage(i);
             const viewport = page.getViewport({ scale: 2 });
             const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
             canvas.height = viewport.height;
             canvas.width = viewport.width;
-
-            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            await page.render({ canvasContext: canvas.getContext("2d"), viewport: viewport }).promise;
             const imgData = canvas.toDataURL("image/jpeg", 0.95);
-            
-            if (i > 1) outPdf.addPage();
-            const pdfWidth = outPdf.internal.pageSize.getWidth();
-            const pdfHeight = outPdf.internal.pageSize.getHeight();
-            outPdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+
+            // page size in mm from the PDF's own size (1 pt = 0.3528 mm) so nothing is stretched or squashed
+            const base = page.getViewport({ scale: 1 });
+            const wmm = base.width * 0.3528, hmm = base.height * 0.3528;
+            const orient = wmm > hmm ? "landscape" : "portrait";
+            if (!outPdf) outPdf = new jsPDF({ orientation: orient, unit: "mm", format: [wmm, hmm] });
+            else outPdf.addPage([wmm, hmm], orient);
+            outPdf.addImage(imgData, "JPEG", 0, 0, wmm, hmm);
         }
 
         outPdf.save("unlocked_" + file.name);
-        status.innerText = "✅ Successfully Unlocked!";
+        status.innerText = "Successfully unlocked! Your download has started.";
         status.style.color = "#10b981";
+        if (typeof redirectToFeedback === "function") redirectToFeedback();
 
     } catch (error) {
         console.error(error);
-        status.innerText = "❌ Decryption Failed: Incorrect password or corrupted file.";
         status.style.color = "#ef4444";
+        status.innerText = (error && error.name === "PasswordException")
+            ? "Incorrect password. Please check it and try again."
+            : "Could not unlock this file. It may be damaged.";
     } finally {
-        btn.disabled = false;
-        btn.innerText = "Decrypt & Download PDF";
+        done();
     }
 }
 
@@ -4411,7 +4364,7 @@ document.getElementById('ocrInput').addEventListener('change', function() {
     const statusText = document.getElementById('fileCountText');
     
     if (fileCount > 0) {
-        statusText.innerHTML = `📂 <b>${fileCount}</b> file(s) selected`;
+        statusText.innerHTML = `<svg class="btn-ico" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> <b>${fileCount}</b> file(s) selected`;
     } else {
         statusText.innerText = "No files chosen";
     }
@@ -5192,6 +5145,214 @@ console.log(
 
 
 
+</script>
+
+<!-- ═══════════ MG ALERT (custom alert replacement) ═══════════ -->
+<style id="mgAlertStyles">
+#mgAlertOverlay{
+    position:fixed; inset:0; z-index:2147483000;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(5,3,14,0.62);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    opacity:0; visibility:hidden;
+    transition:opacity .22s ease, visibility .22s ease;
+}
+#mgAlertOverlay.mg-show{ opacity:1; visibility:visible; }
+
+#mgAlertCard{
+    position:relative; width:100%; max-width:400px;
+    padding:26px 24px 22px;
+    border-radius:20px;
+    /* purple border, red card */
+    border:2px solid #a855f7;
+    background:linear-gradient(160deg,#dc2626 0%,#b91c1c 55%,#991b1b 100%);
+    color:#fff; text-align:center;
+    font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
+    box-shadow:0 0 0 4px rgba(168,85,247,0.22), 0 0 34px rgba(168,85,247,0.55), 0 24px 60px rgba(0,0,0,0.6);
+    transform:translateY(14px) scale(.94);
+    transition:transform .28s cubic-bezier(.2,1.1,.3,1);
+}
+#mgAlertOverlay.mg-show #mgAlertCard{ transform:translateY(0) scale(1); }
+#mgAlertCard::before{
+    content:''; position:absolute; inset:0; border-radius:18px; pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%, rgba(255,255,255,0.22), transparent 60%);
+}
+#mgAlertIcon{
+    position:relative; width:58px; height:58px; margin:0 auto 14px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.16);
+    border:1.5px solid rgba(255,255,255,0.4);
+}
+#mgAlertIcon svg{ width:30px; height:30px; display:block; }
+#mgAlertTitle{ position:relative; font-size:17px; font-weight:800; letter-spacing:.2px; margin-bottom:6px; }
+#mgAlertMsg{ position:relative; font-size:14.5px; line-height:1.55; color:rgba(255,255,255,0.94); margin-bottom:20px; word-break:break-word; }
+#mgAlertBtn{
+    position:relative; width:100%;
+    padding:12px 18px; border:none; border-radius:12px; cursor:pointer;
+    font:inherit; font-size:14.5px; font-weight:800; letter-spacing:.3px;
+    color:#fff;
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    box-shadow:0 6px 18px rgba(124,58,237,0.5);
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+#mgAlertBtn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+#mgAlertBtn:active{ transform:translateY(0) scale(.98); }
+#mgAlertBtn:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+@media (prefers-reduced-motion:reduce){
+    #mgAlertOverlay, #mgAlertCard{ transition:none; }
+}
+</style>
+
+<div id="mgAlertOverlay" role="alertdialog" aria-modal="true" aria-labelledby="mgAlertTitle" aria-describedby="mgAlertMsg" aria-hidden="true">
+    <div id="mgAlertCard">
+        <div id="mgAlertIcon"></div>
+        <div id="mgAlertTitle"></div>
+        <div id="mgAlertMsg"></div>
+        <button id="mgAlertBtn" type="button">Got it</button>
+    </div>
+</div>
+
+
+<script id="mgBusyScript">
+/* mgBusy(button, text) -> returns done(finalText?)   Puts a spinner + text INSIDE the button.
+   Always call done() (use try/finally) so the button can never get stuck.                        */
+window.mgBusy = function (btn, text) {
+    if (!btn) return function () {};
+    var original = btn.innerHTML, wasDisabled = btn.disabled, finished = false;
+    btn.classList.add('mg-busy');
+    btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
+    btn.innerHTML = '<span class="mg-spin" aria-hidden="true"></span><span class="mg-busy-text"></span>';
+    btn.querySelector('.mg-busy-text').textContent = text || 'Working...';
+    var api = function (finalHtml) {
+        if (finished) return; finished = true;
+        btn.classList.remove('mg-busy');
+        btn.removeAttribute('aria-busy');
+        btn.disabled = wasDisabled;
+        btn.innerHTML = (typeof finalHtml === 'string') ? finalHtml : original;
+    };
+    api.update = function (t) { var el = btn.querySelector('.mg-busy-text'); if (el && !finished) el.textContent = t; };
+    return api;
+};
+</script>
+
+<script id="mgAlertScript">
+(function(){
+    var ICONS = {
+        warn:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+        file:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
+        star:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg>',
+        mail:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>'
+    };
+    var overlay, iconEl, titleEl, msgEl, btn, lastFocus = null, queue = [], open = false;
+
+    function ensure(){
+        if (overlay) return true;
+        overlay = document.getElementById('mgAlertOverlay');
+        if (!overlay) return false;
+        iconEl = document.getElementById('mgAlertIcon');
+        titleEl = document.getElementById('mgAlertTitle');
+        msgEl = document.getElementById('mgAlertMsg');
+        btn = document.getElementById('mgAlertBtn');
+        btn.addEventListener('click', close);
+        overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+        document.addEventListener('keydown', function(e){
+            if (!open) return;
+            if (e.key === 'Escape' || e.key === 'Enter') { e.preventDefault(); close(); }
+            else if (e.key === 'Tab') { e.preventDefault(); btn.focus(); }
+        });
+        return true;
+    }
+
+    // Pick a sensible icon + title from the message text
+    function classify(msg){
+        var m = String(msg).toLowerCase();
+        if (/❌|error|fail|could not|not support/.test(m)) return { icon:'error', title:'Something went wrong' };
+        if (/star|rating/.test(m))                          return { icon:'star',  title:'Rating needed' };
+        if (/email/.test(m))                                return { icon:'mail',  title:'Check your email' };
+        if (/file|pdf|image|upload|select|add|choose|heic/.test(m)) return { icon:'file', title:'File needed' };
+        return { icon:'warn', title:'Heads up' };
+    }
+
+    function render(item){
+        var c = classify(item.msg);
+        iconEl.innerHTML = ICONS[item.icon || c.icon];
+        titleEl.textContent = item.title || c.title;
+        // strip a leading ❌ / ✅ emoji since the SVG icon replaces it
+        msgEl.textContent = String(item.msg).replace(/^\s*[❌✅⚠️]+\s*/u, '');
+        overlay.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('mg-show');
+        open = true;
+        lastFocus = document.activeElement;
+        setTimeout(function(){ btn.focus(); }, 30);
+    }
+
+    function close(){
+        if (!open) return;
+        overlay.classList.remove('mg-show');
+        overlay.setAttribute('aria-hidden', 'true');
+        open = false;
+        if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch(e){} }
+        setTimeout(function(){ if (queue.length) render(queue.shift()); }, 260);
+    }
+
+    // Public API: mgAlert(message, {title, icon})
+    window.mgAlert = function(message, opts){
+        opts = opts || {};
+        var item = { msg: message == null ? '' : message, title: opts.title, icon: opts.icon };
+        if (!ensure()) { return; }   // DOM not ready yet: fail quietly rather than block with alert()
+        if (open) queue.push(item); else render(item);
+    };
+})();
+</script>
+
+<script id="navSpyScript">
+(function(){
+    var nav = document.getElementById('navLinks');
+    if (!nav) return;
+    var links = Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]:not([href="#"])'));
+    var items = links.map(function(a){
+        return { a: a, id: a.getAttribute('href').slice(1) };
+    }).filter(function(x){ return document.getElementById(x.id); });
+    var current = null, ticking = false;
+
+    function setActive(item){
+        if (item === current) return;
+        current = item;
+        links.forEach(function(a){ a.classList.remove('nav-active'); });
+        if (!item) return;
+        item.a.classList.add('nav-active');
+        // On phones, slide the active tab to the middle of the scroller
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            var left = item.a.offsetLeft - (nav.clientWidth - item.a.offsetWidth) / 2;
+            nav.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+        }
+    }
+
+    function update(){
+        ticking = false;
+        var line = window.innerHeight * 0.35;   // a section counts once its heading passes this line
+        var found = null;
+        items.forEach(function(it){
+            var top = document.getElementById(it.id).getBoundingClientRect().top;
+            if (top <= line) found = it;         // last heading above the line wins
+        });
+        setActive(found);
+    }
+
+    var navEl = document.querySelector('nav');
+    function glass(){ if (navEl) navEl.classList.toggle('nav-scrolled', window.scrollY > 8); }
+    window.addEventListener('scroll', function(){
+        glass();
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    glass();
+    window.addEventListener('resize', update);
+    update();
+})();
 </script>
 
 </body>
