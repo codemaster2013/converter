@@ -1,5 +1,4 @@
-    <script>
-        (function() {
+(function() {
             // 3D Card Tilt Effect
             const initTilt = () => {
                 const cards = document.querySelectorAll('.card');
@@ -64,4 +63,3 @@
                 initTilt();
             });
         })();
-    </script>
