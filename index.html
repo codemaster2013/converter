@@ -142,13 +142,11 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
     <script src="three-effects.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/plugins/encryption.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -3302,7 +3300,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no data is transmitted, monitored, or stored on external servers.</footer>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // --- SETTINGS MODAL ---
 // --- SETTINGS FEEDBACK ---
 var _fbRating = 0;
@@ -4425,6 +4423,7 @@ window.addEventListener("load", () => {
     const intro = document.getElementById("introOverlay");
 
     // Show for exactly 3 seconds (3000ms)
+    if (!intro) return;   // overlay element no longer exists in the page
     setTimeout(() => {
         intro.classList.add("intro-hide");
 
