@@ -10,25 +10,108 @@
   "background_color": "#05070f",
   "theme_color": "#7c3aed",
   "lang": "en",
-  "categories": ["utilities", "productivity"],
-  "launch_handler": { "client_mode": ["focus-existing", "auto"] },
+  "categories": [
+    "utilities",
+    "productivity"
+  ],
+  "launch_handler": {
+    "client_mode": [
+      "focus-existing",
+      "auto"
+    ]
+  },
   "icons": [
-    { "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Image to PDF", "short_name": "JPG → PDF", "description": "Turn images into a PDF", "url": "./#pdf",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Smart OCR", "short_name": "OCR", "description": "Extract text from images and PDFs", "url": "./#ocr",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Merge PDF", "short_name": "Merge", "description": "Combine PDFs into one", "url": "./#pdfmerge",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Remove PDF Password", "short_name": "Unlock", "description": "Unlock a PDF", "url": "./#unlocker",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "HEIC to JPG", "short_name": "HEIC", "description": "Convert iPhone photos", "url": "./#heic2jpg",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }] }
+    {
+      "name": "Image to PDF",
+      "short_name": "JPG → PDF",
+      "description": "Turn images into a PDF",
+      "url": "./#pdf",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Smart OCR",
+      "short_name": "OCR",
+      "description": "Extract text from images and PDFs",
+      "url": "./#ocr",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Merge PDF",
+      "short_name": "Merge",
+      "description": "Combine PDFs into one",
+      "url": "./#pdfmerge",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Remove PDF Password",
+      "short_name": "Unlock",
+      "description": "Unlock a PDF",
+      "url": "./#unlocker",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "HEIC to JPG",
+      "short_name": "HEIC",
+      "description": "Convert iPhone photos",
+      "url": "./#heic2jpg",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
   ],
   "share_target": {
     "action": "./share-target",
@@ -36,7 +119,16 @@
     "enctype": "multipart/form-data",
     "params": {
       "files": [
-        { "name": "files", "accept": ["image/*", "application/pdf", ".pdf", ".heic", ".heif"] }
+        {
+          "name": "files",
+          "accept": [
+            "image/*",
+            "application/pdf",
+            ".pdf",
+            ".heic",
+            ".heif"
+          ]
+        }
       ]
     }
   },
@@ -44,13 +136,40 @@
     {
       "action": "./",
       "accept": {
-        "application/pdf": [".pdf"],
-        "image/*": [".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".heic", ".heif"]
+        "application/pdf": [
+          ".pdf"
+        ],
+        "image/*": [
+          ".jpg",
+          ".jpeg",
+          ".png",
+          ".webp",
+          ".gif",
+          ".bmp",
+          ".heic",
+          ".heif"
+        ]
       }
     }
   ],
   "screenshots": [
-    { "src": "screenshot-phone.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow", "label": "MediaGrabber Pro tools" },
-    { "src": "screenshot-desktop.png", "sizes": "1920x1080", "type": "image/png", "form_factor": "wide", "label": "MediaGrabber Pro on desktop" }
+    {
+      "src": "screenshot-phone.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "MediaGrabber Pro tools"
+    },
+    {
+      "src": "screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "MediaGrabber Pro on desktop"
+    }
+  ],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
   ]
 }

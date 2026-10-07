@@ -175,15 +175,29 @@ function isValidEmail(email) {
     return domain && allowed.includes(domain.toLowerCase());
 }
 
+async function emailHash(email) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('mgpro|' + email.toLowerCase()));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Checks ONE small key (a hash of the email) instead of downloading every feedback entry
 async function emailAlreadyExists(email) {
     if (!email) return false;
     try {
-        const res = await fetch('https://convertor-11437-default-rtdb.firebaseio.com/feedback.json');
+        const h = await emailHash(email);
+        const res = await fetch('https://convertor-11437-default-rtdb.firebaseio.com/emailHashes/' + h + '.json');
         if (!res.ok) return false;
-        const data = await res.json();
-        if (!data) return false;
-        return Object.values(data).some(e => e.email && e.email.toLowerCase() === email.toLowerCase());
+        return (await res.json()) !== null;
     } catch { return false; }
+}
+
+async function saveEmailHash(email) {
+    if (!email) return;
+    try {
+        const h = await emailHash(email);
+        await fetch('https://convertor-11437-default-rtdb.firebaseio.com/emailHashes/' + h + '.json',
+            { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: 'true' });
+    } catch {}
 }
 
 // ── Submit ─────────────────────────────────────────────
@@ -254,6 +268,8 @@ async function submitFeedback() {
         });
 
         if (!res.ok) throw new Error();
+
+        await saveEmailHash(email);
 
         markDone();
         document.getElementById('form-state').style.display = 'none';
