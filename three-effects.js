@@ -59,6 +59,7 @@
             };
 
             window.addEventListener('DOMContentLoaded', () => {
+                if (document.documentElement.classList.contains('is-pwa')) return; // PWA: skip heavy effects
                 initThree();
                 initTilt();
             });
