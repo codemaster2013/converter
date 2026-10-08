@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://*.firebaseio.com https://*.firebasedatabase.app https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' blob: data: https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://api.mymemory.translated.net https://cdn.jsdelivr.net https://staticimgly.com https://*.staticimgly.com; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta charset="UTF-8">
 <!-- VIP AUTO-REDIRECT: runs before anything renders -->
 <script>
@@ -41,7 +42,7 @@
     <meta name="keywords" content="jpg to pdf, image to pdf, pdf converter, pdf compressor, pdf unlocker, remove pdf password, image to text, smart ocr, ocr online, base64 encoder, base64 decoder, image converter, convert image online, png to pdf, heic to pdf, pdf tools online, free pdf converter, image file converter">
     <meta name="robots" content="index, follow">
     <meta name="author" content="MediaGrabber Pro">
-    <link rel="canonical" href="https://mgppro.vercel.app/" />
+    <link rel="canonical" href="https://codemaster2013.github.io/converter/" />
     <title>JPG to PDF Converter | Image to PDF, OCR, PDF Unlocker & Compressor – MediaGrabber Pro</title>
 
 <script type="application/ld+json">
@@ -49,11 +50,11 @@
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "MediaGrabber Pro",
-  "url": "https://mgppro.vercel.app/",
+  "url": "https://codemaster2013.github.io/converter/",
   "description": "Free online tools: JPG to PDF, image to PDF, PDF compressor, PDF unlocker, OCR image to text, Base64 encoder, image converter.",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://mgppro.vercel.app/?q={search_term_string}",
+    "target": "https://codemaster2013.github.io/converter/?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }
@@ -64,7 +65,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "MediaGrabber Pro",
-  "url": "https://mgppro.vercel.app/",
+  "url": "https://codemaster2013.github.io/converter/",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Any",
   "offers": {
@@ -127,29 +128,27 @@
 </script>
 
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://mgppro.vercel.app/">
+<meta property="og:url" content="https://codemaster2013.github.io/converter/">
 <meta property="og:title" content="JPG to PDF Converter | Image to PDF, OCR, PDF Unlocker – MediaGrabber Pro">
 <meta property="og:description" content="Free online JPG to PDF, image to PDF, PDF compressor, PDF unlocker, Smart OCR image to text, Base64 encoder and image converter. No signup needed.">
-<meta property="og:image" content="https://mgppro.vercel.app/og-image.png">
+<meta property="og:image" content="https://codemaster2013.github.io/converter/og-image.png">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://mgppro.vercel.app/">
+<meta name="twitter:url" content="https://codemaster2013.github.io/converter/">
 <meta name="twitter:title" content="JPG to PDF Converter | Image to PDF, OCR, PDF Unlocker – MediaGrabber Pro">
 <meta name="twitter:description" content="Free online JPG to PDF, PDF compressor, PDF unlocker, Smart OCR, Base64 encoder. Fast and private, no signup needed.">
-<meta name="twitter:image" content="https://mgppro.vercel.app/og-image.png">
+<meta name="twitter:image" content="https://codemaster2013.github.io/converter/og-image.png">
 
     
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="lib-three-160.min.js"></script>
     <script src="three-effects.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="lib-jspdf.umd.min.js"></script>
+    <script src="lib-jszip.min.js"></script> 
+    <script src="lib-pdf.min.js"></script>
+    <script src="lib-pdf-lib.min.js"></script>
+    <script src="lib-qrcode.min.js"></script>
 
 
 <style>
@@ -2517,6 +2516,8 @@ html, body { overflow-x: hidden; }
 <meta name="apple-mobile-web-app-title" content="MG Pro">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script src="pwa.js"></script>
+<script src="mg-libs.js"></script>
+<script src="tools.js" defer></script>
 </head>
 
 <body>
@@ -2534,8 +2535,8 @@ html, body { overflow-x: hidden; }
 
 
 <!-- Firebase v8 (compatible with your code style) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="lib-firebase-app.js"></script>
+<script src="lib-firebase-database.js"></script>
 
 <script>
 var firebaseConfig = {
@@ -3297,7 +3298,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <button id="qrDownloadBtn" class="btn-primary" style="display:none; margin-top:10px; background:linear-gradient(135deg,#4361ee,#7c3aed);" onclick="downloadQRCode()">Download PNG</button>
 </div>
 
-    <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no data is transmitted, monitored, or stored on external servers.</footer>
+    <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no file data is transmitted, monitored, or stored on external servers, except for optional features you start yourself (text translation, AI background remover) and anonymous crash reports, which you can turn off in the ⚡ menu.</footer>
 </div>
 
 <script>
@@ -3507,7 +3508,7 @@ function confirmBetaWelcome() {
 }
 
 function shareWebsite() {
-    var url = 'https://mgppro.vercel.app/';
+    var url = 'https://codemaster2013.github.io/converter/';
     var text = 'Check out MediaGrabber Pro — a free all-in-one file converter & media tool!';
     if (navigator.share) {
         navigator.share({ title: 'MediaGrabber Pro', text: text, url: url }).catch(function(){});
@@ -3534,6 +3535,7 @@ document.addEventListener('keydown', (e) => {
 
 // --- GLOBAL UTILS ---
 const redirectToFeedback = () => {
+    if (window.mgAskRating) { window.mgAskRating(); return; }   // soft rating prompt (see pwa.js)
     // Only redirect once ever — stored in localStorage (survives tab close/refresh)
     if (localStorage.getItem("mg_feedback_done") === "true") return;
     if (sessionStorage.getItem("feedbackDone") === "true") return;
@@ -3678,7 +3680,7 @@ function convertTextToPDF() {
 }
 
 // PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib-pdf.worker.min.js';
 
 function _downloadBlob(blob, filename) {
     const url = URL.createObjectURL(blob);
@@ -4441,7 +4443,7 @@ window.addEventListener("load", () => {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "MediaGrabber Pro",
-  "url": "https://mgppro.vercel.app/"
+  "url": "https://codemaster2013.github.io/converter/"
 }
 
 

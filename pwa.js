@@ -11,7 +11,9 @@
   var standalone = mm('standalone') || mm('fullscreen') || mm('minimal-ui') || mm('window-controls-overlay') || window.navigator.standalone === true;
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
-  var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode'];
+  var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'bgremove', 'qrscan'];
+  var BUILD = '6';
+  window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
   function onReady(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
@@ -31,7 +33,10 @@
     folderUse: 'Saving to: ', folderOff: 'Use normal downloads', folderAllow: 'Allow folder access', storage: '💾 Storage', storageUsing: 'Using',
     offlineReady: 'Offline ready ✓', offlineNot: 'Not cached yet — open the site once while online', clearCache: 'Clear cache', cleared: 'Cache cleared',
     shareBtn: 'Share', saved: 'saved', pasteNone: 'No image found on the clipboard.', dropHint: 'Drop files to open them', close: 'Close',
-    savedToFolder: 'Saved to your folder', queued: 'Saved offline — it will be sent when you are back online.' };
+    savedToFolder: 'Saved to your folder', batchOn: '📦 Batch mode: collect results into one ZIP', batchOff: '📦 Batch mode is ON — tap to turn off', batchBar: 'file(s) in your ZIP', batchGet: 'Download ZIP', batchClear: 'Clear',
+    myFiles: '🗂 My files (kept on this device)', keepOn: 'Keep private copies of results here', keepOff: 'Private copies are OFF — tap to turn on', noKept: 'Nothing saved yet.', del: 'Delete',
+    a11y: '♿ Accessibility', textSize: 'Text size', hc: 'High contrast', shortcuts: '⌨ Keyboard shortcuts', privacy: '🔒 Privacy', crashOn: 'Send anonymous crash reports (no personal data)', crashOff: 'Crash reports are OFF — tap to turn on',
+    rateQ: '⭐ Enjoying MG Pro? Tell us in 20 seconds.', rate: 'Rate us', later: 'Later', fav: '★ Favourites', build: 'Build', queued: 'Saved offline — it will be sent when you are back online.' };
   var I18N = {
     hi: { update: '🔄 नया संस्करण तैयार है', refresh: 'रीफ़्रेश', offline: '📡 आप ऑफ़लाइन हैं — कन्वर्टर चलते रहेंगे। फ़ीडबैक और VIP के लिए इंटरनेट चाहिए।',
       online: '✓ फिर से ऑनलाइन', install: '⬇ ऐप इंस्टॉल करें', iosTip: '📲 MG Pro इंस्टॉल करें: Share बटन दबाएँ, फिर "Add to Home Screen" चुनें।', gotIt: 'ठीक है',
@@ -175,7 +180,7 @@
       var method = ((init && init.method) || (input && input.method) || 'GET').toUpperCase();
       if (url.indexOf(DB) > -1 && method !== 'GET' && init && typeof init.body === 'string') {
         return origFetch(input, init).catch(function (err) {
-          if (url.indexOf('/installs') === -1) toast(t('queued'));
+          if (url.indexOf('/feedback') > -1) toast(t('queued'));
           qPush({ u: url, m: method, b: init.body });
           return new Response('{"name":"queued"}', { status: 200, headers: { 'Content-Type': 'application/json' } });
         });
@@ -350,15 +355,62 @@
     })();
   }
   var isBlobDownload = function (a) { return a && a.hasAttribute && a.hasAttribute('download') && /^blob:/.test(a.href); };
+  var batch = { on: lsGet('mg_batch') === '1', files: [] };
+  function plainDownload(blob, name) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.style.display = 'none'; document.body.appendChild(a);
+    inFallback = true; HTMLAnchorElement.prototype.click === origClick ? origClick.call(a) : a.click(); inFallback = false;
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 5000);
+  }
+  function uniqueName(name, taken) {
+    var dot = name.lastIndexOf('.'), base = dot > 0 ? name.slice(0, dot) : name, ext = dot > 0 ? name.slice(dot) : '', n = name, i = 0;
+    while (taken.indexOf(n) > -1) { i++; n = base + ' (' + i + ')' + ext; } return n;
+  }
+  function batchBar() {
+    if (!batch.files.length) { removeEl('mg-batch-bar'); return; }
+    makeBar('mg-batch-bar', '📦 ' + batch.files.length + ' ' + t('batchBar'), 'linear-gradient(135deg,#7c3aed,#4f46e5)', 'bottom', [
+      { label: t('batchGet'), fn: function () {
+          var z = new window.JSZip(); batch.files.forEach(function (f) { z.file(f.name, f.blob); });
+          z.generateAsync({ type: 'blob' }).then(function (b) { plainDownload(b, 'mediagrabber-batch.zip'); batch.files = []; batchBar(); }); } },
+      { label: t('batchClear'), fn: function () { batch.files = []; batchBar(); } }]);
+  }
+  window.mgBatchCount = function () { return batch.files.length; };
   function handleDownload(a, replay) {
-    var name = a.getAttribute('download') || 'download', take = !!(folderHandle && folderReady);
+    var name = a.getAttribute('download') || 'download';
+    var useBatch = batch.on && typeof window.JSZip !== 'undefined' && !/\.zip$/i.test(name);
+    var take = useBatch || !!(folderHandle && folderReady);
     fetch(a.href).then(function (r) { return r.blob(); }).then(function (blob) {
-      record(name, blob);
+      record(name, blob); keepCopy(name, blob);
+      if (useBatch) { batch.files.push({ name: uniqueName(name, batch.files.map(function (f) { return f.name; })), blob: blob }); batchBar(); return; }
       if (take) return writeToFolder(name, blob).then(function (ok) { if (ok) toast(t('savedToFolder')); else replay(); });
       offerShare();
     }).catch(function () { if (take) replay(); });
     return take;                                   // true -> we handle saving, skip the normal download
   }
+  /* private copies of results (Origin Private File System) */
+  var keepOn = function () { return lsGet('mg_keep') !== '0'; };
+  function opfsDir() {
+    return (navigator.storage && navigator.storage.getDirectory) ? navigator.storage.getDirectory().then(function (r) { return r.getDirectoryHandle('results', { create: true }); }) : Promise.reject(new Error('no opfs'));
+  }
+  async function listKept() {
+    var dir = await opfsDir(), out = [];
+    for await (var ent of dir.entries()) {
+      if (ent[1].kind !== 'file') continue; var f = await ent[1].getFile(), i = ent[0].indexOf('__');
+      out.push({ key: ent[0], name: ent[0].slice(i + 2), ts: Number(ent[0].slice(0, i)) || f.lastModified, size: f.size, file: f });
+    }
+    return out.sort(function (a, b) { return b.ts - a.ts; });
+  }
+  async function trimKept() {
+    var dir = await opfsDir(), all = await listKept(), total = 0;
+    for (var i = 0; i < all.length; i++) { total += all[i].size; if (i >= 15 || total > 150 * 1048576) await dir.removeEntry(all[i].key); }
+  }
+  function keepCopy(name, blob) {
+    if (!keepOn() || blob.size > 60 * 1048576) return;
+    opfsDir().then(async function (dir) {
+      var fh = await dir.getFileHandle(Date.now() + '__' + name.replace(/[\\/]/g, '_'), { create: true }), w = await fh.createWritable();
+      await w.write(blob); await w.close(); await trimKept();
+    }).catch(function () {});
+  }
+  window.__mg = { last: function () { return lastResult; }, kept: function () { return listKept(); }, batch: batch };
   if (typeof HTMLAnchorElement !== 'undefined') {
     var origClick = HTMLAnchorElement.prototype.click, origDispatch = EventTarget.prototype.dispatchEvent;
     HTMLAnchorElement.prototype.click = function () {
@@ -391,7 +443,15 @@
     { id: 'heic2jpg',  name: 'HEIC to JPG',         input: 'heicInput',     multi: true,  test: isHeic },
     { id: 'pdfmerge',  name: 'Merge PDF',           input: 'pdfMergeInput', multi: true,  test: isPdf },
     { id: 'ocr',       name: 'Smart OCR',           input: 'ocrInput',      multi: false, test: function (f) { return isImg(f) || isPdf(f); } },
-    { id: 'unlocker',  name: 'Remove PDF Password', input: 'unlockInput',   multi: false, test: isPdf }
+    { id: 'unlocker',  name: 'Remove PDF Password', input: 'unlockInput',   multi: false, test: isPdf },
+    { id: 'compress',  name: 'Compress to Size',    input: 'cmpInput',      multi: true,  test: isImg },
+    { id: 'photoprep', name: 'Photo & Signature Size', input: 'ppInput',    multi: false, test: isImg },
+    { id: 'scanner',   name: 'Document Scanner',    input: 'scInput',       multi: true,  test: isImg },
+    { id: 'pagetools', name: 'PDF Page Tools',      input: 'ptInput',       multi: false, test: isPdf },
+    { id: 'signpdf',   name: 'Sign PDF',            input: 'sgInput',       multi: false, test: isPdf },
+    { id: 'exif',      name: 'Remove Photo Location', input: 'exInput',     multi: true,  test: isImg },
+    { id: 'bgremove',  name: 'Background Remover',  input: 'bgInput',       multi: false, test: isImg },
+    { id: 'qrscan',    name: 'QR Code Scanner',     input: 'qsInput',       multi: false, test: isImg }
   ];
   function scrollToTool(id) { var s = document.getElementById(id); if (s && s.scrollIntoView) s.scrollIntoView({ block: 'start' }); }
   function applyTool(tool, files) {
@@ -498,55 +558,89 @@
 
   /* ---- quick menu (⚡): paste, recent files, share result, save folder, storage ---- */
   function timeAgo(ts) { try { return new Date(ts).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }); } catch (e) { return ''; } }
+  function sect(box, text) { line(box, text, 'font-size:13px;color:#a855f7;margin:16px 0 6px;'); }
+  function toggleBtn(box, isOn, onLabel, offLabel, fn) {
+    var b = sbtn(box, isOn ? onLabel : offLabel, function () { fn(); }, !isOn); return b;
+  }
   function openMenu() {
-    var s = sheet('mg-menu'), box = s.box;
+    var s = sheet('mg-menu'), box = s.box, reopen = function () { s.ov.remove(); openMenu(); };
     line(box, '⚡ ' + t('menu'), 'font-size:16px;font-weight:700;margin-bottom:12px;');
     sbtn(box, t('paste'), function () { s.ov.remove(); pasteFromClipboard(); });
     if (lastResult && canShareFile(new File([lastResult.blob], lastResult.name))) sbtn(box, t('shareLast') + ' (' + lastResult.name + ')', function () { s.ov.remove(); shareLast(); });
+    if (typeof window.JSZip !== 'undefined') toggleBtn(box, batch.on, t('batchOff'), t('batchOn'), function () { batch.on = !batch.on; lsSet('mg_batch', batch.on ? '1' : '0'); reopen(); });
 
-    line(box, t('recent'), 'font-size:13px;color:#a855f7;margin:10px 0 6px;');
-    var rc = recents();
-    if (!rc.length) line(box, t('noRecent'), 'font-size:13px;color:#9ca3af;font-weight:400;margin-bottom:8px;');
-    rc.slice(0, 8).forEach(function (r) {
-      line(box, r.n + ' · ' + fmtSize(r.s) + ' · ' + timeAgo(r.t), 'font-size:12px;color:#cbd5e1;font-weight:400;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);word-break:break-all;');
-    });
+    sect(box, t('myFiles'));
+    var listBox = document.createElement('div'); box.appendChild(listBox);
+    if (keepOn()) {
+      line(listBox, '…', 'font-size:12px;color:#9ca3af;font-weight:400;');
+      listKept().then(function (items) {
+        listBox.innerHTML = '';
+        if (!items.length) { line(listBox, t('noKept'), 'font-size:13px;color:#9ca3af;font-weight:400;'); return; }
+        items.slice(0, 10).forEach(function (it) {
+          var row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;font-weight:400;';
+          var nm = document.createElement('div'); nm.style.cssText = 'flex:1;min-width:0;word-break:break-all;color:#cbd5e1;'; nm.textContent = it.name + ' · ' + fmtSize(it.size) + ' · ' + timeAgo(it.ts); row.appendChild(nm);
+          [['⬇', 'Download', function () { plainDownload(it.file, it.name); }],
+           ['📤', t('shareBtn'), function () { var f = new File([it.file], it.name, { type: it.file.type }); if (canShareFile(f)) navigator.share({ files: [f] }).catch(function () {}); }],
+           ['🗑', t('del'), function () { opfsDir().then(function (d) { return d.removeEntry(it.key); }).then(function () { row.remove(); }); }]].forEach(function (x) {
+            var bt = document.createElement('button'); bt.textContent = x[0]; bt.title = x[1]; bt.setAttribute('aria-label', x[1]);
+            bt.style.cssText = 'all:unset;cursor:pointer;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.08);'; bt.onclick = x[2]; row.appendChild(bt);
+          });
+          listBox.appendChild(row);
+        });
+      }).catch(function () { listBox.innerHTML = ''; line(listBox, t('noKept'), 'font-size:13px;color:#9ca3af;font-weight:400;'); });
+    } else {
+      var rc = recents();
+      if (!rc.length) line(listBox, t('noRecent'), 'font-size:13px;color:#9ca3af;font-weight:400;');
+      rc.slice(0, 8).forEach(function (r) { line(listBox, r.n + ' · ' + fmtSize(r.s) + ' · ' + timeAgo(r.t), 'font-size:12px;color:#cbd5e1;font-weight:400;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);word-break:break-all;'); });
+    }
 
     if (window.showDirectoryPicker) {
-      line(box, t('saveFolder'), 'font-size:13px;color:#a855f7;margin:14px 0 6px;');
+      sect(box, t('saveFolder'));
       if (folderHandle) {
         line(box, t('folderUse') + folderHandle.name, 'font-size:13px;color:#cbd5e1;font-weight:400;margin-bottom:8px;');
-        if (!folderReady) sbtn(box, t('folderAllow'), function () {
-          folderHandle.requestPermission({ mode: 'readwrite' }).then(function (p) { folderReady = p === 'granted'; s.ov.remove(); }).catch(function () {});
-        });
+        if (!folderReady) sbtn(box, t('folderAllow'), function () { folderHandle.requestPermission({ mode: 'readwrite' }).then(function (p) { folderReady = p === 'granted'; s.ov.remove(); }).catch(function () {}); });
         sbtn(box, t('folderOff'), function () { folderHandle = null; folderReady = false; idb('del'); s.ov.remove(); }, true);
       } else {
         sbtn(box, t('folderNone'), function () {
-          window.showDirectoryPicker({ mode: 'readwrite', id: 'mgpro' }).then(function (h) {
-            folderHandle = h; folderReady = true; idb('set', h); s.ov.remove();
-          }).catch(function () {});
+          window.showDirectoryPicker({ mode: 'readwrite', id: 'mgpro' }).then(function (h) { folderHandle = h; folderReady = true; idb('set', h); s.ov.remove(); }).catch(function () {});
         }, true);
       }
     }
 
-    line(box, t('storage'), 'font-size:13px;color:#a855f7;margin:14px 0 6px;');
+    sect(box, t('storage'));
     var info = line(box, '…', 'font-size:13px;color:#cbd5e1;font-weight:400;margin-bottom:8px;');
     var refresh = function () {
       var parts = [];
       (navigator.storage && navigator.storage.estimate ? navigator.storage.estimate() : Promise.resolve({})).then(function (e) {
         if (e && e.usage != null) parts.push(t('storageUsing') + ' ' + fmtSize(e.usage));
         return window.caches ? caches.match(new URL('index.html', document.baseURI).href) : null;
-      }).then(function (hit) {
-        parts.push(hit ? t('offlineReady') : t('offlineNot')); info.textContent = parts.join(' · ');
-      }).catch(function () { info.textContent = ''; });
+      }).then(function (hit) { parts.push(hit ? t('offlineReady') : t('offlineNot')); info.textContent = parts.join(' · '); }).catch(function () { info.textContent = ''; });
     };
     refresh();
     sbtn(box, t('clearCache'), function () {
       if (!window.caches) return;
-      caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k.indexOf('mgpro-runtime') === 0; }).map(function (k) { return caches.delete(k); })); })
-        .then(function () { toast(t('cleared')); refresh(); });
+      caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k.indexOf('mgpro-runtime') === 0; }).map(function (k) { return caches.delete(k); })); }).then(function () { toast(t('cleared')); refresh(); });
     }, true);
+
+    sect(box, t('a11y'));
+    var zr = document.createElement('div'); zr.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
+    var zl = document.createElement('span'); zl.textContent = t('textSize'); zl.style.cssText = 'flex:1;font-size:13px;font-weight:400;color:#cbd5e1;'; zr.appendChild(zl);
+    [['A−', -0.1], ['A', 0], ['A+', 0.1]].forEach(function (z) {
+      var bt = document.createElement('button'); bt.textContent = z[0]; bt.setAttribute('aria-label', t('textSize') + ' ' + z[0]);
+      bt.style.cssText = 'all:unset;cursor:pointer;padding:8px 14px;border-radius:10px;background:rgba(255,255,255,.1);' + FONT;
+      bt.onclick = function () { setZoom(z[1] === 0 ? 1 : Math.min(1.5, Math.max(0.8, (Number(lsGet('mg_zoom')) || 1) + z[1]))); }; zr.appendChild(bt);
+    }); box.appendChild(zr);
+    toggleBtn(box, root.classList.contains('mg-hc'), '✔ ' + t('hc'), t('hc'), function () { setHC(!root.classList.contains('mg-hc')); reopen(); });
+    sbtn(box, t('shortcuts'), function () { s.ov.remove(); showShortcuts(); }, true);
+
+    sect(box, t('privacy'));
+    toggleBtn(box, keepOn(), t('keepOn'), t('keepOff'), function () { lsSet('mg_keep', keepOn() ? '0' : '1'); reopen(); });
+    toggleBtn(box, !errOff(), t('crashOn'), t('crashOff'), function () { lsSet('mg_err_off', errOff() ? '0' : '1'); reopen(); });
+
+    line(box, 'MediaGrabber Pro · ' + t('build') + ' ' + BUILD, 'font-size:11px;color:#6b7280;font-weight:400;text-align:center;margin:12px 0 8px;');
     sbtn(box, t('close'), function () { s.ov.remove(); }, true);
   }
+  window.mgOpenMenu = openMenu;
   onReady(function () {
     if (!hasTools()) return;
     var fab = document.createElement('button');
@@ -585,4 +679,157 @@
       if (mq.addEventListener) mq.addEventListener('change', follow);
     }
   });
+
+  /* =====================================================================
+     ACCESSIBILITY: text size, high contrast, focus outlines, labels, shortcuts
+     ===================================================================== */
+  (function () {
+    var st = document.createElement('style'); st.id = 'mg-a11y-extra';
+    st.textContent =
+      ':focus-visible { outline: 2px solid #a855f7; outline-offset: 2px; }\n' +
+      'html.mg-hc :focus-visible { outline: 3px solid #ffbf00 !important; outline-offset: 2px; }\n' +
+      'html.mg-hc body { background: #000 !important; color: #fff !important; }\n' +
+      'html.mg-hc body.light-mode { background: #fff !important; color: #000 !important; }\n' +
+      'html.mg-hc .card, html.mg-hc .tool-chip, html.mg-hc input, html.mg-hc textarea, html.mg-hc select, html.mg-hc button, html.mg-hc .upload-area { border: 2px solid currentColor !important; }\n' +
+      'html.mg-hc p, html.mg-hc span, html.mg-hc label, html.mg-hc .subtitle { color: inherit !important; opacity: 1 !important; }\n' +
+      'html.mg-hc a { text-decoration: underline; }\n' +
+      '.mg-star { position:absolute; top:2px; right:4px; z-index:2; all:unset; cursor:pointer; padding:4px 6px; font-size:15px; line-height:1; opacity:.75; }\n' +
+      '.mg-star:hover { opacity:1; } .tool-chip { position: relative; }';
+    document.head.appendChild(st);
+  })();
+  function setZoom(z) { lsSet('mg_zoom', String(z)); if (document.body) document.body.style.zoom = z === 1 ? '' : String(z); }
+  function setHC(on) { root.classList.toggle('mg-hc', on); lsSet('mg_hc', on ? '1' : '0'); }
+  function errOff() { return lsGet('mg_err_off') === '1' || navigator.doNotTrack === '1'; }
+  if (lsGet('mg_hc') === '1') root.classList.add('mg-hc');
+  onReady(function () { var z = Number(lsGet('mg_zoom')); if (z && z !== 1) document.body.style.zoom = String(z); });
+
+  function accName(e) {
+    var lab = e.id && document.querySelector('label[for="' + e.id + '"]'), wrap = e.closest && e.closest('label');
+    return (e.getAttribute('aria-label') || e.getAttribute('aria-labelledby') || e.getAttribute('title') || (lab && lab.textContent.trim()) || (wrap && wrap.textContent.trim()) ||
+            (/^(BUTTON|A)$/.test(e.tagName) ? e.textContent.trim() : '') || e.getAttribute('placeholder') || '').trim();
+  }
+  function labelPass() {
+    Array.prototype.forEach.call(document.querySelectorAll('input,select,textarea,button,a[href]'), function (e) {
+      if (e.type === 'hidden' || accName(e)) return;
+      var g = (e.id || e.name || '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[-_]+/g, ' ').trim();
+      e.setAttribute('aria-label', g || (e.type === 'file' ? 'Choose file' : e.tagName.toLowerCase()));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('img:not([alt])'), function (i) { i.setAttribute('alt', ''); });
+    Array.prototype.forEach.call(document.querySelectorAll('svg:not([aria-hidden]):not([role])'), function (v) { v.setAttribute('aria-hidden', 'true'); });
+    ['ocrStatus', 'unlockStatus', 'cmpStatus', 'ppStatus', 'bgStatus', 'ocrTrStatus', 'sgCount'].forEach(function (id) {
+      var e = document.getElementById(id); if (e && !e.getAttribute('aria-live')) { e.setAttribute('role', 'status'); e.setAttribute('aria-live', 'polite'); }
+    });
+  }
+  onReady(function () {
+    setTimeout(labelPass, 400);
+    var tmr; if ('MutationObserver' in window) new MutationObserver(function () { clearTimeout(tmr); tmr = setTimeout(labelPass, 500); }).observe(document.body, { childList: true, subtree: true });
+  });
+  function allToolIds() { return SECTIONS.filter(function (id) { return id !== 'texttopdf' && document.getElementById(id); }); }
+  function showShortcuts() {
+    var s = sheet('mg-keys'), ids = allToolIds().slice(0, 9);
+    line(s.box, t('shortcuts'), 'font-size:16px;font-weight:700;margin-bottom:10px;');
+    [['Alt + M', t('menu')], ['?', t('shortcuts')], ['Esc', t('close')]].concat(ids.map(function (id, i) {
+      var h = document.getElementById(id), nm = h ? h.textContent.replace(/BETA/, '').trim() : id; return ['Alt + ' + (i + 1), nm];
+    })).forEach(function (r) { line(s.box, r[0] + '   —   ' + r[1], 'font-size:13px;font-weight:400;color:#cbd5e1;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);'); });
+    sbtn(s.box, t('close'), function () { s.ov.remove(); }, true);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (!hasTools()) return;
+    if (e.key === 'Escape') { ['mg-menu', 'mg-keys', 'mg-share-modal', 'mg-tour'].forEach(removeEl); return; }
+    if (e.altKey && !e.ctrlKey && !e.metaKey) {
+      if (/^[1-9]$/.test(e.key)) { var id = allToolIds()[Number(e.key) - 1]; if (id) { e.preventDefault(); scrollToTool(id); } }
+      else if (e.key.toLowerCase() === 'm') { e.preventDefault(); openMenu(); }
+    } else if (e.key === '?' && !isEditable(e.target)) showShortcuts();
+  });
+
+  /* =====================================================================
+     FAVOURITES (★ on any tool chip; pinned row on top)
+     ===================================================================== */
+  function favs() { try { return JSON.parse(lsGet('mg_fav') || '[]'); } catch (e) { return []; } }
+  function buildFavs() {
+    var grid = document.getElementById('allToolsGrid'); if (!grid) return;
+    var wrap = document.getElementById('mgFavWrap');
+    if (!wrap) {
+      wrap = document.createElement('div'); wrap.id = 'mgFavWrap'; wrap.style.cssText = 'margin-top:22px;text-align:left;';
+      var lbl = document.createElement('p'); lbl.textContent = t('fav'); lbl.style.cssText = 'font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#8b7cb8;margin-bottom:8px;';
+      var row = document.createElement('div'); row.id = 'mgFavRow'; row.style.cssText = 'display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;';
+      wrap.appendChild(lbl); wrap.appendChild(row); grid.parentNode.insertBefore(wrap, grid);
+    }
+    var list = favs(), row2 = document.getElementById('mgFavRow'); row2.innerHTML = '';
+    wrap.style.display = list.length ? 'block' : 'none';
+    list.forEach(function (href) {
+      var chip = grid.querySelector('.tool-chip[href="' + href + '"]'); if (!chip) return;
+      var c = chip.cloneNode(true); var st = c.querySelector('.mg-star'); if (st) st.remove(); c.style.flex = '0 0 auto'; row2.appendChild(c);
+    });
+    Array.prototype.forEach.call(grid.querySelectorAll('.tool-chip'), function (chip) {
+      var href = chip.getAttribute('href'), on = list.indexOf(href) > -1, star = chip.querySelector('.mg-star');
+      if (!star) {
+        star = document.createElement('button'); star.type = 'button'; star.className = 'mg-star'; chip.appendChild(star);
+        star.addEventListener('click', function (e) {
+          e.preventDefault(); e.stopPropagation(); var l = favs(), i = l.indexOf(href);
+          if (i > -1) l.splice(i, 1); else l.push(href); lsSet('mg_fav', JSON.stringify(l)); buildFavs();
+        });
+      }
+      star.textContent = on ? '★' : '☆'; star.setAttribute('aria-label', (on ? 'Remove from favourites: ' : 'Add to favourites: ') + (chip.textContent || '').replace(/[★☆]/g, '').trim()); star.style.color = on ? '#fbbf24' : 'inherit';
+    });
+  }
+  onReady(function () { if (hasTools()) buildFavs(); });
+  document.addEventListener('mgtools-ready', function () { if (hasTools()) buildFavs(); });
+
+  /* =====================================================================
+     FIRST-RUN TOUR (once, only for brand-new visitors)
+     ===================================================================== */
+  window.addEventListener('load', function () {
+    if (!hasTools() || lsGet('mg_tour_done') || lsGet('mg_feedback_done') === 'true' || lsGet('mgp_recent_tools') || location.hash || /[?&](shared|tool)=/.test(location.search)) return;
+    setTimeout(function () {
+      var steps = [['🔒 Private by design', 'Your files are processed on your device. They are not uploaded.'],
+                   ['📥 Easy to start', 'Drop files anywhere, paste an image with Ctrl+V, or use "Share → MG Pro" from your gallery.'],
+                   ['📲 Works offline', 'Install the app (browser menu → Install, or Add to Home Screen) and your tools work without internet.']], i = 0;
+      var s = sheet('mg-tour'), body = document.createElement('div'); s.box.appendChild(body);
+      function paint() {
+        body.innerHTML = ''; line(body, steps[i][0], 'font-size:18px;font-weight:700;margin-bottom:8px;'); line(body, steps[i][1], 'font-size:14px;font-weight:400;color:#cbd5e1;margin-bottom:16px;line-height:1.5;');
+        line(body, (i + 1) + ' / ' + steps.length, 'font-size:12px;color:#9ca3af;text-align:center;margin-bottom:10px;');
+        sbtn(body, i === steps.length - 1 ? t('gotIt') : 'Next', function () { if (i === steps.length - 1) { lsSet('mg_tour_done', '1'); s.ov.remove(); } else { i++; paint(); } });
+        if (i < steps.length - 1) sbtn(body, 'Skip', function () { lsSet('mg_tour_done', '1'); s.ov.remove(); }, true);
+      }
+      paint(); lsSet('mg_tour_done', '1');
+    }, 1800);
+  });
+
+  /* =====================================================================
+     RATING PROMPT (soft: after 3 finished tasks, instead of an instant redirect)
+     ===================================================================== */
+  window.mgAskRating = function () {
+    if (lsGet('mg_feedback_done') === 'true') return;
+    var n = Number(lsGet('mg_uses') || 0) + 1; lsSet('mg_uses', String(n));
+    if (n < 3 || Date.now() < Number(lsGet('mg_rate_snooze') || 0) || Number(lsGet('mg_rate_later') || 0) >= 3) return;
+    onReady(function () {
+      makeBar('mg-rate-bar', t('rateQ'), 'linear-gradient(135deg,#7c3aed,#4f46e5)', 'bottom', [
+        { label: t('rate'), fn: function () { removeEl('mg-rate-bar'); location.href = 'index (2).html'; } },
+        { label: t('later'), fn: function () { removeEl('mg-rate-bar'); lsSet('mg_rate_snooze', String(Date.now() + 7 * 24 * 3600 * 1000)); lsSet('mg_rate_later', String(Number(lsGet('mg_rate_later') || 0) + 1)); } }]);
+    });
+  };
+
+  /* =====================================================================
+     VERSION IN FOOTER
+     ===================================================================== */
+  onReady(function () { var f = document.querySelector('footer'); if (f && !document.getElementById('mgBuild')) { var sp = document.createElement('div'); sp.id = 'mgBuild'; sp.style.cssText = 'margin-top:8px;font-size:11px;opacity:.6;'; sp.textContent = 'Build ' + BUILD; f.appendChild(sp); } });
+
+  /* =====================================================================
+     ANONYMOUS CRASH REPORTS (opt-out in the ⚡ menu; no URLs, no personal data)
+     ===================================================================== */
+  (function () {
+    var sent = 0, seen = {};
+    function browser() { var u = navigator.userAgent; return /edg\//i.test(u) ? 'edge' : /chrome|crios/i.test(u) ? 'chrome' : /firefox|fxios/i.test(u) ? 'firefox' : /safari/i.test(u) ? 'safari' : 'other'; }
+    function report(msg, file, line) {
+      if (errOff() || sent >= 5 || !window.fetch || !msg) return;
+      msg = String(msg).slice(0, 200); if (msg === 'Script error.' || /ResizeObserver loop|Non-Error promise rejection/i.test(msg)) return;
+      var key = msg + '|' + file + '|' + line; if (seen[key]) return; seen[key] = 1; sent++;
+      var f = String(file || '').split('?')[0].split('/').pop().slice(0, 60);
+      window.fetch('https://' + DB + '/errors.json', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+        body: JSON.stringify({ t: { '.sv': 'timestamp' }, m: msg, f: f, l: Number(line) || 0, b: BUILD, p: platformName(), s: standalone ? 1 : 0, br: browser() }) }).catch(function () {});
+    }
+    window.addEventListener('error', function (e) { if (e && e.message) report(e.message, e.filename, e.lineno); });
+    window.addEventListener('unhandledrejection', function (e) { var r = e && e.reason; report(r && (r.message || r), 'promise', 0); });
+  })();
 })();
