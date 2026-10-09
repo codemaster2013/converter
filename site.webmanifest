@@ -2,7 +2,7 @@
   "id": "./",
   "name": "MediaGrabber Pro",
   "short_name": "MG Pro",
-  "description": "Professional media tools that never leave your browser: JPG to PDF, OCR, PDF unlocker, compressor and more.",
+  "description": "Free, private PDF and image tools that run in your browser: Image to PDF, JPG to PDF, Smart OCR, PDF password remover, PDF reader, image converter, Base64 and more.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -12,11 +12,12 @@
   "lang": "en",
   "categories": [
     "utilities",
-    "productivity"
+    "productivity",
+    "photo"
   ],
   "launch_handler": {
     "client_mode": [
-      "focus-existing",
+      "navigate-existing",
       "auto"
     ]
   },
@@ -49,9 +50,9 @@
   "shortcuts": [
     {
       "name": "Image to PDF",
-      "short_name": "JPG → PDF",
-      "description": "Turn images into a PDF",
-      "url": "./#pdf",
+      "short_name": "Image→PDF",
+      "description": "Convert JPG, PNG and photos to a PDF",
+      "url": "./?tool=image-to-pdf#image-to-pdf",
       "icons": [
         {
           "src": "android-chrome-192x192.png",
@@ -64,7 +65,33 @@
       "name": "Smart OCR",
       "short_name": "OCR",
       "description": "Extract text from images and PDFs",
-      "url": "./#ocr",
+      "url": "./?tool=ocr#ocr",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Remove PDF Password",
+      "short_name": "Unlock PDF",
+      "description": "Unlock a password-protected PDF",
+      "url": "./?tool=pdf-password-remover#pdf-password-remover",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Image Converter",
+      "short_name": "Converter",
+      "description": "Convert images between JPG, PNG and WebP",
+      "url": "./?tool=image-converter#image-converter",
       "icons": [
         {
           "src": "android-chrome-192x192.png",
@@ -77,7 +104,7 @@
       "name": "Merge PDF",
       "short_name": "Merge",
       "description": "Combine PDFs into one",
-      "url": "./#pdfmerge",
+      "url": "./?tool=pdfmerge#pdfmerge",
       "icons": [
         {
           "src": "android-chrome-192x192.png",
@@ -87,10 +114,23 @@
       ]
     },
     {
-      "name": "Remove PDF Password",
-      "short_name": "Unlock",
-      "description": "Unlock a PDF",
-      "url": "./#unlocker",
+      "name": "PDF Reader",
+      "short_name": "Reader",
+      "description": "Read and annotate PDFs",
+      "url": "./?tool=pdf-reader#pdf-reader",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Base64 Converter",
+      "short_name": "Base64",
+      "description": "Encode and decode Base64",
+      "url": "./?tool=base64#base64",
       "icons": [
         {
           "src": "android-chrome-192x192.png",
@@ -103,7 +143,7 @@
       "name": "HEIC to JPG",
       "short_name": "HEIC",
       "description": "Convert iPhone photos",
-      "url": "./#heic2jpg",
+      "url": "./?tool=heic2jpg#heic2jpg",
       "icons": [
         {
           "src": "android-chrome-192x192.png",
@@ -172,5 +212,7 @@
     "window-controls-overlay",
     "standalone"
   ],
-  "handle_links": "preferred"
+  "handle_links": "preferred",
+  "dir": "ltr",
+  "prefer_related_applications": false
 }

@@ -1657,9 +1657,11 @@ body.light-mode .fb-input { background: rgba(0,0,0,0.05); color: #111; }
 
 /* 🔒 Lock background scroll */
 
+/* Only locks while a dialog is genuinely open (see the scroll-lock watchdog near the end of the page) */
 body.modal-open {
     overflow: hidden !important;
     height: 100vh;
+    height: 100dvh;
 }
 
 /* Updates Row */
@@ -1937,12 +1939,25 @@ line-height:1.5;
 /* ============================
    VIP GOLD THEME OVERRIDES
 ============================ */
-html, body {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
+/* Scrolling: ONLY the page (viewport) scrolls. Putting overflow-x:hidden on both html and body turns
+   <body> into its own scroll container, which swallows the mouse wheel on desktop. So the horizontal
+   clip lives on <html> only and <body> uses overflow:clip (which never creates a scroll container). */
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
   box-sizing: border-box;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,215,0,0.45) #05030a;
+  overscroll-behavior-y: auto;
+}
+body {
+  overflow-x: clip;
+  overflow-y: visible;
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 html::-webkit-scrollbar { width: 6px; }
 html::-webkit-scrollbar-track { background: #05030a; }
@@ -4750,20 +4765,17 @@ window.addEventListener("load", () => {
 });
 
 
- type="application/ld+json">
+</script>
+
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "MediaGrabber Pro",
   "url": "https://codemaster2013.github.io/converter/"
 }
-
-
-
 </script>
 
-</script>
-<script>
 <script>
 
 /* ==============================
@@ -5476,7 +5488,6 @@ document.getElementById("closeUpdatesBtn").addEventListener("click", function(){
 });
 
 
-</script>
 </script>
 
 <script>
@@ -6812,5 +6823,46 @@ function smcForever() {
 
 <style>.vip-card{scroll-margin-top:90px}.vip-card:target{outline:2px solid rgba(255,215,0,.85);outline-offset:4px}</style>
 <script>window.addEventListener('load',function(){var h=location.hash.slice(1);if(!h)return;setTimeout(function(){var e=document.getElementById(h);if(e)e.scrollIntoView({behavior:'smooth',block:'start'});},600);});</script>
+<script src="mg-deeplink.js"></script>
+<script>
+/* ============================================================
+   SCROLL-LOCK WATCHDOG
+   body.modal-open / body{overflow:hidden} are meant to hold the page still only while a dialog is open.
+   If a dialog was closed in an unusual way (error, back button, re-opened tab) the lock could stay on and the
+   mouse wheel, touchpad, keys and touch would stop working. This releases the lock whenever no dialog is visible.
+   ============================================================ */
+(function () {
+  var DIALOGS = ['#settingsOverlay', '.pr-overlay', '#pdfReaderView', '#updatesOverlay', '#moreModalOverlay', '#backLoader',
+                 '#backChoiceOverlay', '#switchModeOverlay', '#betaWelcomeOverlay', '#mgAlertOverlay.mg-show'];
+  function dialogVisible() {
+    for (var i = 0; i < DIALOGS.length; i++) {
+      var list = document.querySelectorAll(DIALOGS[i]);
+      for (var j = 0; j < list.length; j++) {
+        var el = list[j], cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) < 0.05) continue;
+        var r = el.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) return true;
+      }
+    }
+    return false;
+  }
+  function release() {
+    var b = document.body, h = document.documentElement;
+    var locked = b.classList.contains('modal-open') || b.style.overflow === 'hidden' || h.style.overflow === 'hidden' || b.style.position === 'fixed';
+    if (locked && !dialogVisible()) {
+      b.classList.remove('modal-open');
+      b.style.overflow = ''; b.style.position = ''; b.style.height = ''; b.style.top = '';
+      h.style.overflow = '';
+    }
+  }
+  var t = null;
+  function soon() { clearTimeout(t); t = setTimeout(release, 120); }
+  new MutationObserver(soon).observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
+  ['wheel', 'keydown', 'touchstart', 'pointerdown'].forEach(function (ev) { window.addEventListener(ev, release, { passive: true, capture: true }); });
+  window.addEventListener('pageshow', soon);
+  document.addEventListener('visibilitychange', soon);
+  setTimeout(release, 1500); setTimeout(release, 4500);
+})();
+</script>
 </body>
 </html>

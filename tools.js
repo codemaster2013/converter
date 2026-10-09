@@ -1,7 +1,7 @@
 /* MediaGrabber Pro – extra tools (loaded on index.html).
    Compress to size · Photo & signature size · Document scanner · PDF page tools · Sign PDF ·
-   Remove photo location (EXIF) · Background remover · QR scanner · OCR translate.
-   Everything runs in the browser; files never leave the device (except text you choose to translate). */
+   Remove photo location (EXIF) · QR scanner.
+   Everything runs in the browser; files never leave the device. */
 (function () {
   'use strict';
   var T = window.__mgt = {};                       // internals exposed for testing
@@ -37,13 +37,56 @@
   }
   function baseName(n) { return (n || 'file').replace(/\.[^.]+$/, ''); }
   function done() { try { if (typeof redirectToFeedback === 'function') redirectToFeedback(); } catch (e) {} }
-  function loadBitmap(file) {
-    if (window.createImageBitmap) {
-      return createImageBitmap(file, { imageOrientation: 'from-image' }).catch(function () { return createImageBitmap(file); });
+  /* Reads the first bytes of a file to find its real format (a wrong/empty MIME type is the usual reason
+     a phone photo "could not be decoded"). */
+  function sniffType(u) {
+    var s4 = String.fromCharCode(u[0], u[1], u[2], u[3]);
+    if (u[0] === 0xFF && u[1] === 0xD8 && u[2] === 0xFF) return 'image/jpeg';
+    if (u[0] === 0x89 && s4.slice(1) === 'PNG') return 'image/png';
+    if (s4 === 'GIF8') return 'image/gif';
+    if (s4 === 'RIFF' && String.fromCharCode(u[8], u[9], u[10], u[11]) === 'WEBP') return 'image/webp';
+    if (u[0] === 0x42 && u[1] === 0x4D) return 'image/bmp';
+    if (String.fromCharCode(u[4], u[5], u[6], u[7]) === 'ftyp') {
+      var brand = String.fromCharCode(u[8], u[9], u[10], u[11]);
+      if (/^(avif|avis)$/.test(brand)) return 'image/avif';
+      if (/^(heic|heix|hevc|hevx|heim|heis|mif1|msf1)$/.test(brand)) return 'image/heic';
     }
+    return '';
+  }
+  function imgElement(blob) {
     return new Promise(function (res, rej) {
-      var i = new Image(); i.onload = function () { res(i); }; i.onerror = rej; i.src = URL.createObjectURL(file);
+      var url = URL.createObjectURL(blob), i = new Image();
+      i.onload = function () { URL.revokeObjectURL(url); res(i); };
+      i.onerror = function () { URL.revokeObjectURL(url); rej(new Error('decode')); };
+      i.src = url;
     });
+  }
+  async function loadBitmap(file) {
+    // 1) fast path
+    if (window.createImageBitmap) {
+      try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch (e) {}
+      try { return await createImageBitmap(file); } catch (e) {}
+    }
+    // 2) read the bytes ourselves and try again with the real format
+    var buf;
+    try { buf = await file.arrayBuffer(); }
+    catch (e) { throw new Error('This file could not be read. Please choose it again.'); }
+    if (!buf.byteLength) throw new Error('This file is empty (0 bytes). Please choose it again.');
+    var kind = sniffType(new Uint8Array(buf, 0, Math.min(16, buf.byteLength)));
+    if (kind === 'image/heic') {
+      if (typeof window.heic2any === 'function') {
+        try {
+          var out = await window.heic2any({ blob: new Blob([buf], { type: 'image/heic' }), toType: 'image/jpeg', quality: 0.95 });
+          out = Array.isArray(out) ? out[0] : out;
+          return window.createImageBitmap ? await createImageBitmap(out) : await imgElement(out);
+        } catch (e) { throw new Error('This HEIC photo could not be converted. Try the HEIC to JPG tool first.'); }
+      }
+      throw new Error('HEIC photos are not supported here. Use the HEIC to JPG tool first.');
+    }
+    var fixed = new Blob([buf], { type: kind || (/^image\//.test(file.type) ? file.type : 'image/jpeg') });
+    if (window.createImageBitmap) { try { return await createImageBitmap(fixed); } catch (e) {} }
+    try { var im = await imgElement(fixed); if (im.decode) { try { await im.decode(); } catch (e) {} } return im; }
+    catch (e) { throw new Error('This file is not a readable image (' + (kind ? kind.replace('image/', '').toUpperCase() : (file.type || 'unknown format')) + ').'); }
   }
   function newCanvas(w, h) { var c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
   function drawScaled(src, w, h, bg) {
@@ -219,7 +262,7 @@
       }
       input.onchange = async function () {
         if (!input.files.length) return;
-        try { bmp = await loadBitmap(input.files[0]); } catch (e) { notify('This file is not a readable image.', 'Image error'); return; }
+        try { bmp = await loadBitmap(input.files[0]); } catch (e) { notify((e && e.message) || 'This file is not a readable image.', 'Image error'); return; }
         state = { zoom: 1, cx: bmp.width / 2, cy: bmp.height / 2 }; zoom.value = 1; applyPreset();
       };
       zoom.oninput = function () { state.zoom = Number(zoom.value); draw(); };
@@ -830,81 +873,6 @@
     });
 
   /* =================================================================
-     7. BACKGROUND REMOVER
-     ================================================================= */
-  T.removeBgQuick = function (canvas, tol) {
-    var w = canvas.width, h = canvas.height, ctx = canvas.getContext('2d'), img = ctx.getImageData(0, 0, w, h), d = img.data, n = w * h, i, x, y;
-    var rs = [], gs = [], bs = [];
-    function sample(px) { var p = px * 4; rs.push(d[p]); gs.push(d[p + 1]); bs.push(d[p + 2]); }
-    for (x = 0; x < w; x++) { sample(x); sample((h - 1) * w + x); } for (y = 1; y < h - 1; y++) { sample(y * w); sample(y * w + w - 1); }
-    function med(a) { a.sort(function (p, q) { return p - q; }); return a[a.length >> 1]; }
-    var br = med(rs), bg = med(gs), bb = med(bs), t2 = tol * tol;
-    function near(px) { var p = px * 4, dr = d[p] - br, dg = d[p + 1] - bg, db = d[p + 2] - bb; return dr * dr + dg * dg + db * db <= t2; }
-    var isBg = new Uint8Array(n), stack = new Int32Array(n), sp = 0;
-    function push(px) { if (!isBg[px] && near(px)) { isBg[px] = 1; stack[sp++] = px; } }
-    for (x = 0; x < w; x++) { push(x); push((h - 1) * w + x); } for (y = 0; y < h; y++) { push(y * w); push(y * w + w - 1); }
-    while (sp) {
-      var p = stack[--sp]; x = p % w; y = (p / w) | 0;
-      if (x > 0) push(p - 1); if (x < w - 1) push(p + 1); if (y > 0) push(p - w); if (y < h - 1) push(p + w);
-    }
-    for (i = 0; i < n; i++) d[i * 4 + 3] = isBg[i] ? 0 : 255;
-    var soft = new Uint8Array(n);                       // soften the cut-out edge by one pixel
-    for (y = 1; y < h - 1; y++) for (x = 1; x < w - 1; x++) { var q = y * w + x; if (!isBg[q] && (isBg[q - 1] || isBg[q + 1] || isBg[q - w] || isBg[q + w])) soft[q] = 1; }
-    for (i = 0; i < n; i++) if (soft[i]) d[i * 4 + 3] = 150;
-    var out = newCanvas(w, h); out.getContext('2d').putImageData(img, 0, 0); return out;
-  };
-  var AI_URL = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm';
-  T.removeBgAI = async function (file, onProgress) {
-    var mod = await import(AI_URL);
-    return mod.removeBackground(file, { output: { format: 'image/png' }, progress: function (key, cur, tot) { if (onProgress) onProgress(key, cur, tot); } });
-  };
-
-  addTool('bgremove', 'Background Remover', 'Remove Background',
-    ICON('<path d="M12 3a9 9 0 1 0 0 18"/><path d="M12 3v18"/><path d="M12 8h4M12 12h6M12 16h4"/>'),
-    'Cut the background out of a photo. "Quick" works best on plain backgrounds; "AI" handles complex photos (it downloads a model once, about 40 MB).',
-    function (card) {
-      var mode = 'quick', tol = 40, srcCanvas = null, file = null, resultBlob = null;
-      var input = el('input', { type: 'file', id: 'bgInput', accept: 'image/*', hidden: 'hidden' });
-      var label = el('label', { 'class': 'upload-area', 'for': 'bgInput' }, [el('p', { text: 'Click to upload a photo', style: 'font-weight:600' }), input]);
-      var row = el('div', { 'class': 'mgt-row' }), q = el('button', { 'class': 'mgt-chip on', type: 'button', text: 'Quick (plain background)' }), a = el('button', { 'class': 'mgt-chip', type: 'button', text: 'AI (beta, any background)' });
-      q.onclick = function () { mode = 'quick'; q.classList.add('on'); a.classList.remove('on'); tolRow.style.display = 'flex'; }; a.onclick = function () { mode = 'ai'; a.classList.add('on'); q.classList.remove('on'); tolRow.style.display = 'none'; };
-      row.appendChild(q); row.appendChild(a);
-      var tolIn = el('input', { type: 'range', min: '10', max: '110', value: '40', style: 'flex:1;margin:0' }), tolRow = el('div', { 'class': 'mgt-row' }, [el('span', { text: 'Sensitivity', style: 'font-size:13px;opacity:.8' }), tolIn]);
-      tolIn.oninput = function () { tol = Number(tolIn.value); };
-      var bgSel = el('select', { style: 'margin:0;max-width:170px', id: 'bgFill' }, [['transparent', 'Transparent (PNG)'], ['#ffffff', 'White background'], ['#2563eb', 'Blue background']].map(function (o) { return el('option', { value: o[0], text: o[1] }); }));
-      var btn = el('button', { 'class': 'btn-primary', text: 'Remove background', id: 'bgBtn' }), status = el('div', { 'class': 'mgt-note', id: 'bgStatus' });
-      var preview = el('img', { id: 'bgPreview', 'class': 'mgt-checker', style: 'display:none;max-width:100%;max-height:360px;border-radius:10px;margin:10px auto' });
-      var results = ResultList(card);
-      input.onchange = async function () {
-        if (!input.files.length) return; file = input.files[0];
-        try { var b = await loadBitmap(file), k = Math.min(1, 1600 / Math.max(b.width, b.height)); srcCanvas = drawScaled(b, Math.round(b.width * k), Math.round(b.height * k)); if (b.close) b.close(); status.textContent = file.name; }
-        catch (e) { notify('This file is not a readable image.', 'Image error'); }
-      };
-      btn.onclick = async function () {
-        if (!srcCanvas) { notify('Please choose a photo first.', 'No photo'); return; }
-        var fin = busy(btn, 'Working…'); results.clear(); var outCanvas = null;
-        try {
-          if (mode === 'ai') {
-            try {
-              status.textContent = 'Loading the AI model (first time only)…';
-              var blob = await T.removeBgAI(file, function (key, cur, tot) { if (tot) status.textContent = 'Downloading model… ' + Math.round(cur / tot * 100) + '%'; });
-              var bm = await createImageBitmap(blob); outCanvas = drawScaled(bm, bm.width, bm.height); status.textContent = 'Done (AI).';
-            } catch (e) { status.textContent = 'The AI model could not be loaded (' + (e && e.message || 'offline?') + '). Using Quick mode instead.'; }
-          }
-          if (!outCanvas) { outCanvas = T.removeBgQuick(srcCanvas, tol); if (mode !== 'ai') status.textContent = 'Done. If parts are missing, lower the sensitivity; if background is left, raise it.'; }
-          var fill = bgSel.value, fin2 = outCanvas;
-          if (fill !== 'transparent') { fin2 = newCanvas(outCanvas.width, outCanvas.height); var x = fin2.getContext('2d'); x.fillStyle = fill; x.fillRect(0, 0, fin2.width, fin2.height); x.drawImage(outCanvas, 0, 0); }
-          resultBlob = await toBlob(fin2, fill === 'transparent' ? 'image/png' : 'image/jpeg', 0.93);
-          preview.src = URL.createObjectURL(resultBlob); preview.style.display = 'block';
-          results.add(baseName(file.name) + '-nobg.' + (fill === 'transparent' ? 'png' : 'jpg'), resultBlob); done();
-        } catch (e) { notify('Could not remove the background: ' + e.message); }
-        fin();
-      };
-      card.insertBefore(label, card.firstChild); var an = card.querySelector('.mgt-list');
-      [row, tolRow, el('div', { 'class': 'mgt-row' }, [el('span', { text: 'Output', style: 'font-size:13px;opacity:.8' }), bgSel]), btn, status, preview].forEach(function (n) { card.insertBefore(n, an); });
-    });
-
-  /* =================================================================
      8. QR SCANNER
      ================================================================= */
   T.decodeQR = async function (source) {
@@ -956,63 +924,6 @@
     });
 
   /* =================================================================
-     9. OCR → TRANSLATE  (added under the existing Smart OCR result)
-     ================================================================= */
-  T.detectLang = function (text) {
-    var dev = (text.match(/[\u0900-\u097F]/g) || []).length, guj = (text.match(/[\u0A80-\u0AFF]/g) || []).length, lat = (text.match(/[A-Za-z]/g) || []).length;
-    return guj > dev && guj > lat ? 'gu' : (dev > lat ? 'hi' : 'en');
-  };
-  T.chunkText = function (text, max) {
-    var parts = text.split(/(?<=[.!?।\n])\s+/), out = [], cur = '';
-    parts.forEach(function (p) {
-      while (p.length > max) { if (cur) { out.push(cur); cur = ''; } out.push(p.slice(0, max)); p = p.slice(max); }
-      if ((cur + ' ' + p).length > max) { if (cur) out.push(cur); cur = p; } else cur = cur ? cur + ' ' + p : p;
-    });
-    if (cur) out.push(cur); return out;
-  };
-  T.translateText = async function (text, src, tgt, onProgress) {
-    if ('Translator' in self) {
-      try {
-        var av = await self.Translator.availability({ sourceLanguage: src, targetLanguage: tgt });
-        if (av && av !== 'unavailable') { var tr = await self.Translator.create({ sourceLanguage: src, targetLanguage: tgt }); return { text: await tr.translate(text), via: 'your browser' }; }
-      } catch (e) {}
-    }
-    var chunks = T.chunkText(text, 450), res = [];
-    for (var i = 0; i < chunks.length; i++) {
-      if (onProgress) onProgress(i + 1, chunks.length);
-      var r = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunks[i]) + '&langpair=' + src + '|' + tgt);
-      if (!r.ok) throw new Error('Translation service is not reachable (' + r.status + ').');
-      var j = await r.json();
-      if (!j.responseData || Number(j.responseStatus) !== 200) throw new Error((j.responseDetails || 'Translation service error'));
-      res.push(j.responseData.translatedText);
-    }
-    return { text: res.join(' '), via: 'MyMemory' };
-  };
-  function initTranslate() {
-    var ocr = $('ocrResult'); if (!ocr || $('ocrTrBtn')) return; var card = ocr.closest('.card') || ocr.parentNode;
-    var sel = el('select', { id: 'ocrTrLang', style: 'margin:0;max-width:150px' }, [['en', 'English'], ['hi', 'हिन्दी (Hindi)'], ['gu', 'ગુજરાતી (Gujarati)']].map(function (o) { return el('option', { value: o[0], text: o[1] }); }));
-    var btn = el('button', { 'class': 'btn-primary', type: 'button', id: 'ocrTrBtn', text: 'Translate text', style: 'margin:0;width:auto;padding:10px 18px' });
-    var status = el('div', { 'class': 'mgt-note', id: 'ocrTrStatus' });
-    var outTa = el('textarea', { id: 'ocrTranslated', placeholder: 'Translation will appear here…', style: 'min-height:140px;margin-top:8px' });
-    var cp = el('button', { 'class': 'mgt-chip', type: 'button', text: 'Copy translation' });
-    cp.onclick = function () { if (navigator.clipboard) navigator.clipboard.writeText(outTa.value); };
-    btn.onclick = async function () {
-      var text = ocr.value.trim(); if (!text) { notify('Extract some text first, then translate it.', 'No text'); return; }
-      var src = T.detectLang(text), tgt = sel.value; if (src === tgt) { status.textContent = 'The text is already in that language.'; return; }
-      var fin = busy(btn, 'Translating…');
-      try {
-        var r = await T.translateText(text, src, tgt, function (i, n) { status.textContent = 'Translating part ' + i + ' of ' + n + '…'; });
-        outTa.value = r.text; status.textContent = 'Translated ' + (src === 'en' ? 'English' : (src === 'hi' ? 'Hindi' : 'Gujarati')) + ' → ' + sel.options[sel.selectedIndex].text + ' (' + r.via + '). Please proofread.'; done();
-      } catch (e) { status.textContent = ''; notify('Could not translate: ' + e.message, 'Translation failed'); }
-      fin();
-    };
-    card.appendChild(el('p', { text: 'Translate the extracted text', style: 'font-size:13px;opacity:.8;margin:18px 0 6px' }));
-    card.appendChild(el('div', { 'class': 'mgt-row', style: 'margin:0' }, [sel, btn]));
-    card.appendChild(el('div', { 'class': 'mgt-note', text: 'Privacy: unless your browser has built-in translation, only this text is sent to the free MyMemory service. Do not translate private documents.' }));
-    card.appendChild(status); card.appendChild(outTa); card.appendChild(cp);
-  }
-
-  /* =================================================================
      INIT – adds the chips + sections to the page
      ================================================================= */
   var CSS = '.mgt-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;align-items:center}' +
@@ -1037,7 +948,6 @@
       try { t.build(card); } catch (e) { console.error('Tool failed to build:', t.id, e); }
       foot.parentNode.insertBefore(h2, foot); foot.parentNode.insertBefore(card, foot);
     });
-    initTranslate();
     window.mgToolIds = TOOLS_META.map(function (t) { return t.id; });
     T.ready = true; document.dispatchEvent(new Event('mgtools-ready'));
   }

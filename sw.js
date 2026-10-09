@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"
@@ -9,7 +9,7 @@ const RUNTIME_MAX_ENTRIES = 200;
 // Relative paths so it works at a domain root (Vercel) AND a sub-path (GitHub Pages /converter/)
 const CORE_ASSETS = [
   './', './index.html', './index (2).html', './index (3).html', './index (4).html', './index (5).html',
-  './offline.html', './three-effects.js', './pwa.js', './mg-libs.js', './tools.js', './site.webmanifest',
+  './offline.html', './three-effects.js', './pwa.js', './mg-libs.js', './mg-deeplink.js', './tools.js', './site.webmanifest',
   './lib-pdf.min.js', './lib-pdf.worker.min.js', './lib-pdf-lib.min.js', './lib-jszip.min.js', './lib-jspdf.umd.min.js', './lib-qrcode.min.js',
   './lib-firebase-app.js', './lib-firebase-database.js', './lib-three-160.min.js',
   './favicon.ico', './favicon-16x16.png', './favicon-32x32.png', './favicon-48x48.png',
@@ -20,7 +20,7 @@ const CORE_ASSETS = [
 const NETWORK_ONLY_HOSTS = ['firebaseio.com', 'firebasedatabase.app', 'google-analytics.com', 'googletagmanager.com'];
 
 // Large, rarely-changing files (OCR engine/language data): cache-first so they are downloaded only once
-const BIG_FILES = /traineddata|tessdata|tesseract-core|\.wasm(\.js)?(\?|$)|worker\.min\.js|\/lib-[^/]*$|staticimgly|background-removal/i;
+const BIG_FILES = /traineddata|tessdata|tesseract-core|\.wasm(\.js)?(\?|$)|worker\.min\.js|\/lib-[^/]*$/i;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

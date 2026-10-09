@@ -11,8 +11,8 @@
   var standalone = mm('standalone') || mm('fullscreen') || mm('minimal-ui') || mm('window-controls-overlay') || window.navigator.standalone === true;
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
-  var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'bgremove', 'qrscan'];
-  var BUILD = '6';
+  var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
+  var BUILD = '7';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
@@ -34,7 +34,6 @@
     offlineReady: 'Offline ready ✓', offlineNot: 'Not cached yet — open the site once while online', clearCache: 'Clear cache', cleared: 'Cache cleared',
     shareBtn: 'Share', saved: 'saved', pasteNone: 'No image found on the clipboard.', dropHint: 'Drop files to open them', close: 'Close',
     savedToFolder: 'Saved to your folder', batchOn: '📦 Batch mode: collect results into one ZIP', batchOff: '📦 Batch mode is ON — tap to turn off', batchBar: 'file(s) in your ZIP', batchGet: 'Download ZIP', batchClear: 'Clear',
-    myFiles: '🗂 My files (kept on this device)', keepOn: 'Keep private copies of results here', keepOff: 'Private copies are OFF — tap to turn on', noKept: 'Nothing saved yet.', del: 'Delete',
     a11y: '♿ Accessibility', textSize: 'Text size', hc: 'High contrast', shortcuts: '⌨ Keyboard shortcuts', privacy: '🔒 Privacy', crashOn: 'Send anonymous crash reports (no personal data)', crashOff: 'Crash reports are OFF — tap to turn on',
     rateQ: '⭐ Enjoying MG Pro? Tell us in 20 seconds.', rate: 'Rate us', later: 'Later', fav: '★ Favourites', build: 'Build', queued: 'Saved offline — it will be sent when you are back online.' };
   var I18N = {
@@ -379,38 +378,21 @@
     var useBatch = batch.on && typeof window.JSZip !== 'undefined' && !/\.zip$/i.test(name);
     var take = useBatch || !!(folderHandle && folderReady);
     fetch(a.href).then(function (r) { return r.blob(); }).then(function (blob) {
-      record(name, blob); keepCopy(name, blob);
+      record(name, blob);
       if (useBatch) { batch.files.push({ name: uniqueName(name, batch.files.map(function (f) { return f.name; })), blob: blob }); batchBar(); return; }
       if (take) return writeToFolder(name, blob).then(function (ok) { if (ok) toast(t('savedToFolder')); else replay(); });
       offerShare();
     }).catch(function () { if (take) replay(); });
     return take;                                   // true -> we handle saving, skip the normal download
   }
-  /* private copies of results (Origin Private File System) */
-  var keepOn = function () { return lsGet('mg_keep') !== '0'; };
-  function opfsDir() {
-    return (navigator.storage && navigator.storage.getDirectory) ? navigator.storage.getDirectory().then(function (r) { return r.getDirectoryHandle('results', { create: true }); }) : Promise.reject(new Error('no opfs'));
-  }
-  async function listKept() {
-    var dir = await opfsDir(), out = [];
-    for await (var ent of dir.entries()) {
-      if (ent[1].kind !== 'file') continue; var f = await ent[1].getFile(), i = ent[0].indexOf('__');
-      out.push({ key: ent[0], name: ent[0].slice(i + 2), ts: Number(ent[0].slice(0, i)) || f.lastModified, size: f.size, file: f });
+  /* One-time cleanup: earlier builds kept private copies of results in the browser's private file area.
+     That feature has been removed, so wipe anything it left behind. */
+  try {
+    if (navigator.storage && navigator.storage.getDirectory) {
+      navigator.storage.getDirectory().then(function (r) { return r.removeEntry('results', { recursive: true }); }).catch(function () {});
     }
-    return out.sort(function (a, b) { return b.ts - a.ts; });
-  }
-  async function trimKept() {
-    var dir = await opfsDir(), all = await listKept(), total = 0;
-    for (var i = 0; i < all.length; i++) { total += all[i].size; if (i >= 15 || total > 150 * 1048576) await dir.removeEntry(all[i].key); }
-  }
-  function keepCopy(name, blob) {
-    if (!keepOn() || blob.size > 60 * 1048576) return;
-    opfsDir().then(async function (dir) {
-      var fh = await dir.getFileHandle(Date.now() + '__' + name.replace(/[\\/]/g, '_'), { create: true }), w = await fh.createWritable();
-      await w.write(blob); await w.close(); await trimKept();
-    }).catch(function () {});
-  }
-  window.__mg = { last: function () { return lastResult; }, kept: function () { return listKept(); }, batch: batch };
+  } catch (e) {}
+  window.__mg = { last: function () { return lastResult; }, batch: batch };
   if (typeof HTMLAnchorElement !== 'undefined') {
     var origClick = HTMLAnchorElement.prototype.click, origDispatch = EventTarget.prototype.dispatchEvent;
     HTMLAnchorElement.prototype.click = function () {
@@ -450,7 +432,6 @@
     { id: 'pagetools', name: 'PDF Page Tools',      input: 'ptInput',       multi: false, test: isPdf },
     { id: 'signpdf',   name: 'Sign PDF',            input: 'sgInput',       multi: false, test: isPdf },
     { id: 'exif',      name: 'Remove Photo Location', input: 'exInput',     multi: true,  test: isImg },
-    { id: 'bgremove',  name: 'Background Remover',  input: 'bgInput',       multi: false, test: isImg },
     { id: 'qrscan',    name: 'QR Code Scanner',     input: 'qsInput',       multi: false, test: isImg }
   ];
   function scrollToTool(id) { var s = document.getElementById(id); if (s && s.scrollIntoView) s.scrollIntoView({ block: 'start' }); }
@@ -569,30 +550,11 @@
     if (lastResult && canShareFile(new File([lastResult.blob], lastResult.name))) sbtn(box, t('shareLast') + ' (' + lastResult.name + ')', function () { s.ov.remove(); shareLast(); });
     if (typeof window.JSZip !== 'undefined') toggleBtn(box, batch.on, t('batchOff'), t('batchOn'), function () { batch.on = !batch.on; lsSet('mg_batch', batch.on ? '1' : '0'); reopen(); });
 
-    sect(box, t('myFiles'));
+    sect(box, t('recent'));
     var listBox = document.createElement('div'); box.appendChild(listBox);
-    if (keepOn()) {
-      line(listBox, '…', 'font-size:12px;color:#9ca3af;font-weight:400;');
-      listKept().then(function (items) {
-        listBox.innerHTML = '';
-        if (!items.length) { line(listBox, t('noKept'), 'font-size:13px;color:#9ca3af;font-weight:400;'); return; }
-        items.slice(0, 10).forEach(function (it) {
-          var row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;font-weight:400;';
-          var nm = document.createElement('div'); nm.style.cssText = 'flex:1;min-width:0;word-break:break-all;color:#cbd5e1;'; nm.textContent = it.name + ' · ' + fmtSize(it.size) + ' · ' + timeAgo(it.ts); row.appendChild(nm);
-          [['⬇', 'Download', function () { plainDownload(it.file, it.name); }],
-           ['📤', t('shareBtn'), function () { var f = new File([it.file], it.name, { type: it.file.type }); if (canShareFile(f)) navigator.share({ files: [f] }).catch(function () {}); }],
-           ['🗑', t('del'), function () { opfsDir().then(function (d) { return d.removeEntry(it.key); }).then(function () { row.remove(); }); }]].forEach(function (x) {
-            var bt = document.createElement('button'); bt.textContent = x[0]; bt.title = x[1]; bt.setAttribute('aria-label', x[1]);
-            bt.style.cssText = 'all:unset;cursor:pointer;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.08);'; bt.onclick = x[2]; row.appendChild(bt);
-          });
-          listBox.appendChild(row);
-        });
-      }).catch(function () { listBox.innerHTML = ''; line(listBox, t('noKept'), 'font-size:13px;color:#9ca3af;font-weight:400;'); });
-    } else {
-      var rc = recents();
-      if (!rc.length) line(listBox, t('noRecent'), 'font-size:13px;color:#9ca3af;font-weight:400;');
-      rc.slice(0, 8).forEach(function (r) { line(listBox, r.n + ' · ' + fmtSize(r.s) + ' · ' + timeAgo(r.t), 'font-size:12px;color:#cbd5e1;font-weight:400;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);word-break:break-all;'); });
-    }
+    var rc = recents();
+    if (!rc.length) line(listBox, t('noRecent'), 'font-size:13px;color:#9ca3af;font-weight:400;');
+    rc.slice(0, 8).forEach(function (r) { line(listBox, r.n + ' · ' + fmtSize(r.s) + ' · ' + timeAgo(r.t), 'font-size:12px;color:#cbd5e1;font-weight:400;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);word-break:break-all;'); });
 
     if (window.showDirectoryPicker) {
       sect(box, t('saveFolder'));
@@ -634,7 +596,6 @@
     sbtn(box, t('shortcuts'), function () { s.ov.remove(); showShortcuts(); }, true);
 
     sect(box, t('privacy'));
-    toggleBtn(box, keepOn(), t('keepOn'), t('keepOff'), function () { lsSet('mg_keep', keepOn() ? '0' : '1'); reopen(); });
     toggleBtn(box, !errOff(), t('crashOn'), t('crashOff'), function () { lsSet('mg_err_off', errOff() ? '0' : '1'); reopen(); });
 
     line(box, 'MediaGrabber Pro · ' + t('build') + ' ' + BUILD, 'font-size:11px;color:#6b7280;font-weight:400;text-align:center;margin:12px 0 8px;');
@@ -650,16 +611,7 @@
     fab.onclick = openMenu; document.body.appendChild(fab);
   });
 
-  /* ---- deep links (?tool=ocr), remember last tool, follow phone theme ---- */
-  window.addEventListener('load', function () {
-    if (!hasTools()) return;
-    var q = /[?&]tool=([a-z0-9]+)/i.exec(location.search);
-    if (q && SECTIONS.indexOf(q[1].toLowerCase()) > -1) { setTimeout(function () { scrollToTool(q[1].toLowerCase()); }, 500); return; }
-    if (standalone && !location.hash && !/[?&]shared=/.test(location.search)) {
-      var last = lsGet('mg_last_tool');
-      if (last && SECTIONS.indexOf(last) > 0) setTimeout(function () { scrollToTool(last); }, 700);
-    }
-  });
+  /* ---- remember last tool, follow phone theme  (deep links are handled by mg-deeplink.js) ---- */
   onReady(function () {
     if (!hasTools()) return;
     if ('IntersectionObserver' in window) {

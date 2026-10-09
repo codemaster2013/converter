@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://*.firebaseio.com https://*.firebasedatabase.app https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' blob: data: https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://api.mymemory.translated.net https://cdn.jsdelivr.net https://staticimgly.com https://*.staticimgly.com; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' blob: data: https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta charset="UTF-8">
 <!-- VIP AUTO-REDIRECT: runs before anything renders -->
 <script>
@@ -9,10 +9,11 @@
   if(localStorage.getItem('mgp_skip_once')==='1'){
     localStorage.removeItem('mgp_skip_once');
   } else if(localStorage.getItem('mgp_vip_default')==='1'){
-    window.location.replace('index (3).html');
+    window.location.replace('index (3).html' + window.location.search + window.location.hash);   // keep a requested tool
   }
 })();
 </script>
+<script src="mg-deeplink.js"></script>
 <!-- PAGE LOADING OVERLAY -->
 <div id="pageLoader">
     <div class="loader-dots">
@@ -34,7 +35,7 @@
 </div>
 <!-- END PAGE LOADING OVERLAY -->
 
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />
     <meta name="google-site-verification" content="KbFDykQbzWuFYw1MOPvcTvgaYO6rS5zBdLwHbdtZpB0" />
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,6 +128,85 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "MediaGrabber Pro tools",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Image to PDF Converter",
+      "description": "Convert JPG, PNG and other images to a PDF, privately in your browser.",
+      "url": "https://codemaster2013.github.io/converter/?tool=image-to-pdf#image-to-pdf"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Image Converter",
+      "description": "Convert images between JPG, PNG and WebP.",
+      "url": "https://codemaster2013.github.io/converter/?tool=image-converter#image-converter"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Smart OCR (Image to Text)",
+      "description": "Extract text from images and scanned PDFs.",
+      "url": "https://codemaster2013.github.io/converter/?tool=ocr#ocr"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "PDF Password Remover",
+      "description": "Remove the password from a PDF you own.",
+      "url": "https://codemaster2013.github.io/converter/?tool=pdf-password-remover#pdf-password-remover"
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "name": "PDF Reader",
+      "description": "Read and annotate PDFs.",
+      "url": "https://codemaster2013.github.io/converter/?tool=pdf-reader#pdf-reader"
+    },
+    {
+      "@type": "ListItem",
+      "position": 6,
+      "name": "Merge PDF",
+      "description": "Combine several PDFs into one file.",
+      "url": "https://codemaster2013.github.io/converter/?tool=pdfmerge#pdfmerge"
+    },
+    {
+      "@type": "ListItem",
+      "position": 7,
+      "name": "Base64 Converter",
+      "description": "Encode images and text to Base64 and decode them back.",
+      "url": "https://codemaster2013.github.io/converter/?tool=base64#base64"
+    },
+    {
+      "@type": "ListItem",
+      "position": 8,
+      "name": "HEIC to JPG Converter",
+      "description": "Convert iPhone HEIC photos to JPG.",
+      "url": "https://codemaster2013.github.io/converter/?tool=heic2jpg#heic2jpg"
+    },
+    {
+      "@type": "ListItem",
+      "position": 9,
+      "name": "QR Code Generator",
+      "description": "Create QR codes.",
+      "url": "https://codemaster2013.github.io/converter/?tool=qrcode#qrcode"
+    },
+    {
+      "@type": "ListItem",
+      "position": 10,
+      "name": "Compress Image to Size",
+      "description": "Compress images to a target file size.",
+      "url": "https://codemaster2013.github.io/converter/?tool=compress#compress"
+    }
+  ]
+}
+</script>
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://codemaster2013.github.io/converter/">
 <meta property="og:title" content="JPG to PDF Converter | Image to PDF, OCR, PDF Unlocker – MediaGrabber Pro">
@@ -3298,7 +3378,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <button id="qrDownloadBtn" class="btn-primary" style="display:none; margin-top:10px; background:linear-gradient(135deg,#4361ee,#7c3aed);" onclick="downloadQRCode()">Download PNG</button>
 </div>
 
-    <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no file data is transmitted, monitored, or stored on external servers, except for optional features you start yourself (text translation, AI background remover) and anonymous crash reports, which you can turn off in the ⚡ menu.</footer>
+    <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no file data is transmitted, monitored, or stored on external servers, except for anonymous crash reports, which you can turn off in the ⚡ menu.</footer>
 </div>
 
 <script>
