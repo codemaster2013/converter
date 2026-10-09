@@ -8,7 +8,7 @@
   // "Just once" from settings — skip redirect this one time, then VIP resumes
   if(localStorage.getItem('mgp_skip_once')==='1'){
     localStorage.removeItem('mgp_skip_once');
-  } else if(localStorage.getItem('mgp_vip_default')==='1'){
+  } else if(localStorage.getItem('mgp_vip_default')==='1' && !/[?&]shared=/.test(location.search)){   // shared files must land on the main app, which has the file prompt
     window.location.replace('index (3).html' + window.location.search + window.location.hash);   // keep a requested tool
   }
 })();
@@ -246,7 +246,7 @@
     gap: clamp(20px, 5vw, 40px);
     padding: 20px;
     box-sizing: border-box;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 #pageLoader.hide {
@@ -2593,7 +2593,7 @@ html, body { overflow-x: hidden; }
 <meta name="theme-color" content="#05070f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="MG Pro">
+<meta name="apple-mobile-web-app-title" content="PDF Converter">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script src="pwa.js"></script>
 <script src="mg-libs.js"></script>
@@ -3378,7 +3378,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
     <button id="qrDownloadBtn" class="btn-primary" style="display:none; margin-top:10px; background:linear-gradient(135deg,#4361ee,#7c3aed);" onclick="downloadQRCode()">Download PNG</button>
 </div>
 
-    <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no file data is transmitted, monitored, or stored on external servers, except for anonymous crash reports, which you can turn off in the ⚡ menu.</footer>
+    <footer> © 2026 MediaGrabber. MediaGrabber Pro is intended strictly for personal, non-commercial use with user-owned or non-copyrighted content. All media processing is performed locally within the user’s browser; no file data is transmitted, monitored, or stored on external servers.</footer>
 </div>
 
 <script>
@@ -5244,19 +5244,33 @@ function launchVipLoader() {
     bar.style.width = '100%';
     setTimeout(function() {
       window.location.href = 'index (3).html';
-    }, 300);
-  }, 5000);
+    }, 200);
+  }, 1400);
 }
 
 
-// ===== PAGE LOADER: show for 5 seconds =====
+// ===== PAGE LOADER: shown only until the page is actually ready =====
 (function () {
-    document.body.style.overflow = 'hidden';
-    setTimeout(function () {
-        var loader = document.getElementById('pageLoader');
-        if (loader) loader.classList.add('hide');
+    var loader = document.getElementById('pageLoader');
+    if (!loader) return;
+    var t0 = Date.now(), hidden = false;
+    function hide() {
+        if (hidden) return; hidden = true;
+        loader.classList.add('hide');
         document.body.style.overflow = '';
-    }, 5000);
+        setTimeout(function () { if (loader.parentNode) loader.style.display = 'none'; }, 400);
+    }
+    // After an in-app update or a repeat visit in this session there is nothing to wait for
+    var skip = false;
+    try { skip = sessionStorage.getItem('mg_updating') === '1' || sessionStorage.getItem('mg_seen') === '1'; sessionStorage.removeItem('mg_updating'); sessionStorage.setItem('mg_seen', '1'); } catch (e) {}
+    if (skip) { loader.style.transition = 'none'; hide(); return; }
+    document.body.style.overflow = 'hidden';
+    function ready() {
+        var wait = Math.max(0, 450 - (Date.now() - t0));          // tiny minimum so it never flashes
+        setTimeout(hide, wait);
+    }
+    if (document.readyState === 'complete') ready(); else window.addEventListener('load', ready);
+    setTimeout(hide, 4000);                                       // safety net: never trap the user
 })();
 // ===== END PAGE LOADER =====
 

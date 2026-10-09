@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "MediaGrabber Pro",
-  "short_name": "MG Pro",
+  "name": "PDF Converter",
+  "short_name": "PDF Converter",
   "description": "Free, private PDF and image tools that run in your browser: Image to PDF, JPG to PDF, Smart OCR, PDF password remover, PDF reader, image converter, Base64 and more.",
   "start_url": "./",
   "scope": "./",
@@ -166,7 +166,8 @@
             "application/pdf",
             ".pdf",
             ".heic",
-            ".heif"
+            ".heif",
+            "video/*"
           ]
         }
       ]

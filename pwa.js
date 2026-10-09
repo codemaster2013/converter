@@ -12,7 +12,7 @@
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
   var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
-  var BUILD = '7';
+  var BUILD = '9';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
@@ -24,17 +24,17 @@
   function platformName() { return /android/i.test(navigator.userAgent) ? 'android' : (isIOS ? 'ios' : 'desktop'); }
 
   /* ---------------- text (English / Hindi / Gujarati) ---------------- */
-  var EN = { update: '🔄 New version ready', refresh: 'Refresh',
+  var EN = { update: '🔄 New version ready', refresh: 'Refresh', updateNow: 'Update', installApp: 'Install app', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
     offline: "📡 You're offline — converters still work. Feedback & VIP need internet.", online: '✓ Back online',
     install: '⬇ Install App', iosTip: '📲 Install MG Pro: tap the Share button, then "Add to Home Screen".', gotIt: 'Got it',
-    filesReceived: 'file(s) received', chooseTool: 'What would you like to do?', unsupported: 'These file types are not supported (use images or PDFs).',
+    filesReceived: 'file(s) received', chooseTool: 'What would you like to do?', unsupported: 'Videos and other file types are not supported here. Please share an image or a PDF.',
     cancel: 'Cancel', menu: 'Quick menu', paste: '📋 Paste image', recent: '🕘 Recent files', noRecent: 'Nothing yet — finished files will appear here.',
     shareLast: '📤 Share last result', saveFolder: '📁 Save folder', folderNone: 'Choose a folder to save results into (desktop)',
     folderUse: 'Saving to: ', folderOff: 'Use normal downloads', folderAllow: 'Allow folder access', storage: '💾 Storage', storageUsing: 'Using',
     offlineReady: 'Offline ready ✓', offlineNot: 'Not cached yet — open the site once while online', clearCache: 'Clear cache', cleared: 'Cache cleared',
     shareBtn: 'Share', saved: 'saved', pasteNone: 'No image found on the clipboard.', dropHint: 'Drop files to open them', close: 'Close',
     savedToFolder: 'Saved to your folder', batchOn: '📦 Batch mode: collect results into one ZIP', batchOff: '📦 Batch mode is ON — tap to turn off', batchBar: 'file(s) in your ZIP', batchGet: 'Download ZIP', batchClear: 'Clear',
-    a11y: '♿ Accessibility', textSize: 'Text size', hc: 'High contrast', shortcuts: '⌨ Keyboard shortcuts', privacy: '🔒 Privacy', crashOn: 'Send anonymous crash reports (no personal data)', crashOff: 'Crash reports are OFF — tap to turn on',
+    a11y: '♿ Accessibility', textSize: 'Text size', hc: 'High contrast', shortcuts: '⌨ Keyboard shortcuts', privacy: '🔒 Privacy',
     rateQ: '⭐ Enjoying MG Pro? Tell us in 20 seconds.', rate: 'Rate us', later: 'Later', fav: '★ Favourites', build: 'Build', queued: 'Saved offline — it will be sent when you are back online.' };
   var I18N = {
     hi: { update: '🔄 नया संस्करण तैयार है', refresh: 'रीफ़्रेश', offline: '📡 आप ऑफ़लाइन हैं — कन्वर्टर चलते रहेंगे। फ़ीडबैक और VIP के लिए इंटरनेट चाहिए।',
@@ -114,7 +114,8 @@
     vp.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
 
     var css = [
-      'html.is-pwa, html.is-pwa body { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; overscroll-behavior: none; }',
+      'html.is-pwa, html.is-pwa body { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; }',
+      'html.is-pwa { overscroll-behavior-y: contain; }',
       'html.is-pwa, html.is-pwa * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }',
       'html.is-pwa input, html.is-pwa textarea, html.is-pwa [contenteditable="true"], html.is-pwa .allow-select, html.is-pwa .allow-select * { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }',
       'html.is-pwa img, html.is-pwa a { -webkit-user-drag: none; user-drag: none; }',
@@ -130,12 +131,11 @@
     ].join('\n');
     var st = document.createElement('style'); st.id = 'pwa-only-styles'; st.textContent = css; document.head.appendChild(st);
 
+    /* Zoom is blocked by the viewport + CSS touch-action below. No global touch/wheel listeners here:
+       a non-passive listener on the document forces every scroll through the main thread and makes
+       scrolling stall in the installed app. */
     var opt = { passive: false };
     ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }, opt); });
-    document.addEventListener('touchmove', function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); }, opt);
-    var lastTap = 0;
-    document.addEventListener('touchend', function (e) { var n = Date.now(); if (n - lastTap < 300 && !isEditable(e.target)) e.preventDefault(); lastTap = n; }, opt);
-    window.addEventListener('wheel', function (e) { if (e.ctrlKey) e.preventDefault(); }, opt);
     window.addEventListener('keydown', function (e) { if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].indexOf(e.key) > -1) e.preventDefault(); });
     document.addEventListener('contextmenu', function (e) { if (!isEditable(e.target)) e.preventDefault(); });
     document.addEventListener('selectstart', function (e) { if (!isEditable(e.target)) e.preventDefault(); });
@@ -202,6 +202,19 @@
   window.addEventListener('load', function () { setTimeout(flushQueue, 1500); });
   window.addEventListener('online', flushQueue);
 
+  /* tap "Update": small spinner on the button, then a quick reload with no loading screen */
+  function applyUpdate() {
+    var bar = document.getElementById('mg-update-bar'); var btn = bar && bar.querySelector('button');
+    if (!document.getElementById('mg-upd-css')) {
+      var st = document.createElement('style'); st.id = 'mg-upd-css';
+      st.textContent = '@keyframes mgUpdSpin{to{transform:rotate(360deg)}}.mg-upd-spin{display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-2px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:mgUpdSpin .6s linear infinite}#mg-update-bar{transition:opacity .25s}';
+      document.head.appendChild(st);
+    }
+    if (btn) { btn.innerHTML = '<span class="mg-upd-spin"></span>' + t('updating'); btn.style.pointerEvents = 'none'; }
+    try { sessionStorage.setItem('mg_updating', '1'); } catch (e) {}
+    setTimeout(function () { if (bar) bar.style.opacity = '0'; location.reload(); }, 500);
+  }
+
   /* ---- service worker + update notice ---- */
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     window.addEventListener('load', function () {
@@ -214,7 +227,7 @@
       if (!hadController) return;
       onReady(function () {
         makeBar('mg-update-bar', t('update'), 'linear-gradient(135deg,#7c3aed,#4f46e5)', 'bottom', [
-          { label: t('refresh'), fn: function () { location.reload(); } }, { label: '✕', fn: function () { removeEl('mg-update-bar'); } }]);
+          { label: t('updateNow'), fn: function () { applyUpdate(); } }, { label: '✕', fn: function () { removeEl('mg-update-bar'); } }]);
       });
     });
   }
@@ -276,7 +289,6 @@
   function maybeShowInstall() {
     if (!deferred || installBtn || standalone || !document.body) return;
     if (Date.now() - Number(lsGet(DISMISS_KEY) || 0) < WEEK) return;
-    if (Number(lsGet('mg_conversions') || 0) < 1) return;          // wait until the visitor has seen the value
     installBtn = document.createElement('div');
     installBtn.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:100000;display:flex;align-items:center;gap:4px;' +
       'background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff;border-radius:999px;padding:4px 6px 4px 4px;box-shadow:0 8px 24px rgba(124,58,237,.45);' + FONT;
@@ -287,7 +299,7 @@
     x.onclick = function () { lsSet(DISMISS_KEY, String(Date.now())); removeInstallBtn(); };
     installBtn.appendChild(go); installBtn.appendChild(x); document.body.appendChild(installBtn);
   }
-  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; onReady(maybeShowInstall); });
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; onReady(function () { setTimeout(maybeShowInstall, 2500); }); });
   window.addEventListener('appinstalled', function () {
     deferred = null; removeInstallBtn();
     if (lsGet('mg_install_counted') || !window.fetch) return;       // anonymous install counter: timestamp + platform only
@@ -547,6 +559,7 @@
     var s = sheet('mg-menu'), box = s.box, reopen = function () { s.ov.remove(); openMenu(); };
     line(box, '⚡ ' + t('menu'), 'font-size:16px;font-weight:700;margin-bottom:12px;');
     sbtn(box, t('paste'), function () { s.ov.remove(); pasteFromClipboard(); });
+    if (!standalone) sbtn(box, '📲 ' + t('installApp'), function () { s.ov.remove(); if (deferred) window.mgInstallApp(); else toast(isIOS ? t('installHow').replace('Install app', 'Share → Add to Home Screen') : t('installHow')); });
     if (lastResult && canShareFile(new File([lastResult.blob], lastResult.name))) sbtn(box, t('shareLast') + ' (' + lastResult.name + ')', function () { s.ov.remove(); shareLast(); });
     if (typeof window.JSZip !== 'undefined') toggleBtn(box, batch.on, t('batchOff'), t('batchOn'), function () { batch.on = !batch.on; lsSet('mg_batch', batch.on ? '1' : '0'); reopen(); });
 
@@ -554,7 +567,14 @@
     var listBox = document.createElement('div'); box.appendChild(listBox);
     var rc = recents();
     if (!rc.length) line(listBox, t('noRecent'), 'font-size:13px;color:#9ca3af;font-weight:400;');
-    rc.slice(0, 8).forEach(function (r) { line(listBox, r.n + ' · ' + fmtSize(r.s) + ' · ' + timeAgo(r.t), 'font-size:12px;color:#cbd5e1;font-weight:400;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);word-break:break-all;'); });
+    rc.slice(0, 8).forEach(function (r, idx) {
+      var row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);';
+      var tx = document.createElement('span'); tx.style.cssText = 'flex:1;font-size:12px;color:#cbd5e1;word-break:break-all;'; tx.textContent = r.n + ' · ' + fmtSize(r.s) + ' · ' + timeAgo(r.t);
+      var x = document.createElement('button'); x.textContent = '✕'; x.setAttribute('aria-label', 'Delete'); x.style.cssText = 'all:unset;cursor:pointer;padding:8px 10px;color:#f87171;font-size:14px;';
+      x.onclick = function () { var l = recents(); l.splice(idx, 1); lsSet('mg_recent', JSON.stringify(l)); reopen(); };
+      row.appendChild(tx); row.appendChild(x); listBox.appendChild(row);
+    });
+    if (rc.length) sbtn(box, '🗑 ' + t('clearRecent'), function () { lsSet('mg_recent', '[]'); reopen(); }, true);
 
     if (window.showDirectoryPicker) {
       sect(box, t('saveFolder'));
@@ -596,9 +616,7 @@
     sbtn(box, t('shortcuts'), function () { s.ov.remove(); showShortcuts(); }, true);
 
     sect(box, t('privacy'));
-    toggleBtn(box, !errOff(), t('crashOn'), t('crashOff'), function () { lsSet('mg_err_off', errOff() ? '0' : '1'); reopen(); });
 
-    line(box, 'MediaGrabber Pro · ' + t('build') + ' ' + BUILD, 'font-size:11px;color:#6b7280;font-weight:400;text-align:center;margin:12px 0 8px;');
     sbtn(box, t('close'), function () { s.ov.remove(); }, true);
   }
   window.mgOpenMenu = openMenu;
@@ -651,7 +669,6 @@
   })();
   function setZoom(z) { lsSet('mg_zoom', String(z)); if (document.body) document.body.style.zoom = z === 1 ? '' : String(z); }
   function setHC(on) { root.classList.toggle('mg-hc', on); lsSet('mg_hc', on ? '1' : '0'); }
-  function errOff() { return lsGet('mg_err_off') === '1' || navigator.doNotTrack === '1'; }
   if (lsGet('mg_hc') === '1') root.classList.add('mg-hc');
   onReady(function () { var z = Number(lsGet('mg_zoom')); if (z && z !== 1) document.body.style.zoom = String(z); });
 
@@ -761,27 +778,4 @@
         { label: t('later'), fn: function () { removeEl('mg-rate-bar'); lsSet('mg_rate_snooze', String(Date.now() + 7 * 24 * 3600 * 1000)); lsSet('mg_rate_later', String(Number(lsGet('mg_rate_later') || 0) + 1)); } }]);
     });
   };
-
-  /* =====================================================================
-     VERSION IN FOOTER
-     ===================================================================== */
-  onReady(function () { var f = document.querySelector('footer'); if (f && !document.getElementById('mgBuild')) { var sp = document.createElement('div'); sp.id = 'mgBuild'; sp.style.cssText = 'margin-top:8px;font-size:11px;opacity:.6;'; sp.textContent = 'Build ' + BUILD; f.appendChild(sp); } });
-
-  /* =====================================================================
-     ANONYMOUS CRASH REPORTS (opt-out in the ⚡ menu; no URLs, no personal data)
-     ===================================================================== */
-  (function () {
-    var sent = 0, seen = {};
-    function browser() { var u = navigator.userAgent; return /edg\//i.test(u) ? 'edge' : /chrome|crios/i.test(u) ? 'chrome' : /firefox|fxios/i.test(u) ? 'firefox' : /safari/i.test(u) ? 'safari' : 'other'; }
-    function report(msg, file, line) {
-      if (errOff() || sent >= 5 || !window.fetch || !msg) return;
-      msg = String(msg).slice(0, 200); if (msg === 'Script error.' || /ResizeObserver loop|Non-Error promise rejection/i.test(msg)) return;
-      var key = msg + '|' + file + '|' + line; if (seen[key]) return; seen[key] = 1; sent++;
-      var f = String(file || '').split('?')[0].split('/').pop().slice(0, 60);
-      window.fetch('https://' + DB + '/errors.json', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
-        body: JSON.stringify({ t: { '.sv': 'timestamp' }, m: msg, f: f, l: Number(line) || 0, b: BUILD, p: platformName(), s: standalone ? 1 : 0, br: browser() }) }).catch(function () {});
-    }
-    window.addEventListener('error', function (e) { if (e && e.message) report(e.message, e.filename, e.lineno); });
-    window.addEventListener('unhandledrejection', function (e) { var r = e && e.reason; report(r && (r.message || r), 'promise', 0); });
-  })();
 })();

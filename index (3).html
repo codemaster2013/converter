@@ -1957,7 +1957,6 @@ body {
   max-width: 100%;
   height: auto;
   box-sizing: border-box;
-  touch-action: pan-x pan-y pinch-zoom;
 }
 html::-webkit-scrollbar { width: 6px; }
 html::-webkit-scrollbar-track { background: #05030a; }
@@ -2757,7 +2756,7 @@ body{
 <meta name="theme-color" content="#05070f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="MG Pro">
+<meta name="apple-mobile-web-app-title" content="PDF Converter">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script src="pwa.js"></script>
 <script src="mg-libs.js"></script>
@@ -4753,15 +4752,14 @@ window.addEventListener("load", () => {
     const intro = document.getElementById("introOverlay");
 
     // Show for exactly 3 seconds (3000ms)
+    var quick = false;
+    try { quick = sessionStorage.getItem("mg_updating") === "1" || sessionStorage.getItem("mg_seen") === "1"; sessionStorage.removeItem("mg_updating"); sessionStorage.setItem("mg_seen", "1"); } catch (e) {}
     setTimeout(() => {
         intro.classList.add("intro-hide");
-
-        // Remove after animation completes (1.5s)
         setTimeout(() => {
             intro.style.display = "none";
-        }, 1500);
-
-    }, 1000);
+        }, quick ? 0 : 500);
+    }, quick ? 0 : 450);
 });
 
 
