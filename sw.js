@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"
@@ -9,9 +9,9 @@ const RUNTIME_MAX_ENTRIES = 200;
 // Relative paths so it works at a domain root (Vercel) AND a sub-path (GitHub Pages /converter/)
 const CORE_ASSETS = [
   './', './index.html', './index (2).html', './index (3).html', './index (4).html', './index (5).html',
-  './offline.html', './three-effects.js', './pwa.js', './mg-libs.js', './mg-deeplink.js', './tools.js', './site.webmanifest',
+  './offline.html', './pwa.js', './mg-libs.js', './mg-deeplink.js', './mg-icons.js', './tools.js', './site.webmanifest',
   './lib-pdf.min.js', './lib-pdf.worker.min.js', './lib-pdf-lib.min.js', './lib-jszip.min.js', './lib-jspdf.umd.min.js', './lib-qrcode.min.js',
-  './lib-firebase-app.js', './lib-firebase-database.js', './lib-three-160.min.js',
+  './lib-firebase-app.js', './lib-firebase-database.js',
   './favicon.ico', './favicon-16x16.png', './favicon-32x32.png', './favicon-48x48.png',
   './apple-touch-icon.png', './android-chrome-192x192.png', './android-chrome-512x512.png'
 ];
