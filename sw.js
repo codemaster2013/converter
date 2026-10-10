@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v10';
+const CACHE_VERSION = 'v12';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"

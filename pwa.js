@@ -12,7 +12,7 @@
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
   var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
-  var BUILD = '10';
+  var BUILD = '12';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
@@ -24,7 +24,7 @@
   function platformName() { return /android/i.test(navigator.userAgent) ? 'android' : (isIOS ? 'ios' : 'desktop'); }
 
   /* ---------------- text (English / Hindi / Gujarati) ---------------- */
-  var EN = { update: '🔄 New version ready', refresh: 'Refresh', updateNow: 'Update', installApp: 'Install app', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
+  var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
     offline: "📡 You're offline — converters still work. Feedback & VIP need internet.", online: '✓ Back online',
     install: '⬇ Install App', iosTip: '📲 Install MG Pro: tap the Share button, then "Add to Home Screen".', gotIt: 'Got it',
     filesReceived: 'file(s) received', chooseTool: 'What would you like to do?', unsupported: 'Videos and other file types are not supported here. Please share an image or a PDF.',
@@ -202,18 +202,60 @@
   window.addEventListener('load', function () { setTimeout(flushQueue, 1500); });
   window.addEventListener('online', flushQueue);
 
-  /* tap "Update": small spinner on the button, then a quick reload with no loading screen */
+  /* ---------- in-app update (installed app only) ----------
+     The new version is already downloaded by the time this shows. "Update" plays a short
+     "fetching files" animation (about 3 s) and reloads. "Cancel" hides the bar, and the same
+     Update button then stays available in the quick menu and in Settings. */
+  var updatePending = false, updating = false;
   function applyUpdate() {
-    var bar = document.getElementById('mg-update-bar'); var btn = bar && bar.querySelector('button');
+    if (updating) return; updating = true;
+    removeEl('mg-update-bar'); removeEl('mg-menu'); removeEl('mg-upd-setting');
     if (!document.getElementById('mg-upd-css')) {
       var st = document.createElement('style'); st.id = 'mg-upd-css';
-      st.textContent = '@keyframes mgUpdSpin{to{transform:rotate(360deg)}}.mg-upd-spin{display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-2px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:mgUpdSpin .6s linear infinite}#mg-update-bar{transition:opacity .25s}';
+      st.textContent = '@keyframes mgUpdSpin{to{transform:rotate(360deg)}}' +
+        '#mg-updating{position:fixed;inset:0;z-index:100010;display:flex;align-items:center;justify-content:center;background:rgba(5,7,15,.86);opacity:0;transition:opacity .25s;padding:24px}' +
+        '#mg-updating .mgu-card{width:min(320px,100%);text-align:center;padding:28px 22px;border-radius:20px;background:#12131f;border:1px solid rgba(168,85,247,.45);box-shadow:0 20px 60px rgba(124,58,237,.35);color:#fff}' +
+        '#mg-updating .mgu-spin{width:44px;height:44px;margin:0 auto 16px;border-radius:50%;border:4px solid rgba(255,255,255,.15);border-top-color:#a855f7;animation:mgUpdSpin .8s linear infinite}' +
+        '#mg-updating .mgu-t{font-size:18px;font-weight:700;margin-bottom:6px}#mg-updating .mgu-s{font-size:13px;color:#9ca3af;min-height:18px;margin-bottom:18px}' +
+        '#mg-updating .mgu-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}' +
+        '#mg-updating .mgu-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#a855f7,#6366f1);transition:width 2.8s linear}';
       document.head.appendChild(st);
     }
-    if (btn) { btn.innerHTML = '<span class="mg-upd-spin"></span>' + t('updating'); btn.style.pointerEvents = 'none'; }
+    var ov = document.createElement('div'); ov.id = 'mg-updating'; ov.setAttribute('role', 'status'); ov.style.cssText = FONT;
+    ov.innerHTML = '<div class="mgu-card"><div class="mgu-spin"></div><div class="mgu-t"></div><div class="mgu-s"></div><div class="mgu-bar"><div class="mgu-fill"></div></div></div>';
+    ov.querySelector('.mgu-t').textContent = t('updating');
+    var sub = ov.querySelector('.mgu-s'); sub.textContent = t('fetching');
+    document.body.appendChild(ov);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { ov.style.opacity = '1'; ov.querySelector('.mgu-fill').style.width = '100%'; }); });
+    setTimeout(function () { sub.textContent = t('installing'); }, 1700);
     try { sessionStorage.setItem('mg_updating', '1'); } catch (e) {}
-    setTimeout(function () { if (bar) bar.style.opacity = '0'; setTimeout(function () { location.reload(); }, 220); }, 2800);
+    setTimeout(function () { location.reload(); }, 3000);
   }
+  function showUpdateButtons() { return updatePending && standalone && !updating; }
+  /* Settings (main app + VIP): add an Update row while an update is waiting */
+  function refreshUpdateSetting() {
+    var ex = document.getElementById('mg-upd-setting');
+    if (!showUpdateButtons()) { if (ex) ex.remove(); return; }
+    var panel = document.getElementById('settingsModalInner'); if (!panel || ex) return;
+    var d = document.createElement('div'); d.id = 'mg-upd-setting'; d.style.cssText = 'margin:16px 0 4px;';
+    var bt = document.createElement('button'); bt.type = 'button'; bt.textContent = t('updateAvail') + ' · ' + t('updateNow');
+    bt.style.cssText = 'all:unset;box-sizing:border-box;width:100%;text-align:center;cursor:pointer;padding:13px 14px;border-radius:12px;color:#fff;font-weight:700;background:linear-gradient(135deg,#7c3aed,#4f46e5);' + FONT;
+    bt.onclick = applyUpdate; d.appendChild(bt); panel.appendChild(d);
+  }
+  function showUpdateBar() {
+    if (!standalone) return;                       // website visitors just get the new files on their next visit
+    updatePending = true;
+    onReady(function () {
+      makeBar('mg-update-bar', t('update'), 'linear-gradient(135deg,#7c3aed,#4f46e5)', 'bottom', [
+        { label: t('updateNow'), fn: applyUpdate },
+        { label: t('cancel'), fn: function () { removeEl('mg-update-bar'); refreshUpdateSetting(); } }]);
+      refreshUpdateSetting();
+    });
+  }
+  onReady(function () {
+    var ov = document.getElementById('settingsOverlay');
+    if (ov && window.MutationObserver) new MutationObserver(refreshUpdateSetting).observe(ov, { attributes: true });
+  });
 
   /* ---- service worker + update notice ---- */
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
@@ -225,12 +267,81 @@
     });
     navigator.serviceWorker.addEventListener('controllerchange', function () {
       if (!hadController) return;
-      onReady(function () {
-        makeBar('mg-update-bar', t('update'), 'linear-gradient(135deg,#7c3aed,#4f46e5)', 'bottom', [
-          { label: t('updateNow'), fn: function () { applyUpdate(); } }, { label: '✕', fn: function () { removeEl('mg-update-bar'); } }]);
+      showUpdateBar();
+    });
+  }
+
+  /* ---------- offline badges ----------
+     Marks which tools work without internet. Everything runs in the browser, so a tool works offline as soon as the
+     files it needs are stored on this device. Most are stored when the app is first installed; OCR, HEIC and the QR
+     scanner download their engine the first time you use them. Each tool is checked against the real offline
+     storage, so a badge only turns green when it is true. */
+  var OFFLINE_LAZY = {                       // files a tool downloads on first use (an inner list means "any one of these")
+    ocr: ['lib-tesseract.min.js', 'eng.traineddata.gz', ['tesseract-core-lstm.wasm.js', 'tesseract-core-simd-lstm.wasm.js']],
+    heic2jpg: ['lib-heic2any.min.js'],
+    qrscan: ['lib-jsqr.js']
+  };
+  function cached(file) {
+    var u = new URL(file, document.baseURI).href;
+    return caches.match(u, { ignoreSearch: true }).then(function (r) { return !!r; }).catch(function () { return false; });
+  }
+  function needsOk(list) {
+    return Promise.all(list.map(function (n) {
+      return Array.isArray(n) ? Promise.all(n.map(cached)).then(function (a) { return a.some(Boolean); }) : cached(n);
+    })).then(function (a) { return a.every(Boolean); });
+  }
+  var offlineDotCss = false;
+  function offlineKeyOf(el) {
+    var h = el.getAttribute && el.getAttribute('href');
+    if (h && h.charAt(0) === '#') return h.slice(1);
+    var m = /toolTabClick\(this,\s*'([a-z0-9]+)'/i.exec(el.getAttribute('onclick') || '');
+    return m ? m[1] : '';
+  }
+  function refreshOfflineBadges() {
+    if (!window.caches) return;
+    var items = [].slice.call(document.querySelectorAll('a.tool-chip, button.tool-tab:not(.more-tab)'));
+    if (!items.length) return;
+    cached('lib-pdf-lib.min.js').then(function (core) {
+      if (!core) return;                                          // app files not stored yet (first visit) – show nothing rather than guess
+      if (!offlineDotCss) {
+        offlineDotCss = true;
+        var st = document.createElement('style');
+        st.textContent = '.mg-off-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;vertical-align:middle;flex:none}' +
+          'a.tool-chip .mg-off-dot{position:absolute;top:7px;left:8px;margin:0}' +
+          '.mg-off-ok{background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.25)}.mg-off-once{background:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.25)}' +
+          '.mg-off-legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:8px 0;font:500 11px Poppins,Inter,system-ui,sans-serif;opacity:.8}' +
+          '.mg-off-legend span{display:inline-flex;align-items:center}.mg-off-legend .mg-off-dot{position:static;margin:0 6px 0 0}' +
+          '.mg-off-dim{opacity:.5}';
+        document.head.appendChild(st);
+      }
+      var first = items[0];
+      if (!document.getElementById('mg-off-legend') && first.parentNode) {
+        var lg = document.createElement('div'); lg.id = 'mg-off-legend'; lg.className = 'mg-off-legend';
+        lg.innerHTML = '<span><i class="mg-off-dot mg-off-ok"></i></span><span><i class="mg-off-dot mg-off-once"></i></span>';
+        lg.children[0].appendChild(document.createTextNode(t('offlineOk')));
+        lg.children[1].appendChild(document.createTextNode(t('offlineOnce')));
+        first.parentNode.parentNode.insertBefore(lg, first.parentNode);
+      }
+      items.forEach(function (el) {
+        var key = offlineKeyOf(el); if (!key) return;
+        var need = OFFLINE_LAZY[key];
+        (need ? needsOk(need) : Promise.resolve(true)).then(function (ok) {
+          var d = el.querySelector('.mg-off-dot');
+          if (!d) { d = document.createElement('i'); el.appendChild(d); }
+          d.className = 'mg-off-dot ' + (ok ? 'mg-off-ok' : 'mg-off-once');
+          d.title = ok ? t('offlineOk') : t('offlineOnceLong');
+          el.classList.toggle('mg-off-dim', !ok && navigator.onLine === false);
+        });
       });
     });
   }
+  window.addEventListener('load', function () { setTimeout(refreshOfflineBadges, 1500); setTimeout(refreshOfflineBadges, 6000); });
+  window.addEventListener('online', refreshOfflineBadges);
+  window.addEventListener('offline', refreshOfflineBadges);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('controllerchange', function () { setTimeout(refreshOfflineBadges, 2500); });
+  document.addEventListener('click', function (e) {                 // after using a tool, its engine may now be stored
+    if (e.target && e.target.closest && e.target.closest('button')) setTimeout(refreshOfflineBadges, 8000);
+  }, true);
 
   /* ---- offline / online bar ---- */
   var offTimer;
@@ -558,6 +669,7 @@
   function openMenu() {
     var s = sheet('mg-menu'), box = s.box, reopen = function () { s.ov.remove(); openMenu(); };
     line(box, '⚡ ' + t('menu'), 'font-size:16px;font-weight:700;margin-bottom:12px;');
+    if (showUpdateButtons()) sbtn(box, '↻ ' + t('updateAvail') + ' · ' + t('updateNow'), function () { applyUpdate(); });
     sbtn(box, t('paste'), function () { s.ov.remove(); pasteFromClipboard(); });
     if (!standalone) sbtn(box, '📲 ' + t('installApp'), function () { s.ov.remove(); if (deferred) window.mgInstallApp(); else toast(isIOS ? t('installHow').replace('Install app', 'Share → Add to Home Screen') : t('installHow')); });
     if (lastResult && canShareFile(new File([lastResult.blob], lastResult.name))) sbtn(box, t('shareLast') + ' (' + lastResult.name + ')', function () { s.ov.remove(); shareLast(); });
