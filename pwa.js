@@ -12,7 +12,7 @@
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
   var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
-  var BUILD = '12';
+  var BUILD = '14';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
@@ -229,6 +229,7 @@
     requestAnimationFrame(function () { requestAnimationFrame(function () { ov.style.opacity = '1'; ov.querySelector('.mgu-fill').style.width = '100%'; }); });
     setTimeout(function () { sub.textContent = t('installing'); }, 1700);
     try { sessionStorage.setItem('mg_updating', '1'); } catch (e) {}
+    try { (waitingSW || (swReg && swReg.waiting)).postMessage('SKIP_WAITING'); } catch (e) {}   // permission given: switch the new version on
     setTimeout(function () { location.reload(); }, 3000);
   }
   function showUpdateButtons() { return updatePending && standalone && !updating; }
@@ -257,17 +258,28 @@
     if (ov && window.MutationObserver) new MutationObserver(refreshUpdateSetting).observe(ov, { attributes: true });
   });
 
-  /* ---- service worker + update notice ---- */
+  /* ---- service worker + update notice ----
+     A new version is downloaded in the background but NOT switched on until the person allows it:
+     installed app  -> bar with Update / Cancel (Cancel keeps an Update button in the quick menu and Settings)
+     website        -> switched on quietly, because there is nothing to interrupt */
+  var swReg = null, waitingSW = null;
+  function offerUpdate(w) {
+    if (!w) return;
+    if (!standalone) { try { w.postMessage('SKIP_WAITING'); } catch (e) {} return; }
+    waitingSW = w; showUpdateBar();
+  }
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js').then(function (reg) {
+        swReg = reg;
+        if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
+        reg.addEventListener('updatefound', function () {
+          var n = reg.installing; if (!n) return;
+          n.addEventListener('statechange', function () { if (n.state === 'installed' && navigator.serviceWorker.controller) offerUpdate(n); });
+        });
         setInterval(function () { reg.update().catch(function () {}); }, 30 * 60 * 1000);
         document.addEventListener('visibilitychange', function () { if (!document.hidden) reg.update().catch(function () {}); });
       }).catch(function (e) { console.warn('SW registration failed', e); });
-    });
-    navigator.serviceWorker.addEventListener('controllerchange', function () {
-      if (!hadController) return;
-      showUpdateBar();
     });
   }
 

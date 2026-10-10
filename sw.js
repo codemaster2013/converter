@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v12';
+const CACHE_VERSION = 'v14';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"
@@ -13,7 +13,7 @@ const CORE_ASSETS = [
   './lib-pdf.min.js', './lib-pdf.worker.min.js', './lib-pdf-lib.min.js', './lib-jszip.min.js', './lib-jspdf.umd.min.js', './lib-qrcode.min.js',
   './lib-firebase-app.js', './lib-firebase-database.js',
   './favicon.ico', './favicon-16x16.png', './favicon-32x32.png', './favicon-48x48.png',
-  './apple-touch-icon.png', './android-chrome-192x192.png', './android-chrome-512x512.png'
+  './apple-touch-icon.png', './android-chrome-192x192.png', './android-chrome-512x512.png', './android-chrome-maskable-192x192.png', './android-chrome-maskable-512x512.png'
 ];
 
 // Live data: never cache (feedback / VIP checks etc.)
@@ -26,7 +26,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CORE_CACHE)
       .then((cache) => Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url))))
-      .then(() => self.skipWaiting())
+      // No skipWaiting() here: an update waits until the person taps "Update" (see SKIP_WAITING message below)
   );
 });
 
