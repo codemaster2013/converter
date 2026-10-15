@@ -12,7 +12,7 @@
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
   var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
-  var BUILD = '14';
+  var BUILD = '17';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 

@@ -2027,7 +2027,7 @@ body {
 .vip-back-btn:hover { background:rgba(255,215,0,0.15); border-color:var(--vip-gold); box-shadow:0 0 16px rgba(255,215,0,0.2); }
 
 /* VIP Hero */
-.vip-hero { text-align:center; padding:50px 20px 36px; position:relative; z-index:1; width:100%; box-sizing:border-box; }
+.vip-hero { text-align:center; padding:50px 20px 36px; position:relative; z-index:1; width:100%; box-sizing:border-box; background:radial-gradient(ellipse 60% 55% at 50% 38%, rgba(255,215,0,0.07), rgba(255,215,0,0) 70%); contain:paint; }
 .vip-hero-badge {
   display:inline-flex; align-items:center; gap:8px;
   background:rgba(255,215,0,0.08); border:1px solid rgba(255,215,0,0.3);
@@ -2039,7 +2039,6 @@ body {
   line-height:1.15; margin-bottom:16px;
   background:linear-gradient(180deg,#fff8dc 0%,#ffd700 40%,#b8860b 80%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  filter:drop-shadow(0 0 25px rgba(255,215,0,0.25));
 }
 .vip-hero-sub { font-size:15px; color:#7a6a4a; max-width:600px; margin:0 auto 28px; padding:0 16px; }
 .vip-benefits { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:28px; width:100%; box-sizing:border-box; padding:0 16px; }
@@ -2213,6 +2212,15 @@ body {
 }
 
 canvas#_hiddenCv { display:none; }
+
+/* Phones & tablets: smaller blur radii and no saturate boost on the always-visible bars.
+   Very large backdrop-filter areas were a cause of the garbled hero on mobile GPUs. */
+@media (max-width: 900px), (pointer: coarse) {
+  #glassNav, #glassNav.scrolled, nav.nav-scrolled, .vip-nav {
+    -webkit-backdrop-filter: blur(10px) !important; backdrop-filter: blur(10px) !important;
+  }
+  .vip-crown { filter: none !important; }
+}
 
 body{
     overflow-x:hidden;
@@ -5497,18 +5505,35 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib-pdf.worker.min.js';
 
 // Particles
 (function(){
-  var c=document.getElementById('vipParticles');
-  var cols=['#ffd700','#ffe566','#fff8dc','#ffb300'];
-  for(var i=0;i<50;i++){
-    var p=document.createElement('div');
-    p.className='vip-particle';
-    p.style.left=Math.random()*100+'vw';
-    p.style.width=p.style.height=(1+Math.random()*3)+'px';
-    p.style.setProperty('--d',(4+Math.random()*5)+'s');
-    p.style.setProperty('--dl',(Math.random()*8)+'s');
-    p.style.background=cols[Math.floor(Math.random()*cols.length)];
-    c.appendChild(p);
+  /* Gold particles drawn on ONE canvas. They used to be 50 separate animated elements, each promoted to its own
+     GPU layer; on phones that exhausted graphics memory and corrupted the hero area (glitch stripes). */
+  var host=document.getElementById('vipParticles'); if(!host) return;
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cv=document.createElement('canvas'); cv.setAttribute('aria-hidden','true');
+  cv.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;display:block';
+  host.appendChild(cv);
+  var ctx=cv.getContext('2d'); if(!ctx) return;
+  var W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,1.5);
+  function size(){ W=window.innerWidth; H=window.innerHeight; cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  size(); window.addEventListener('resize',size);
+  var cols=['#ffd700','#ffe566','#fff8dc','#ffb300'], N=W<600?26:44, ps=[];
+  function mk(){ return {x:Math.random()*W, r:(1+Math.random()*3)/2, d:4+Math.random()*5, t:-Math.random()*8, c:cols[Math.floor(Math.random()*cols.length)]}; }
+  for(var i=0;i<N;i++) ps.push(mk());
+  var last=0, run=true;
+  function frame(ts){
+    if(!run) return;
+    var dt=last? Math.min((ts-last)/1000,0.1) : 0.016; last=ts;
+    ctx.clearRect(0,0,W,H);
+    for(var n=0;n<ps.length;n++){
+      var p=ps[n]; p.t+=dt; if(p.t<0) continue;
+      var k=p.t/p.d; if(k>=1){ p.t=-Math.random()*2; p.x=Math.random()*W; continue; }
+      var y=H-k*H*1.05, o=k<0.08? k/0.08*0.5 : (k<0.92? 0.5-(k-0.08)/0.84*0.3 : 0.2*(1-k)/0.08);
+      ctx.globalAlpha=o; ctx.fillStyle=p.c; ctx.beginPath(); ctx.arc(p.x,y,p.r,0,6.2832); ctx.fill();
+    }
+    requestAnimationFrame(frame);
   }
+  document.addEventListener('visibilitychange',function(){ if(document.hidden){ run=false; } else if(!run){ run=true; last=0; requestAnimationFrame(frame); } });
+  requestAnimationFrame(frame);
 })();
 
 // Stats
