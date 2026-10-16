@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found – MediaGrabber Pro</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05070f">
+<script>
+// Works on GitHub Pages sub-path (/converter/) AND on a domain root (Vercel / custom domain)
+(function(){
+  var seg = location.pathname.split('/')[1] || '';
+  var isGh = /\.github\.io$/.test(location.hostname);
+  window.MG_BASE = (isGh && seg) ? '/' + seg + '/' : '/';
+  document.write('<base href="' + window.MG_BASE + '">');
+})();
+</script>
+<style>
+ *{box-sizing:border-box;margin:0}
+ html,body{height:100%}
+ body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;overflow-x:hidden;
+  background:radial-gradient(circle at 50% 0%,#12162b 0%,#070a14 55%,#04060d 100%);color:#e5e7eb;
+  font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;position:relative}
+
+ /* ---------- background ---------- */
+ .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+ .grid{position:absolute;inset:-50%;background-image:
+   linear-gradient(rgba(139,92,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.07) 1px,transparent 1px);
+   background-size:44px 44px;transform:perspective(600px) rotateX(60deg) translateY(0);transform-origin:center top;
+   animation:gridmove 8s linear infinite;mask-image:radial-gradient(circle at 50% 30%,#000 10%,transparent 65%);
+   -webkit-mask-image:radial-gradient(circle at 50% 30%,#000 10%,transparent 65%)}
+ @keyframes gridmove{to{background-position:0 44px}}
+ .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:orb 14s ease-in-out infinite alternate}
+ .o1{width:340px;height:340px;background:#7c3aed;top:-80px;left:-60px}
+ .o2{width:300px;height:300px;background:#4f46e5;bottom:-80px;right:-40px;animation-delay:-5s}
+ .o3{width:220px;height:220px;background:#db2777;top:45%;left:60%;opacity:.28;animation-delay:-9s}
+ @keyframes orb{to{transform:translate(40px,-30px) scale(1.15)}}
+ .star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.2;animation:twinkle 3s ease-in-out infinite}
+ @keyframes twinkle{50%{opacity:.95;transform:scale(1.8)}}
+
+ /* floating tool icons */
+ .fi{position:absolute;width:44px;height:44px;opacity:.16;animation:drift 12s ease-in-out infinite alternate}
+ .fi svg{width:100%;height:100%;fill:none;stroke:#c4b5fd;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+ @keyframes drift{0%{transform:translateY(0) rotate(-8deg)}100%{transform:translateY(-34px) rotate(10deg)}}
+
+ /* ---------- card ---------- */
+ .card{position:relative;z-index:1;max-width:460px;width:100%;padding:34px 26px 28px;border-radius:30px;
+  border:1px solid rgba(255,255,255,.1);background:linear-gradient(160deg,rgba(22,28,52,.78),rgba(10,14,28,.78));
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 30px 80px -20px rgba(99,102,241,.45),inset 0 1px 0 rgba(255,255,255,.08);
+  animation:cardin .8s cubic-bezier(.2,.9,.3,1.2) both}
+ .card::before{content:"";position:absolute;inset:-1px;border-radius:30px;padding:1px;pointer-events:none;
+  background:conic-gradient(from var(--a,0deg),transparent 0 70%,#a855f7 85%,#6366f1 95%,transparent);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  animation:spin 6s linear infinite}
+ @property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+ @keyframes spin{to{--a:360deg}}
+ @keyframes cardin{from{opacity:0;transform:translateY(30px) scale(.94)}to{opacity:1;transform:none}}
+
+ /* hero svg */
+ .hero{width:100%;max-width:340px;height:auto;display:block;margin:0 auto 6px;overflow:visible}
+ .four{fill:none;stroke:url(#g1);stroke-width:17;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:400;stroke-dashoffset:400;animation:draw 1.3s .2s ease-out forwards;filter:drop-shadow(0 0 10px rgba(139,92,246,.55))}
+ .four.r{animation-delay:.5s}
+ @keyframes draw{to{stroke-dashoffset:0}}
+ .doc{animation:bob 3.2s ease-in-out infinite;transform-origin:170px 70px}
+ @keyframes bob{50%{transform:translateY(-9px) rotate(3deg)}}
+ .shadow{animation:shadow 3.2s ease-in-out infinite;transform-origin:170px 128px}
+ @keyframes shadow{50%{transform:scaleX(.7);opacity:.2}}
+ .lens{animation:search 4s ease-in-out infinite;transform-origin:185px 80px}
+ @keyframes search{0%,100%{transform:translate(-18px,-4px) rotate(-8deg)}50%{transform:translate(14px,6px) rotate(8deg)}}
+ .eye{animation:blink 4.5s infinite;transform-box:fill-box;transform-origin:center}
+ @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+ .spark{animation:tw 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+ .spark:nth-of-type(2){animation-delay:-.8s}.spark:nth-of-type(3){animation-delay:-1.6s}
+ @keyframes tw{0%,100%{opacity:0;transform:scale(.2)}50%{opacity:1;transform:scale(1)}}
+
+ h1{font-size:24px;font-weight:800;margin:10px 0 8px;animation:up .6s .9s both}
+ p{color:#9ca3af;font-size:14px;line-height:1.65;margin-bottom:14px;animation:up .6s 1s both}
+ .path{display:inline-block;max-width:100%;padding:6px 12px;margin-bottom:20px;border-radius:999px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;
+  color:#c4b5fd;background:rgba(139,92,246,.12);border:1px dashed rgba(139,92,246,.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;animation:up .6s 1.1s both}
+ @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+ .actions{display:flex;gap:10px;animation:up .6s 1.2s both}
+ .btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border:0;border-radius:14px;color:#fff;
+  font:700 15px Poppins,system-ui,sans-serif;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#a855f7,#6366f1);box-shadow:0 10px 25px -8px rgba(124,58,237,.8);transition:transform .2s,box-shadow .2s}
+ .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px -8px rgba(124,58,237,1)}
+ .btn:active{transform:scale(.97)}
+ .btn::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:shine 3.5s 2s infinite}
+ @keyframes shine{40%,100%{left:160%}}
+ .btn.ghost{flex:0 0 auto;padding:14px 18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:none}
+ .btn.ghost::after{display:none}
+ .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+ #sug{margin-top:22px;text-align:left;display:none}
+ #sug small{display:block;color:#9ca3af;font-size:12px;margin-bottom:10px;text-align:center;letter-spacing:.3px}
+ #sug a{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;margin-bottom:8px;border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;color:#e5e7eb;text-decoration:none;font-size:14px;background:rgba(255,255,255,.04);
+  opacity:0;animation:up .5s forwards;transition:border-color .2s,background .2s,transform .2s}
+ #sug a:hover{border-color:#a855f7;background:rgba(168,85,247,.1);transform:translateX(4px)}
+ #sug a svg{width:16px;height:16px;fill:none;stroke:#a78bfa;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+ @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important}
+  .four{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="grid"></div>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div id="stars"></div>
+  <!-- floating tool icons: PDF, image, QR, lock -->
+  <div class="fi" style="top:9%;left:8%;animation-delay:-2s"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg></div>
+  <div class="fi" style="top:16%;right:9%;animation-delay:-6s"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg></div>
+  <div class="fi" style="bottom:14%;left:11%;animation-delay:-4s"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h3M20 17v4"/></svg></div>
+  <div class="fi" style="bottom:20%;right:10%;animation-delay:-8s"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+</div>
+
+<main class="card">
+  <svg class="hero" viewBox="0 0 340 140" role="img" aria-label="404 – page not found">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+      <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e2547"/><stop offset="1" stop-color="#121733"/></linearGradient>
+    </defs>
+    <!-- 4 -->
+    <g class="four-wrap"><path class="four" d="M82 14 L20 92 H104 M82 14 V124"/></g>
+    <!-- second 4 -->
+    <g transform="translate(236 0)"><path class="four r" d="M82 14 L20 92 H104 M82 14 V124"/></g>
+    <!-- ground shadow -->
+    <ellipse class="shadow" cx="170" cy="130" rx="30" ry="5" fill="#000" opacity=".4"/>
+    <!-- floating sad document + magnifier -->
+    <g class="doc">
+      <path d="M142 28h42l22 22v60a8 8 0 0 1-8 8h-56a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z" fill="url(#g2)" stroke="url(#g1)" stroke-width="3"/>
+      <path d="M184 28v16a6 6 0 0 0 6 6h16" fill="none" stroke="url(#g1)" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse class="eye" cx="157" cy="72" rx="4" ry="5" fill="#e9d5ff"/>
+      <ellipse class="eye" cx="183" cy="72" rx="4" ry="5" fill="#e9d5ff"/>
+      <path d="M160 94q10-9 20 0" fill="none" stroke="#e9d5ff" stroke-width="3" stroke-linecap="round"/>
+      <g class="lens">
+        <circle cx="190" cy="84" r="17" fill="rgba(168,85,247,.12)" stroke="#f0abfc" stroke-width="4"/>
+        <path d="M202 97l16 16" stroke="#f0abfc" stroke-width="6" stroke-linecap="round"/>
+        <path d="M182 78a10 10 0 0 1 9-5" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+      </g>
+    </g>
+    <!-- sparkles -->
+    <path class="spark" d="M130 20l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#f0abfc"/>
+    <path class="spark" d="M222 18l1.6 4.6 4.6 1.6-4.6 1.6L222 31l-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#a5b4fc"/>
+    <path class="spark" d="M124 108l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#c4b5fd"/>
+  </svg>
+
+  <h1>Oops! Page not found</h1>
+  <p>This page took a wrong turn and got lost. The link may be broken, mistyped, or moved. Let's get you back to your tools.</p>
+  <div class="path" id="path" title="Requested URL"></div>
+
+  <div class="actions">
+    <a class="btn" id="home" href="./">
+      <svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Go to Home
+    </a>
+    <button class="btn ghost" onclick="history.length>1?history.back():location.href='./'" aria-label="Go back">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back
+    </button>
+  </div>
+
+  <div id="sug"><small>✨ Maybe you were looking for</small><div id="list"></div></div>
+</main>
+
+<script>
+(function(){
+  // twinkling stars
+  var st=document.getElementById('stars'),f=document.createDocumentFragment();
+  for(var i=0;i<45;i++){var s=document.createElement('i');s.className='star';
+    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=(-Math.random()*3)+'s';s.style.animationDuration=(2+Math.random()*3)+'s';f.appendChild(s)}
+  st.appendChild(f);
+
+  // requested path chip
+  document.getElementById('path').textContent = location.pathname + location.search;
+
+  // smart suggestions
+  var tools = [
+    ['Merge PDF','merge-pdf.html'],['Unlock PDF','unlock-pdf.html'],['Sign PDF','sign-pdf-online.html'],
+    ['PDF Reader','pdf-reader.html'],['PDF Page Organizer','pdf-page-organizer.html'],['JPG to PDF','jpg-to-pdf.html'],
+    ['Document Scanner to PDF','document-scanner-pdf.html'],['Image Converter','image-converter.html'],
+    ['HEIC to JPG','heic-to-jpg.html'],['Compress Image to 100KB','compress-image-to-100kb.html'],
+    ['Passport Size Photo Maker','passport-size-photo-maker.html'],['Remove EXIF / GPS from Photo','remove-exif-gps-from-photo.html'],
+    ['OCR – Image to Text','ocr-image-to-text.html'],['QR Code Generator','qr-code-generator.html'],
+    ['QR Code Scanner','qr-code-scanner.html'],['Base64 Converter','base64-converter.html']
+  ];
+  var typed = decodeURIComponent(location.pathname).toLowerCase().replace(/\.html?$/,'').split(/[^a-z0-9]+/).filter(function(w){return w.length>1 && w!=='converter'});
+  function score(t){
+    var s=0, hay=(t[0]+' '+t[1]).toLowerCase();
+    typed.forEach(function(w){ if(hay.indexOf(w)>-1) s+=2; else if(w.length>3 && hay.indexOf(w.slice(0,4))>-1) s+=1; });
+    return s;
+  }
+  var out = tools.map(function(t){return {t:t,s:score(t)}}).filter(function(r){return r.s>0})
+    .sort(function(a,b){return b.s-a.s}).slice(0,3);
+  if(out.length){
+    var box=document.getElementById('list');
+    out.forEach(function(r,i){
+      var a=document.createElement('a');a.href=r.t[1];a.style.animationDelay=(1.4+i*.12)+'s';
+      a.innerHTML='<span></span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+      a.firstChild.textContent=r.t[0];box.appendChild(a);
+    });
+    document.getElementById('sug').style.display='block';
+  }
+})();
+</script>
+</body></html>
