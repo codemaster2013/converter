@@ -12,7 +12,7 @@
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
   var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
-  var BUILD = '17';
+  var BUILD = '18';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
@@ -851,7 +851,7 @@
      FIRST-RUN TOUR (once, only for brand-new visitors)
      ===================================================================== */
   window.addEventListener('load', function () {
-    if (!hasTools() || lsGet('mg_tour_done') || lsGet('mg_feedback_done') === 'true' || lsGet('mgp_recent_tools') || location.hash || /[?&](shared|tool)=/.test(location.search)) return;
+    if (!hasTools() || window.__mgIntroShown || lsGet('mg_tour_done') || lsGet('mg_feedback_done') === 'true' || lsGet('mgp_recent_tools') || location.hash || /[?&](shared|tool)=/.test(location.search)) return;
     setTimeout(function () {
       var steps = [['🔒 Private by design', 'Your files are processed on your device. They are not uploaded.'],
                    ['📥 Easy to start', 'Drop files anywhere, paste an image with Ctrl+V, or use "Share → MG Pro" from your gallery.'],
