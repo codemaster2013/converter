@@ -12,7 +12,7 @@
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
   var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
-  var BUILD = '18';
+  var BUILD = '19';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
@@ -424,6 +424,7 @@
   }
   window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; onReady(function () { setTimeout(maybeShowInstall, 2500); }); });
   window.addEventListener('appinstalled', function () {
+    lsSet('mgp_intro_pending', '1');                                 // a NEW install: the first launch of the installed app shows the intro (even if this browser already holds data from earlier website visits)
     deferred = null; removeInstallBtn();
     if (lsGet('mg_install_counted') || !window.fetch) return;       // anonymous install counter: timestamp + platform only
     lsSet('mg_install_counted', '1');

@@ -10,7 +10,7 @@
   var seg = location.pathname.split('/')[1] || '';
   var isGh = /\.github\.io$/.test(location.hostname);
   window.MG_BASE = (isGh && seg) ? '/' + seg + '/' : '/';
-  document.write('<base href="' + window.MG_BASE + '">');
+  // (no <base> tag on purpose: it can make the SVG gradients below disappear in some browsers, so links get the folder added in code)
 })();
 </script>
 <style>
@@ -192,7 +192,7 @@
     <a class="btn" id="home" href="./">
       <svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Go to Home
     </a>
-    <button class="btn ghost" onclick="history.length>1?history.back():location.href='./'" aria-label="Go back">
+    <button class="btn ghost" onclick="history.length>1?history.back():location.href=MG_BASE" aria-label="Go back">
       <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back
     </button>
   </div>
@@ -212,6 +212,10 @@
     s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
     s.style.animationDelay=(-Math.random()*3)+'s';s.style.animationDuration=(2+Math.random()*3)+'s';f.appendChild(s)}
   st.appendChild(f);
+
+  function dec(s){ try { return decodeURIComponent(s); } catch (e) { return s; } }
+  var B = window.MG_BASE;
+  document.getElementById('home').setAttribute('href', B);
 
   // requested path chip
   document.getElementById('path').textContent = location.pathname + location.search;
@@ -288,7 +292,7 @@
   function dice(a,b){if(a.length<2||b.length<2)return 0;var A=bigr(a),B=bigr(b),n=0;for(var k in A)if(B[k])n+=Math.min(A[k],B[k]);return 2*n/(a.length+b.length-2)}
 
   // what did the visitor type? drop the site folder and "index.html" noise
-  var parts = decodeURIComponent(location.pathname).split('/').filter(Boolean);
+  var parts = dec(location.pathname).split('/').filter(Boolean);
   var baseSeg = (window.MG_BASE||'/').replace(/\//g,'');
   var typedParts = parts.filter(function(p,i){
     var c=compact(p);
@@ -296,7 +300,7 @@
   }).map(function(p){return p.replace(/\.html?$/i,'')});
   var raw = typedParts.join(' ');
   var C = compact(raw);
-  var wantsVip = /vip|premium|elite|\bpro\b/i.test(decodeURIComponent(location.pathname));
+  var wantsVip = /vip|premium|elite|\bpro\b/i.test(dec(location.pathname));
 
   function has(tag){return (ALIAS[tag]||[tag]).some(function(a){return C.indexOf(a)>-1})}
   function score(t){
@@ -352,7 +356,7 @@
     if(!e) return;
     var t=e.t, a=document.createElement('a');
     a.className='opt'+(e.vip?' vip':'');
-    a.href = e.vip ? VIP_PAGE+'?tool='+encodeURIComponent(t.v)+'#'+encodeURIComponent(t.v) : t.f;
+    a.href = B + (e.vip ? VIP_PAGE+'?tool='+encodeURIComponent(t.v)+'#'+encodeURIComponent(t.v) : t.f);
     a.style.animationDelay=(1.45+i*.13)+'s'+(e.vip?',0s':'');
     a.innerHTML='<span class="ic"><svg viewBox="0 0 24 24">'+ICON[t.i]+'</svg></span>'+
       '<span class="tx"><span class="tt"><span class="nm"></span><span class="pill '+(e.vip?'vip':'free')+'">'+(e.vip?CROWN+'VIP':'Free')+'</span></span><span class="ds"></span></span>'+

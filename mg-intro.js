@@ -1,6 +1,11 @@
 /* MediaGrabber Pro - first-run intro (installed app).
-   Shown ONCE, on the first launch of the installed app, and again whenever the browser's site data was cleared or the app was
-   removed and installed again (the "seen it" mark lives in site storage, so clearing the data resets it).
+   Shown on the first launch after EVERY new install of the app: the first time it is installed, and again if it was deleted and
+   installed again. Two signals are used:
+     1. the browser's "appinstalled" event (see pwa.js) leaves a marker, and the next launch of the installed app shows the intro
+        and clears the marker. This works even if the browser still holds data from earlier website visits, which an uninstall
+        does not always remove;
+     2. as a backup for browsers that do not announce installs: the very first launch with no saved app data, or after the site
+        data was cleared (the "seen it" mark lives in site storage).
 
    Flow:  welcome screen -> "Getting started" -> 4 tutorial slides (Skip on every screen)
           last slide: "VIP is free" with two buttons
@@ -21,9 +26,10 @@
   var USED_KEYS = ['mg_tour_done', 'mg_uses', 'mg_conversions', 'mg_recent', 'mg_last_tool', 'mg_fav', 'mgp_recent_tools', 'mgp_vip_default', 'mgp_theme', 'mg_feedback_done', 'mgp_updates_enabled', 'mgp_beta_main'];
 
   /* ---------------- pure logic ---------------- */
-  function decide(env) {            // env: { standalone, force, done, used, deep }
+  function decide(env) {            // env: { standalone, force, pending, done, used, deep }
     if (env.force) return true;
-    return !!env.standalone && !env.done && !env.used && !env.deep;
+    if (!env.standalone || env.deep) return false;       // only the installed app, and not when a tool was asked for
+    return !!env.pending || (!env.done && !env.used);    // a new install, or a first launch on a device with no saved data
   }
 
   var SLIDES = [
@@ -138,9 +144,11 @@
     var q = root.location.search || '', h = root.location.hash || '';
     var standalone = !!((root.matchMedia && (root.matchMedia('(display-mode: standalone)').matches || root.matchMedia('(display-mode: fullscreen)').matches || root.matchMedia('(display-mode: minimal-ui)').matches)) || root.navigator.standalone === true);
     var used = false; for (var i = 0; i < USED_KEYS.length; i++) if (get(USED_KEYS[i]) !== null) { used = true; break; }   // read NOW, before the app writes anything
-    var show = decide({ standalone: standalone, force: /[?&]intro=1(&|$)/.test(q), done: get(KEY) !== null, used: used, deep: /[?&](tool|shared|q|open|go|search)=/.test(q) || h.length > 1 });
+    var pending = get('mgp_intro_pending') !== null;
+    var show = decide({ standalone: standalone, force: /[?&]intro=1(&|$)/.test(q), pending: pending, done: get(KEY) !== null, used: used, deep: /[?&](tool|shared|q|open|go|search)=/.test(q) || h.length > 1 });
     if (!show) return;
     root.__mgIntroShown = true;
+    try { if (ls) ls.removeItem('mgp_intro_pending'); } catch (e) {}      // consumed: it will not show again until the next new install
 
     function start() {
       var doc = root.document, st = { screen: 'welcome' }, timer = 0, el = doc.createElement('div'), x0 = null;
