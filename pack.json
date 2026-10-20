@@ -1,0 +1,66 @@
+[
+ {
+  "id": "classic",
+  "name": "Classic"
+ },
+ {
+  "id": "forest",
+  "name": "Forest"
+ },
+ {
+  "id": "green",
+  "name": "Green"
+ },
+ {
+  "id": "space",
+  "name": "Space"
+ },
+ {
+  "id": "paper",
+  "name": "Paper"
+ },
+ {
+  "id": "galaxy",
+  "name": "Galaxy"
+ },
+ {
+  "id": "fire",
+  "name": "Fire"
+ },
+ {
+  "id": "marble",
+  "name": "Marble"
+ },
+ {
+  "id": "fur",
+  "name": "Fur"
+ },
+ {
+  "id": "glow",
+  "name": "Glow"
+ },
+ {
+  "id": "lilac",
+  "name": "Lilac"
+ },
+ {
+  "id": "sky",
+  "name": "Sky"
+ },
+ {
+  "id": "peach",
+  "name": "Peach"
+ },
+ {
+  "id": "mint",
+  "name": "Mint"
+ },
+ {
+  "id": "lime",
+  "name": "Lime"
+ },
+ {
+  "id": "outline",
+  "name": "Outline"
+ }
+]
