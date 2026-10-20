@@ -12,7 +12,7 @@
   var hadController = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
   var DB = 'convertor-11437-default-rtdb.firebaseio.com';
   var SECTIONS = ['converter', 'pdf', 'pdfmerge', 'texttopdf', 'ocr', 'unlocker', 'heic2jpg', 'qrcode', 'compress', 'photoprep', 'scanner', 'pagetools', 'signpdf', 'exif', 'qrscan'];
-  var BUILD = '19';
+  var BUILD = '20';
   window.MG_BUILD = BUILD;
   var FONT = 'font:600 14px Poppins,Inter,system-ui,sans-serif;';
 
@@ -682,6 +682,7 @@
   function openMenu() {
     var s = sheet('mg-menu'), box = s.box, reopen = function () { s.ov.remove(); openMenu(); };
     line(box, '⚡ ' + t('menu'), 'font-size:16px;font-weight:700;margin-bottom:12px;');
+    sbtn(box, '🎨 App icon', function () { s.ov.remove(); if (window.mgAppIcon) window.mgAppIcon.open(); });
     if (showUpdateButtons()) sbtn(box, '↻ ' + t('updateAvail') + ' · ' + t('updateNow'), function () { applyUpdate(); });
     sbtn(box, t('paste'), function () { s.ov.remove(); pasteFromClipboard(); });
     if (!standalone) sbtn(box, '📲 ' + t('installApp'), function () { s.ov.remove(); if (deferred) window.mgInstallApp(); else toast(isIOS ? t('installHow').replace('Install app', 'Share → Add to Home Screen') : t('installHow')); });
