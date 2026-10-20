@@ -21,7 +21,7 @@
   /* which files the page should point at; null means "put the original ones back" */
   function plan(id) {
     if (!valid(id) || id === 'classic') return null;
-    var d = 'icons/' + id + '/';
+    var d = 'appicon-' + id + '-';
     return { manifest: d + 'manifest.webmanifest', icon: d + 'favicon-32.png', apple: d + 'apple-touch-icon.png', image: d + 'icon-512.png', thumb: d + 'thumb.png' };
   }
   function hint(standalone) {
@@ -89,7 +89,7 @@
     var ov = doc.createElement('div'); ov.id = 'mgap'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'App icon');
     var items = '';
     for (var i = 0; i < PACK.length; i++) {
-      var id = PACK[i][0], thumb = id === 'classic' ? 'icons/classic/thumb.png' : plan(id).thumb;
+      var id = PACK[i][0], thumb = id === 'classic' ? 'appicon-classic-thumb.png' : plan(id).thumb;
       items += '<button type="button" class="mgap-it" data-id="' + id + '" aria-label="' + PACK[i][1] + '" aria-pressed="' + (id === sel) + '"><img src="' + thumb + '" alt="" width="96" height="96" loading="lazy"><span class="mgap-ck">' + CHECK + '</span></button>';
     }
     ov.innerHTML = '<div class="mgap-sheet"><h2>App icon</h2><p class="mgap-sub">Pick the look you like best.</p><div class="mgap-grid">' + items + '</div>' +
@@ -113,7 +113,7 @@
       if (b.id === 'mgap-close') close();
       else if (b.id === 'mgap-use') { choose(sel); paint(); noteEl.textContent = 'Saved. ' + hint(isStandalone()); }
       else if (b.id === 'mgap-install') { choose(sel); paint(); noteEl.textContent = 'Starting the install with the ' + nameOf(sel) + ' icon...'; root.setTimeout(function () { try { root.mgInstallApp(); } catch (x) {} }, 700); }
-      else if (b.id === 'mgap-save') { var img = sel === 'classic' ? 'icons/classic/icon-512.png' : plan(sel).image, a = doc.createElement('a'); a.href = img; a.download = 'app-icon-' + sel + '.png'; doc.body.appendChild(a); a.click(); a.remove(); }
+      else if (b.id === 'mgap-save') { var img = sel === 'classic' ? 'appicon-classic-icon-512.png' : plan(sel).image, a = doc.createElement('a'); a.href = img; a.download = 'app-icon-' + sel + '.png'; doc.body.appendChild(a); a.click(); a.remove(); }
     });
     doc.addEventListener('keydown', onKey, true); paint();
     var first = ov.querySelector('.mgap-it[aria-pressed="true"]'); if (first && first.focus) first.focus();
