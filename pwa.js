@@ -21,10 +21,11 @@
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function hasTools() { return !!document.getElementById('imgInput'); }
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isVipPage = /index(?:%20|\s)\(3\)\.html/i.test(window.location.pathname);   // the VIP version; the main page is index.html
   function platformName() { return /android/i.test(navigator.userAgent) ? 'android' : (isIOS ? 'ios' : 'desktop'); }
 
   /* ---------------- text (English / Hindi / Gujarati) ---------------- */
-  var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
+  var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', vipOnlyTitle: 'Install from the VIP version', vipOnlyBody: "You can't install the app from the main version. Go to the VIP version to install the app. VIP is free.", goVip: 'Go to VIP', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
     offline: "📡 You're offline — converters still work. Feedback & VIP need internet.", online: '✓ Back online',
     install: '⬇ Install App', iosTip: '📲 Install MG Pro: tap the Share button, then "Add to Home Screen".', gotIt: 'Got it',
     filesReceived: 'file(s) received', chooseTool: 'What would you like to do?', unsupported: 'Videos and other file types are not supported here. Please share an image or a PDF.',
@@ -405,12 +406,13 @@
   var deferred = null, installBtn = null, DISMISS_KEY = 'mg_pwa_dismissed', WEEK = 7 * 24 * 3600 * 1000;
   function removeInstallBtn() { if (installBtn) { installBtn.remove(); installBtn = null; } }
   window.mgInstallApp = function () {
+    if (!isVipPage) { showVipInstallNotice(); return; }
     if (!deferred) return;
     deferred.prompt();
     deferred.userChoice.finally(function () { deferred = null; removeInstallBtn(); });
   };
   function maybeShowInstall() {
-    if (!deferred || installBtn || standalone || !document.body) return;
+    if (!isVipPage || !deferred || installBtn || standalone || !document.body) return;
     if (Date.now() - Number(lsGet(DISMISS_KEY) || 0) < WEEK) return;
     installBtn = document.createElement('div');
     installBtn.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:100000;display:flex;align-items:center;gap:4px;' +
@@ -433,7 +435,7 @@
   });
 
   /* ---- iOS: one-time "Add to Home Screen" tip ---- */
-  if (isIOS && !standalone && !lsGet('mg_ios_hint')) {
+  if (isIOS && !standalone && isVipPage && !lsGet('mg_ios_hint')) {
     onReady(function () {
       setTimeout(function () {
         makeBar('mg-ios-hint', t('iosTip'), 'linear-gradient(135deg,#7c3aed,#4f46e5)', 'bottom', [
@@ -598,6 +600,13 @@
       (ghost ? 'color:#9ca3af;background:rgba(255,255,255,.06);' : 'color:#fff;background:linear-gradient(135deg,#a855f7,#6366f1);') + FONT;
     b.onclick = fn; box.appendChild(b); return b;
   }
+  function showVipInstallNotice() {
+    var s2 = sheet('mg-vip-install');
+    line(s2.box, '\u{1F451} ' + t('vipOnlyTitle'), 'font-size:16px;font-weight:700;margin-bottom:8px;');
+    line(s2.box, t('vipOnlyBody'), 'font-size:14px;line-height:1.5;color:#cbd5e1;margin-bottom:16px;font-weight:400;');
+    sbtn(s2.box, t('goVip'), function () { s2.ov.remove(); if (typeof window.launchVipLoader === 'function') window.launchVipLoader(); else window.location.href = 'index (3).html'; });
+    sbtn(s2.box, t('close'), function () { s2.ov.remove(); }, true);
+  }
   function offerFiles(files) {
     if (!files || !files.length) return;
     var options = TOOLS.filter(function (tl) { return document.getElementById(tl.input) && files.some(tl.test); });
@@ -685,7 +694,7 @@
     sbtn(box, '🎨 App icon', function () { s.ov.remove(); if (window.mgAppIcon) window.mgAppIcon.open(); });
     if (showUpdateButtons()) sbtn(box, '↻ ' + t('updateAvail') + ' · ' + t('updateNow'), function () { applyUpdate(); });
     sbtn(box, t('paste'), function () { s.ov.remove(); pasteFromClipboard(); });
-    if (!standalone) sbtn(box, '📲 ' + t('installApp'), function () { s.ov.remove(); if (deferred) window.mgInstallApp(); else toast(isIOS ? t('installHow').replace('Install app', 'Share → Add to Home Screen') : t('installHow')); });
+    if (!standalone) sbtn(box, '📲 ' + t('installApp'), function () { s.ov.remove(); if (!isVipPage) { showVipInstallNotice(); return; } if (deferred) window.mgInstallApp(); else toast(isIOS ? t('installHow').replace('Install app', 'Share → Add to Home Screen') : t('installHow')); });
     if (lastResult && canShareFile(new File([lastResult.blob], lastResult.name))) sbtn(box, t('shareLast') + ' (' + lastResult.name + ')', function () { s.ov.remove(); shareLast(); });
     if (typeof window.JSZip !== 'undefined') toggleBtn(box, batch.on, t('batchOff'), t('batchOn'), function () { batch.on = !batch.on; lsSet('mg_batch', batch.on ? '1' : '0'); reopen(); });
 

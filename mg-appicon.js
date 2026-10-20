@@ -61,7 +61,7 @@
     '#mgap .mgap-it[aria-pressed="true"]{box-shadow:0 0 0 3px #12131f,0 0 0 6px #a78bfa;border-radius:50%}' +
     '#mgap .mgap-it .mgap-ck{display:none;position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:50%;background:#7c3aed;border:2px solid #12131f;align-items:center;justify-content:center}' +
     '#mgap .mgap-it[aria-pressed="true"] .mgap-ck{display:flex}#mgap :focus-visible{outline:3px solid #fff;outline-offset:3px}' +
-    '#mgap .mgap-name{margin:14px 0 14px;font-weight:700;font-size:15px}' +
+    '#mgap .mgap-note{margin:0 0 14px;color:#cfc8ee;font-size:13px;line-height:1.5}#mgap .mgap-note:empty{display:none}#mgap .mgap-name{margin:14px 0 14px;font-weight:700;font-size:15px}' +
     '#mgap .mgap-row{display:flex;flex-direction:column;gap:8px}' +
     '#mgap .mgap-btn{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:13px 16px;border-radius:14px;font-weight:700;font-size:15px;border:1px solid rgba(167,139,250,.5);background:rgba(139,92,246,.14);color:#fff}' +
     '#mgap .mgap-pri{background:linear-gradient(135deg,#8b5cf6,#6366f1);border-color:transparent}#mgap .mgap-btn[disabled]{opacity:.45;pointer-events:none}';
@@ -94,14 +94,14 @@
       items += '<button type="button" class="mgap-it" data-id="' + id + '" aria-label="' + PACK[i][1] + '" aria-pressed="' + (id === sel) + '"><img src="' + thumb + '" alt="" width="96" height="96" draggable="false" loading="lazy"><span class="mgap-ck">' + CHECK + '</span></button>';
     }
     ov.innerHTML = '<div class="mgap-sheet"><h2>App icon</h2><p class="mgap-sub">Pick the look you like best.</p><div class="mgap-grid">' + items + '</div>' +
-      '<p class="mgap-name" id="mgap-name"></p><div class="mgap-row">' +
-      '<button type="button" class="mgap-btn mgap-pri" id="mgap-use">Update</button>' +
+      '<p class="mgap-name" id="mgap-name"></p><p class="mgap-note" id="mgap-note"></p><div class="mgap-row">' +
+      '<button type="button" class="mgap-btn mgap-pri" id="mgap-use">Use this icon</button>' +
       '<button type="button" class="mgap-btn" id="mgap-close">Close</button></div></div>';
     doc.body.appendChild(ov);
-    var nameEl = doc.getElementById('mgap-name'), useBtn = doc.getElementById('mgap-use'), busy = false;
+    var nameEl = doc.getElementById('mgap-name'), useBtn = doc.getElementById('mgap-use'), noteEl = doc.getElementById('mgap-note'), busy = false;
     function paint() {
       [].forEach.call(ov.querySelectorAll('.mgap-it'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-id') === sel ? 'true' : 'false'); });
-      nameEl.textContent = nameOf(sel) + (sel === current() ? ' (in use)' : '');
+      nameEl.textContent = nameOf(sel) + (sel === current() ? ' (in use)' : ''); useBtn.disabled = sel === current();
     }
     function close() { ov.remove(); style.remove(); doc.removeEventListener('keydown', onKey, true); }
     function onKey(e) { if (e.key === 'Escape') { e.preventDefault(); close(); } }
@@ -110,7 +110,7 @@
       var b = e.target.closest ? e.target.closest('button') : null; if (!b) return;
       if (b.classList.contains('mgap-it')) { sel = b.getAttribute('data-id'); paint(); return; }
       if (b.id === 'mgap-close') close();
-      else if (b.id === 'mgap-use') { if (busy) return; busy = true; useBtn.textContent = 'Updating...'; useBtn.disabled = true; refresh(sel).then(function () { useBtn.textContent = 'Updated'; root.setTimeout(function () { root.location.reload(); }, 400); }); }
+            else if (b.id === 'mgap-use') { if (busy || sel === current()) return; busy = true; refresh(sel).then(function () { busy = false; paint(); noteEl.textContent = 'To use this icon in your app, delete this app and install it again from the VIP version. VIP is free.'; }); }
     });
     ov.addEventListener('contextmenu', function (e) { e.preventDefault(); }); ov.addEventListener('dragstart', function (e) { e.preventDefault(); });
     doc.addEventListener('keydown', onKey, true); paint();
