@@ -161,7 +161,15 @@
             ".pdf",
             ".heic",
             ".heif",
-            "video/*"
+            "video/*",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".docx",
+            ".pptx",
+            "text/plain",
+            "text/html",
+            ".txt",
+            ".html"
           ]
         }
       ]
@@ -183,6 +191,15 @@
           ".bmp",
           ".heic",
           ".heif"
+        ],
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+          ".docx"
+        ],
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation": [
+          ".pptx"
+        ],
+        "text/plain": [
+          ".txt"
         ]
       }
     }
