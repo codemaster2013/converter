@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v23';
+const CACHE_VERSION = 'v26';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"
@@ -10,7 +10,7 @@ const RUNTIME_MAX_ENTRIES = 200;
 const CORE_ASSETS = [
   './', './index.html', './index (2).html', './index (3).html', './index (4).html', './index (5).html',
   './offline.html', './pwa.js', './mg-libs.js', './mg-deeplink.js', './mg-intro.js', './mg-appicon.js', './mg-icons.js', './tools.js', './site.webmanifest',
-  './lib-pdf.min.js', './lib-pdf.worker.min.js', './lib-pdf-lib.min.js', './lib-jszip.min.js', './lib-jspdf.umd.min.js', './lib-qrcode.min.js',
+  './lib-pdf.min.js', './lib-pdf.worker.min.js', './lib-pdf-lib.min.js', './lib-jszip.min.js', './lib-jspdf.umd.min.js', './lib-qrcode.min.js', './lib-docconv.js', './lib-pdfcrypt.js',
   './lib-firebase-app.js', './lib-firebase-database.js',
   './favicon.ico', './favicon-16x16.png', './favicon-32x32.png', './favicon-48x48.png',
   './apple-touch-icon.png', './android-chrome-192x192.png', './android-chrome-512x512.png', './android-chrome-maskable-192x192.png', './android-chrome-maskable-512x512.png'
@@ -118,6 +118,16 @@ self.addEventListener('fetch', (event) => {
   if (BIG_FILES.test(req.url)) {
     event.respondWith(
       caches.match(req).then((cached) => cached || fetch(req).then((res) => { putInCache(RUNTIME_CACHE, req, res); return res; }))
+    );
+    return;
+  }
+
+  // Our own scripts and manifests: network first, so a change shows on the very next visit (cached copy only when offline)
+  if (url.origin === self.location.origin && /\.(js|webmanifest)$/i.test(url.pathname)) {
+    event.respondWith(
+      fetch(req, { cache: 'no-cache' })
+        .then((res) => { putInCache(RUNTIME_CACHE, req, res); return res; })
+        .catch(() => caches.match(req).then((hit) => hit || caches.match(req, { ignoreSearch: true })))
     );
     return;
   }

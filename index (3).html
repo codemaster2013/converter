@@ -4122,7 +4122,7 @@ async function processOCR() {
         let extractedText = "";
 
         if (file.type === "application/pdf") {
-            const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+            const pdf = await pdfjsLib.getDocument({ isEvalSupported: false, data: await file.arrayBuffer() }).promise;
             for (let i = 1; i <= pdf.numPages; i++) {
                 status.innerText = `🛡️ Privacy Scan: Page ${i}...`;
                 const page = await pdf.getPage(i);
@@ -4671,7 +4671,7 @@ async function removePassword() {
         const arrayBuffer = await file.arrayBuffer();
         
         // Step 1: Try loading the PDF without a password first
-        let loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        let loadingTask = pdfjsLib.getDocument({ isEvalSupported: false, data: arrayBuffer });
         let pdf;
         
         try {
@@ -4696,8 +4696,7 @@ async function removePassword() {
                 }
                 
                 // Re-try with the provided password
-                loadingTask = pdfjsLib.getDocument({
-                    data: arrayBuffer,
+                loadingTask = pdfjsLib.getDocument({ isEvalSupported: false, data: arrayBuffer,
                     password: password
                 });
                 pdf = await loadingTask.promise;
@@ -5123,7 +5122,7 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
                 return;
             }
             var pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
-            return pdfjsLib.getDocument({ data: buf }).promise.then(function(pdf) {
+            return pdfjsLib.getDocument({ isEvalSupported: false, data: buf }).promise.then(function(pdf) {
                 prPDFDoc = pdf;
                 prCurrentFileName = item.name;
                 prCurrentPage = Math.min(item.page, prPDFDoc.numPages);
@@ -5154,7 +5153,7 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
             savePDFData(file.name, saveBuf);
 
             var pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
-            return pdfjsLib.getDocument({ data: loadBuf }).promise;
+            return pdfjsLib.getDocument({ isEvalSupported: false, data: loadBuf }).promise;
         }).then(function(pdf) {
             prPDFDoc = pdf;
             prScale = 1.0;
@@ -5726,7 +5725,7 @@ async function vRunOcr(){
     var imageData;
     if(_vOcrFile.type==='application/pdf'){
       var arrayBuf=await _vOcrFile.arrayBuffer();
-      var pdfDoc=await pdfjsLib.getDocument({data:arrayBuf}).promise;
+      var pdfDoc=await pdfjsLib.getDocument({ isEvalSupported: false, data:arrayBuf}).promise;
       var page=await pdfDoc.getPage(1);
       var vp=page.getViewport({scale:2.0});
       var cv=document.getElementById('_hiddenCv');cv.width=vp.width;cv.height=vp.height;
@@ -5785,7 +5784,7 @@ async function vRemovePass(){
     var fileBytes=await file.arrayBuffer();
     var pdf;
     try{
-      pdf=await pdfjsLib.getDocument({data:fileBytes.slice(0)}).promise;
+      pdf=await pdfjsLib.getDocument({ isEvalSupported: false, data:fileBytes.slice(0)}).promise;
       stat.style.color='#ffd700';stat.textContent='💡 This PDF has no password — downloading original.';
       var dl=document.createElement('a');
       dl.href=URL.createObjectURL(new Blob([fileBytes],{type:'application/pdf'}));
@@ -5802,7 +5801,7 @@ async function vRemovePass(){
     }
     stat.textContent='🔑 Unlocking with password...';
     try{
-      pdf=await pdfjsLib.getDocument({data:fileBytes.slice(0),password:password}).promise;
+      pdf=await pdfjsLib.getDocument({ isEvalSupported: false, data:fileBytes.slice(0),password:password}).promise;
     }catch(e2){
       stat.style.color='#ef4444';stat.textContent='❌ Wrong password — please try again.';
       btn.disabled=false;vToast('⚠ Wrong password');return;
@@ -6471,7 +6470,7 @@ async function vLoadSplitPdf(inp){
   var f=inp.files[0];if(!f)return;
   try{
     var ab=await f.arrayBuffer();
-    _vSplitDoc=await pdfjsLib.getDocument({data:ab}).promise;
+    _vSplitDoc=await pdfjsLib.getDocument({ isEvalSupported: false, data:ab}).promise;
     document.getElementById('vSplitCount').textContent='✦ '+f.name+' — '+_vSplitDoc.numPages+' pages';
     document.getElementById('vSplitInfo').style.display='block';vToast('✦ PDF loaded — '+_vSplitDoc.numPages+' pages');
   }catch(e){vToast('⚠ Could not load PDF');}
@@ -6574,7 +6573,7 @@ async function vLoadPdfComp(inp) {
   _vPdfCompOrigSize = f.size;
   try {
     var ab = await f.arrayBuffer();
-    _vPdfCompDoc = await pdfjsLib.getDocument({data: ab}).promise;
+    _vPdfCompDoc = await pdfjsLib.getDocument({ isEvalSupported: false, data: ab}).promise;
     function fmtBytes(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(2)+' MB';}
     document.getElementById('vPdfCompName').textContent = '📄 ' + f.name + ' — ' + _vPdfCompDoc.numPages + ' pages — ' + fmtBytes(f.size);
     document.getElementById('vPdfCompInfo').style.display = 'block';

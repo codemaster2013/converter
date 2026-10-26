@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – extra tools (loaded on index.html).
    Compress to size · Photo & signature size · Document scanner · PDF page tools · Sign PDF ·
-   Remove photo location (EXIF) · QR scanner.
+   Remove photo location (EXIF) · QR scanner · PDF Converter (all-in-one) · PDF Locker.
    Everything runs in the browser; files never leave the device. */
 (function () {
   'use strict';
@@ -547,7 +547,7 @@
     return d;
   }
   async function pdfThumbs(bytes, scale, each) {
-    var pdf = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
+    var pdf = await pdfjsLib.getDocument({ isEvalSupported: false, data: bytes.slice() }).promise;
     for (var i = 1; i <= pdf.numPages; i++) {
       var pg = await pdf.getPage(i), vp = pg.getViewport({ scale: scale }), c = newCanvas(Math.ceil(vp.width), Math.ceil(vp.height));
       await pg.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise; each(i - 1, c);
@@ -733,7 +733,7 @@
       input.onchange = async function () {
         if (!input.files.length) return; var f = input.files[0]; name = baseName(f.name); placed = []; count.textContent = '';
         try {
-          bytes = await readBytes(f); await openPdfLib(bytes); pdfDoc = await pdfjsLib.getDocument({ data: bytes.slice() }).promise; total = pdfDoc.numPages; pageNo = 1;
+          bytes = await readBytes(f); await openPdfLib(bytes); pdfDoc = await pdfjsLib.getDocument({ isEvalSupported: false, data: bytes.slice() }).promise; total = pdfDoc.numPages; pageNo = 1;
           await showPage(); saveBtn.style.display = 'block'; pg.textContent = 'Draw a signature above, tap "Use this signature", drag it into place, then "Place on this page".';
         } catch (e) { notify(e.message || 'Could not open this PDF.', 'PDF error'); }
       };
@@ -921,6 +921,102 @@
       };
       stopBtn.onclick = stop; window.addEventListener('pagehide', stop);
       [label, camBtn, stopBtn, video, out].forEach(function (n) { card.appendChild(n); });
+    });
+
+  /* =================================================================
+     PDF CONVERTER (all-in-one)  +  PDF LOCKER
+     ================================================================= */
+  function lazy(files) { return Promise.all(files.map(function (f) { return window.mgLoadScript ? window.mgLoadScript(f) : Promise.reject(new Error('Loader missing')); })); }
+  T.fileKinds = function (files) { return window.MGDocConv ? files.map(window.MGDocConv.detect) : []; };
+
+  addTool('pdfconv', 'PDF Converter (All-in-One)', 'PDF Converter',
+    ICON('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 14l3-3 3 3"/><path d="M12 11v7"/>'),
+    'One tool for PDF, Word, PowerPoint, images, HTML and text. Convert them to PDF, or turn a PDF into Word, PowerPoint, images or text. (Excel files are not supported.)',
+    function (card) {
+      var files = [], target = null;
+      var input = el('input', { type: 'file', id: 'pcInput', multiple: 'multiple', accept: '.pdf,.docx,.pptx,.doc,.ppt,.html,.htm,.txt,.md,image/*,application/pdf', hidden: 'hidden' });
+      var label = el('label', { 'class': 'upload-area', 'for': 'pcInput' }, [el('p', { text: 'Click to upload PDF, Word, PowerPoint, image or text files', style: 'font-weight:600' }), input]);
+      var info = el('div', { 'class': 'mgt-note', id: 'pcInfo' }), opts = el('div', { 'class': 'mgt-row', id: 'pcTargets' });
+      var comb = el('input', { type: 'checkbox', id: 'pcCombine', checked: 'checked', style: 'width:auto;margin:0 6px 0 0' });
+      var combRow = el('label', { style: 'display:none;align-items:center;font-size:14px;margin:6px 0' }, [comb, 'Combine all images into one PDF']);
+      var go = el('button', { 'class': 'btn-primary', text: 'Convert', id: 'pcGo', style: 'display:none' });
+      var prog = el('div', { 'class': 'mgt-note', id: 'pcProg' }), host = el('div', { id: 'pcOut' }), results = ResultList(host);
+      function refresh() {
+        results.clear(); opts.innerHTML = ''; target = null; go.style.display = 'none'; combRow.style.display = 'none'; prog.textContent = '';
+        if (!files.length) { info.textContent = ''; return; }
+        info.textContent = files.length === 1 ? files[0].name : files.length + ' files selected';
+        var C = window.MGDocConv, msg = ''; files.forEach(function (f) { msg = msg || C.message(f); });
+        if (msg) { info.textContent = msg; info.style.color = '#f87171'; return; }
+        info.style.color = '';
+        var tg = C.targetsFor(files);
+        if (!tg.length) { info.textContent = 'Upload one kind of file at a time (for example only PDFs, or only Word/PowerPoint/images).'; info.style.color = '#f87171'; return; }
+        tg.forEach(function (t) {
+          var b = el('button', { 'class': 'mgt-chip', type: 'button', text: (tg.length > 1 ? '' : 'Convert to ') + t.label, onclick: function () { pick(t.id); } }); b.setAttribute('data-t', t.id); opts.appendChild(b);
+        });
+        if (tg.length === 1) pick(tg[0].id); else info.textContent += ' — choose what to convert it to:';
+        if (files.length > 1 && files.every(function (f) { return C.detect(f) === 'image'; })) combRow.style.display = 'flex';
+      }
+      function pick(id) {
+        target = id; Array.prototype.forEach.call(opts.children, function (b) { b.classList.toggle('on', b.getAttribute('data-t') === id); }); go.style.display = 'block';
+      }
+      async function load(list) {
+        files = list; info.textContent = 'Preparing…';
+        try { await lazy(['lib-docconv.js']); } catch (e) { info.textContent = ''; notify('Could not load the converter. Check your internet connection once, then try again.', 'Converter'); return; }
+        refresh();
+      }
+      input.onchange = function () { load(Array.prototype.slice.call(input.files)); };
+      T.pdfConvLoad = load;
+      go.onclick = async function () {
+        if (!files.length || !target) return; var fin = busy(go, 'Converting…'); results.clear();
+        try {
+          var out = await window.MGDocConv.convert(files, target, { combine: comb.checked, progress: function (v) { prog.textContent = 'Converting… ' + Math.round(v * 100) + '%'; } });
+          out.forEach(function (o) { results.add(o.name, o.blob, o.note); }); prog.textContent = out.length + ' file(s) ready — tap Download.'; done();
+        } catch (e) { prog.textContent = ''; notify(e.message || 'Could not convert this file.', 'Converter'); }
+        fin();
+      };
+      [label, info, opts, combRow, go, prog, host].forEach(function (n) { card.appendChild(n); });
+    });
+
+  addTool('pdflock', 'PDF Locker – Add Password to PDF', 'PDF Locker',
+    ICON('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.2"/>'),
+    'Protect a PDF with a password so only people who know it can open it. Optionally block printing, copying and editing. Your file never leaves your device.',
+    function (card) {
+      var files = [];
+      var input = el('input', { type: 'file', id: 'plInput', multiple: 'multiple', accept: 'application/pdf,.pdf', hidden: 'hidden' });
+      var label = el('label', { 'class': 'upload-area', 'for': 'plInput' }, [el('p', { text: 'Click to upload PDF(s) to lock', style: 'font-weight:600' }), input]);
+      var info = el('div', { 'class': 'mgt-note', id: 'plInfo' });
+      var pw = el('input', { type: 'password', id: 'plPass', placeholder: 'Set a password', autocomplete: 'new-password', style: 'margin:8px 0 0' });
+      var pw2 = el('input', { type: 'password', id: 'plPass2', placeholder: 'Repeat the password', autocomplete: 'new-password', style: 'margin:8px 0 0' });
+      var show = el('input', { type: 'checkbox', id: 'plShow', style: 'width:auto;margin:0 6px 0 0', onchange: function () { pw.type = pw2.type = show.checked ? 'text' : 'password'; } });
+      function cb(id, text) { var c = el('input', { type: 'checkbox', id: id, style: 'width:auto;margin:0 6px 0 0' }); return { c: c, row: el('label', { style: 'display:flex;align-items:center;font-size:14px;margin:6px 0' }, [c, text]) }; }
+      var noPrint = cb('plNoPrint', 'Block printing'), noCopy = cb('plNoCopy', 'Block copying text'), noEdit = cb('plNoEdit', 'Block editing & comments');
+      var owner = el('input', { type: 'password', id: 'plOwner', placeholder: 'Owner password (optional, to change these limits later)', autocomplete: 'new-password', style: 'margin:8px 0 0' });
+      var go = el('button', { 'class': 'btn-primary', text: 'Lock PDF', id: 'plGo', style: 'margin-top:12px' });
+      var warn = el('div', { 'class': 'mgt-note', text: 'Keep your password safe. A locked PDF cannot be opened without it, and we cannot recover it for you.' });
+      var host = el('div', { id: 'plOut' }), results = ResultList(host);
+      input.onchange = function () {
+        files = Array.prototype.slice.call(input.files).filter(function (f) { return f.type === 'application/pdf' || /\.pdf$/i.test(f.name); });
+        results.clear(); info.textContent = !files.length ? (input.files.length ? 'Please choose PDF files.' : '') : files.length === 1 ? files[0].name : files.length + ' PDFs selected';
+      };
+      go.onclick = async function () {
+        if (!files.length) { notify('Upload a PDF first.', 'No file'); return; }
+        if (!pw.value) { notify('Type the password you want to set.', 'Password needed'); return; }
+        if (pw.value !== pw2.value) { notify('The two passwords do not match.', 'Check password'); return; }
+        var fin = busy(go, 'Locking…'); results.clear();
+        try {
+          await lazy(['lib-pdfcrypt.js']);
+          var ok = 0;
+          for (var i = 0; i < files.length; i++) {
+            try {
+              var out = await window.MGPdfCrypt.lock(await readBytes(files[i]), { userPassword: pw.value, ownerPassword: owner.value, allow: { print: !noPrint.c.checked, copy: !noCopy.c.checked, modify: !noEdit.c.checked, annotate: !noEdit.c.checked } });
+              results.add(baseName(files[i].name) + '-locked.pdf', new Blob([out], { type: 'application/pdf' }), 'Password protected (AES-128)'); ok++;
+            } catch (e) { notify('"' + files[i].name + '": ' + (e.message || 'could not be locked.'), 'PDF Locker'); }
+          }
+          if (ok) done();
+        } catch (e) { notify(e.message || 'Could not lock the PDF.', 'PDF Locker'); }
+        fin();
+      };
+      [label, info, pw, pw2, el('label', { style: 'display:flex;align-items:center;font-size:13px;margin:8px 0 4px;opacity:.85' }, [show, 'Show password']), noPrint.row, noCopy.row, noEdit.row, owner, go, warn, host].forEach(function (n) { card.appendChild(n); });
     });
 
   /* =================================================================

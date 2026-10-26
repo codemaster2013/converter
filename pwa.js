@@ -26,9 +26,10 @@
 
   /* ---------------- text (English / Hindi / Gujarati) ---------------- */
   var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', vipOnlyTitle: 'Install from the VIP version', vipOnlyBody: "You can't install the app from the main version. Go to the VIP version to install the app. VIP is free.", goVip: 'Go to VIP', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
+    offlineNow: 'You are offline',
     offline: "📡 You're offline — converters still work. Feedback & VIP need internet.", online: '✓ Back online',
     install: '⬇ Install App', iosTip: '📲 Install MG Pro: tap the Share button, then "Add to Home Screen".', gotIt: 'Got it',
-    filesReceived: 'file(s) received', chooseTool: 'What would you like to do?', unsupported: 'Videos and other file types are not supported here. Please share an image or a PDF.',
+    filesReceived: 'file(s) received', chooseTool: 'What would you like to do?', unsupported: 'Videos and other file types are not supported here. Please share an image, a PDF, a Word or PowerPoint file, or a text file.',
     cancel: 'Cancel', menu: 'Quick menu', paste: '📋 Paste image', recent: '🕘 Recent files', noRecent: 'Nothing yet — finished files will appear here.',
     shareLast: '📤 Share last result', saveFolder: '📁 Save folder', folderNone: 'Choose a folder to save results into (desktop)',
     folderUse: 'Saving to: ', folderOff: 'Use normal downloads', folderAllow: 'Allow folder access', storage: '💾 Storage', storageUsing: 'Using',
@@ -38,7 +39,7 @@
     a11y: '♿ Accessibility', textSize: 'Text size', hc: 'High contrast', shortcuts: '⌨ Keyboard shortcuts', privacy: '🔒 Privacy',
     rateQ: '⭐ Enjoying MG Pro? Tell us in 20 seconds.', rate: 'Rate us', later: 'Later', fav: '★ Favourites', build: 'Build', queued: 'Saved offline — it will be sent when you are back online.' };
   var I18N = {
-    hi: { update: '🔄 नया संस्करण तैयार है', refresh: 'रीफ़्रेश', offline: '📡 आप ऑफ़लाइन हैं — कन्वर्टर चलते रहेंगे। फ़ीडबैक और VIP के लिए इंटरनेट चाहिए।',
+    hi: { update: '🔄 नया संस्करण तैयार है', refresh: 'रीफ़्रेश', offlineNow: 'आप ऑफ़लाइन हैं', offline: '📡 आप ऑफ़लाइन हैं — कन्वर्टर चलते रहेंगे। फ़ीडबैक और VIP के लिए इंटरनेट चाहिए।',
       online: '✓ फिर से ऑनलाइन', install: '⬇ ऐप इंस्टॉल करें', iosTip: '📲 MG Pro इंस्टॉल करें: Share बटन दबाएँ, फिर "Add to Home Screen" चुनें।', gotIt: 'ठीक है',
       filesReceived: 'फ़ाइल मिलीं', chooseTool: 'आप क्या करना चाहेंगे?', unsupported: 'ये फ़ाइल प्रकार समर्थित नहीं हैं (इमेज या PDF उपयोग करें)।', cancel: 'रद्द करें',
       menu: 'क्विक मेन्यू', paste: '📋 इमेज पेस्ट करें', recent: '🕘 हाल की फ़ाइलें', noRecent: 'अभी कुछ नहीं — तैयार फ़ाइलें यहाँ दिखेंगी।',
@@ -47,7 +48,7 @@
       offlineNot: 'अभी कैश नहीं — साइट एक बार ऑनलाइन खोलें', clearCache: 'कैश साफ़ करें', cleared: 'कैश साफ़ हो गया', shareBtn: 'शेयर', saved: 'सेव हुई',
       pasteNone: 'क्लिपबोर्ड में इमेज नहीं मिली।', dropHint: 'खोलने के लिए फ़ाइलें यहाँ छोड़ें', close: 'बंद करें', savedToFolder: 'आपके फ़ोल्डर में सेव हुई',
       queued: 'ऑफ़लाइन सेव हुआ — इंटरनेट आते ही भेजा जाएगा।' },
-    gu: { update: '🔄 નવી આવૃત્તિ તૈયાર છે', refresh: 'રીફ્રેશ', offline: '📡 તમે ઑફલાઇન છો — કન્વર્ટર ચાલુ રહેશે. ફીડબેક અને VIP માટે ઇન્ટરનેટ જોઈએ.',
+    gu: { update: '🔄 નવી આવૃત્તિ તૈયાર છે', refresh: 'રીફ્રેશ', offlineNow: 'તમે ઑફલાઇન છો', offline: '📡 તમે ઑફલાઇન છો — કન્વર્ટર ચાલુ રહેશે. ફીડબેક અને VIP માટે ઇન્ટરનેટ જોઈએ.',
       online: '✓ ફરી ઑનલાઇન', install: '⬇ એપ ઇન્સ્ટોલ કરો', iosTip: '📲 MG Pro ઇન્સ્ટોલ કરો: Share બટન દબાવો, પછી "Add to Home Screen" પસંદ કરો.', gotIt: 'બરાબર',
       filesReceived: 'ફાઇલ મળી', chooseTool: 'તમે શું કરવા માંગો છો?', unsupported: 'આ ફાઇલ પ્રકાર સપોર્ટેડ નથી (ઇમેજ અથવા PDF વાપરો).', cancel: 'રદ કરો',
       menu: 'ક્વિક મેનૂ', paste: '📋 ઇમેજ પેસ્ટ કરો', recent: '🕘 તાજેતરની ફાઇલો', noRecent: 'હજી કંઈ નથી — તૈયાર ફાઇલો અહીં દેખાશે.',
@@ -292,6 +293,8 @@
   var OFFLINE_LAZY = {                       // files a tool downloads on first use (an inner list means "any one of these")
     ocr: ['lib-tesseract.min.js', 'eng.traineddata.gz', ['tesseract-core-lstm.wasm.js', 'tesseract-core-simd-lstm.wasm.js']],
     heic2jpg: ['lib-heic2any.min.js'],
+    pdfconv: ['lib-docconv.js'],
+    pdflock: ['lib-pdfcrypt.js'],
     qrscan: ['lib-jsqr.js']
   };
   function cached(file) {
@@ -310,31 +313,54 @@
     var m = /toolTabClick\(this,\s*'([a-z0-9]+)'/i.exec(el.getAttribute('onclick') || '');
     return m ? m[1] : '';
   }
+  function ensureOfflineCss() {
+    if (offlineDotCss) return;
+    offlineDotCss = true;
+    var st = document.createElement('style');
+    st.textContent = '.mg-off-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;vertical-align:middle;flex:none}' +
+      'a.tool-chip .mg-off-dot{position:absolute;top:7px;left:8px;margin:0}' +
+      '.mg-off-ok{background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.25)}.mg-off-once{background:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.25)}' +
+      '.mg-off-legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:8px 0;font:500 11px Poppins,Inter,system-ui,sans-serif;opacity:.8}' +
+      '.mg-off-legend span{display:inline-flex;align-items:center}.mg-off-legend .mg-off-dot{position:static;margin:0 6px 0 0}' +
+      '.mg-off-red{background:#ef4444;box-shadow:0 0 6px 2px rgba(239,68,68,.75),0 0 14px 4px rgba(239,68,68,.45);animation:mgRedGlow 1.4s ease-in-out infinite}' +
+      '@keyframes mgRedGlow{0%,100%{box-shadow:0 0 4px 1px rgba(239,68,68,.65),0 0 10px 3px rgba(239,68,68,.35)}50%{box-shadow:0 0 9px 3px rgba(239,68,68,.95),0 0 20px 7px rgba(239,68,68,.55)}}' +
+      '#mg-off-now{opacity:1;color:#fca5a5;font-weight:600}' +
+      '.mg-off-dim{opacity:.5}';
+    document.head.appendChild(st);
+  }
+  function ensureLegend(items) {
+    ensureOfflineCss();
+    items = items || [].slice.call(document.querySelectorAll('a.tool-chip, button.tool-tab:not(.more-tab)'));
+    var lg = document.getElementById('mg-off-legend');
+    if (!lg && items.length && items[0].parentNode && items[0].parentNode.parentNode) {
+      lg = document.createElement('div'); lg.id = 'mg-off-legend'; lg.className = 'mg-off-legend';
+      lg.innerHTML = '<span><i class="mg-off-dot mg-off-ok"></i></span><span><i class="mg-off-dot mg-off-once"></i></span>';
+      lg.children[0].appendChild(document.createTextNode(t('offlineOk')));
+      lg.children[1].appendChild(document.createTextNode(t('offlineOnce')));
+      items[0].parentNode.parentNode.insertBefore(lg, items[0].parentNode);
+    }
+    return lg;
+  }
+  /* red glowing "You are offline" marker – shown right after "Works offline" while offline, removed when back online */
+  function syncOfflineMarker() {
+    var off = navigator.onLine === false;
+    var cur = document.getElementById('mg-off-now');
+    if (!off) { if (cur) cur.remove(); return; }
+    if (cur) return;
+    var lg = ensureLegend(); if (!lg) return;
+    var sp = document.createElement('span'); sp.id = 'mg-off-now';
+    sp.innerHTML = '<i class="mg-off-dot mg-off-red"></i>';
+    sp.appendChild(document.createTextNode(t('offlineNow')));
+    lg.insertBefore(sp, lg.children[1] || null);
+  }
   function refreshOfflineBadges() {
     if (!window.caches) return;
     var items = [].slice.call(document.querySelectorAll('a.tool-chip, button.tool-tab:not(.more-tab)'));
     if (!items.length) return;
+    syncOfflineMarker();
     cached('lib-pdf-lib.min.js').then(function (core) {
       if (!core) return;                                          // app files not stored yet (first visit) – show nothing rather than guess
-      if (!offlineDotCss) {
-        offlineDotCss = true;
-        var st = document.createElement('style');
-        st.textContent = '.mg-off-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;vertical-align:middle;flex:none}' +
-          'a.tool-chip .mg-off-dot{position:absolute;top:7px;left:8px;margin:0}' +
-          '.mg-off-ok{background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.25)}.mg-off-once{background:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.25)}' +
-          '.mg-off-legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:8px 0;font:500 11px Poppins,Inter,system-ui,sans-serif;opacity:.8}' +
-          '.mg-off-legend span{display:inline-flex;align-items:center}.mg-off-legend .mg-off-dot{position:static;margin:0 6px 0 0}' +
-          '.mg-off-dim{opacity:.5}';
-        document.head.appendChild(st);
-      }
-      var first = items[0];
-      if (!document.getElementById('mg-off-legend') && first.parentNode) {
-        var lg = document.createElement('div'); lg.id = 'mg-off-legend'; lg.className = 'mg-off-legend';
-        lg.innerHTML = '<span><i class="mg-off-dot mg-off-ok"></i></span><span><i class="mg-off-dot mg-off-once"></i></span>';
-        lg.children[0].appendChild(document.createTextNode(t('offlineOk')));
-        lg.children[1].appendChild(document.createTextNode(t('offlineOnce')));
-        first.parentNode.parentNode.insertBefore(lg, first.parentNode);
-      }
+      ensureLegend(items);
       items.forEach(function (el) {
         var key = offlineKeyOf(el); if (!key) return;
         var need = OFFLINE_LAZY[key];
@@ -348,7 +374,7 @@
       });
     });
   }
-  window.addEventListener('load', function () { setTimeout(refreshOfflineBadges, 1500); setTimeout(refreshOfflineBadges, 6000); });
+  window.addEventListener('load', function () { setTimeout(syncOfflineMarker, 300); setTimeout(refreshOfflineBadges, 1500); setTimeout(refreshOfflineBadges, 6000); });
   window.addEventListener('online', refreshOfflineBadges);
   window.addEventListener('offline', refreshOfflineBadges);
   if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('controllerchange', function () { setTimeout(refreshOfflineBadges, 2500); });
@@ -360,11 +386,19 @@
   var offTimer;
   window.addEventListener('offline', function () {
     clearTimeout(offTimer);
-    onReady(function () { makeBar('mg-offline-bar', t('offline'), '#b45309', 'top'); });
+    onReady(function () {
+      makeBar('mg-offline-bar', t('offline'), '#b45309', 'top');
+      offTimer = setTimeout(function () { removeEl('mg-offline-bar'); }, 4000);   // notice stays 4 seconds only
+      syncOfflineMarker();                                                       // red glowing dot stays while offline
+    });
   });
   window.addEventListener('online', function () {
     clearTimeout(offTimer);
-    onReady(function () { makeBar('mg-offline-bar', t('online'), '#15803d', 'top'); offTimer = setTimeout(function () { removeEl('mg-offline-bar'); }, 2500); });
+    onReady(function () {
+      makeBar('mg-offline-bar', t('online'), '#15803d', 'top');
+      offTimer = setTimeout(function () { removeEl('mg-offline-bar'); }, 4000);
+      syncOfflineMarker();                                                       // removes the red dot
+    });
   });
   onReady(function () { if (navigator.onLine === false) window.dispatchEvent(new Event('offline')); });
 
@@ -557,6 +591,10 @@
   var isHeic = function (f) { return /image\/hei[cf]/i.test(f.type) || /\.hei[cf]$/i.test(f.name); };
   var isPdf = function (f) { return f.type === 'application/pdf' || /\.pdf$/i.test(f.name); };
   var isImg = function (f) { return /^image\//i.test(f.type) && !isHeic(f); };
+  var isDocx = function (f) { return /\.(docx|docm|dotx)$/i.test(f.name) || /wordprocessingml/i.test(f.type); };
+  var isPptx = function (f) { return /\.(pptx|pptm|ppsx)$/i.test(f.name) || /presentationml/i.test(f.type); };
+  var isTextDoc = function (f) { return /\.(txt|md|log|html?)$/i.test(f.name) || /^text\/(plain|html)$/i.test(f.type); };
+  var isConvertible = function (f) { return isPdf(f) || isDocx(f) || isPptx(f) || isImg(f) || isTextDoc(f); };
   var TOOLS = [
     { id: 'converter', name: 'Image Converter',     input: 'imgInput',      multi: true,  test: isImg },
     { id: 'pdf',       name: 'Image to PDF',        input: 'pdfImgs',       multi: true,  test: isImg },
@@ -570,7 +608,9 @@
     { id: 'pagetools', name: 'PDF Page Tools',      input: 'ptInput',       multi: false, test: isPdf },
     { id: 'signpdf',   name: 'Sign PDF',            input: 'sgInput',       multi: false, test: isPdf },
     { id: 'exif',      name: 'Remove Photo Location', input: 'exInput',     multi: true,  test: isImg },
-    { id: 'qrscan',    name: 'QR Code Scanner',     input: 'qsInput',       multi: false, test: isImg }
+    { id: 'qrscan',    name: 'QR Code Scanner',     input: 'qsInput',       multi: false, test: isImg },
+    { id: 'pdfconv',   name: 'PDF Converter',       input: 'pcInput',       multi: true,  test: isConvertible },
+    { id: 'pdflock',   name: 'PDF Locker',          input: 'plInput',       multi: true,  test: isPdf }
   ];
   function scrollToTool(id) { var s = document.getElementById(id); if (s && s.scrollIntoView) s.scrollIntoView({ block: 'start' }); }
   function applyTool(tool, files) {
@@ -610,6 +650,7 @@
   function offerFiles(files) {
     if (!files || !files.length) return;
     var options = TOOLS.filter(function (tl) { return document.getElementById(tl.input) && files.some(tl.test); });
+    var pri = { pdfconv: 0 }; options.sort(function (a, b) { return (pri[a.id] != null ? pri[a.id] : 5) - (pri[b.id] != null ? pri[b.id] : 5); });
     var s = sheet('mg-share-modal');
     line(s.box, files.length + ' ' + t('filesReceived'), 'font-size:16px;font-weight:700;margin-bottom:4px;');
     line(s.box, options.length ? t('chooseTool') : t('unsupported'), 'font-size:13px;color:#9ca3af;margin-bottom:14px;font-weight:400;');

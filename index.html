@@ -2581,7 +2581,8 @@ html, body { overflow-x: hidden; }
     .theme-card { flex: 1 1 45%; }
 }
 
-    </style>
+    html.is-pwa .mg-browser-only{display:none !important}
+</style>
 <!-- PWA / icons -->
 <link rel="icon" href="favicon.ico?v=3">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=3">
@@ -2960,7 +2961,7 @@ if(update !== updatesArray[updatesArray.length - 1]){
 </nav>
 
 <div class="container">
-    <div class="badge">PRO v1.2.0 • Browser & PC-Only</div>
+    <div class="badge">PRO v1.2.0<span class="mg-browser-only"> • Browser & PC-Only</span></div>
 
     <h1 class="hero-title">
     One Tool.<br>Master Your Media.
@@ -4026,7 +4027,7 @@ async function processOCR() {
         let extractedText = "";
 
         if (file.type === "application/pdf") {
-            const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+            const pdf = await pdfjsLib.getDocument({ isEvalSupported: false, data: await file.arrayBuffer() }).promise;
             for (let i = 1; i <= pdf.numPages; i++) {
                 done.update(`Scanning page ${i} of ${pdf.numPages}...`);
                 const page = await pdf.getPage(i);
@@ -4429,7 +4430,7 @@ async function removePassword() {
 
         // Step 1: try without a password first
         try {
-            pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+            pdf = await pdfjsLib.getDocument({ isEvalSupported: false, data: arrayBuffer.slice(0) }).promise;
             // opened with no password => the file is not locked
             status.style.color = "#a78bfa";
             status.innerHTML = "<strong>Notice:</strong> This PDF is already unlocked and does not contain a password.";
@@ -4442,7 +4443,7 @@ async function removePassword() {
                     return;
                 }
                 done.update("Unlocking...");
-                pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0), password: password }).promise;
+                pdf = await pdfjsLib.getDocument({ isEvalSupported: false, data: arrayBuffer.slice(0), password: password }).promise;
             } else {
                 throw err;
             }
@@ -4871,7 +4872,7 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
                 return;
             }
             var pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
-            return pdfjsLib.getDocument({ data: buf }).promise.then(function(pdf) {
+            return pdfjsLib.getDocument({ isEvalSupported: false, data: buf }).promise.then(function(pdf) {
                 prPDFDoc = pdf;
                 prCurrentFileName = item.name;
                 prCurrentPage = Math.min(item.page, prPDFDoc.numPages);
@@ -4902,7 +4903,7 @@ function resumeReading(i) { if (window._resumeReading) window._resumeReading(i);
             savePDFData(file.name, saveBuf);
 
             var pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
-            return pdfjsLib.getDocument({ data: loadBuf }).promise;
+            return pdfjsLib.getDocument({ isEvalSupported: false, data: loadBuf }).promise;
         }).then(function(pdf) {
             prPDFDoc = pdf;
             prScale = 1.0;
