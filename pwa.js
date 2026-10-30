@@ -25,7 +25,7 @@
   function platformName() { return /android/i.test(navigator.userAgent) ? 'android' : (isIOS ? 'ios' : 'desktop'); }
 
   /* ---------------- text (English / Hindi / Gujarati) ---------------- */
-  var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', vipOnlyTitle: 'Install from the VIP version', vipOnlyBody: "You can't install the app from the main version. Go to the VIP version to install the app. VIP is free.", goVip: 'Go to VIP', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
+  var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', vipOnlyTitle: 'Install from the VIP version', vipOnlyBody: "You can't install the app from the main version. Go to the VIP version to install the app. VIP is free.", goVip: 'Go to VIP', disclaimerLead: 'Before downloading, read this disclaimer:', disclaimerNote: 'We are not responsible if you download or install without reading it.', continueDownload: 'Continue to Download', cancelDownload: 'Cancel', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
     offlineNow: 'You are offline',
     offline: "📡 You're offline — converters still work. Feedback & VIP need internet.", online: '✓ Back online',
     install: '⬇ Install App', iosTip: '📲 Install MG Pro: tap the Share button, then "Add to Home Screen".', gotIt: 'Got it',
@@ -442,8 +442,7 @@
   window.mgInstallApp = function () {
     if (!isVipPage) { showVipInstallNotice(); return; }
     if (!deferred) return;
-    deferred.prompt();
-    deferred.userChoice.finally(function () { deferred = null; removeInstallBtn(); });
+    showInstallDisclaimer();     // the disclaimer is shown before the browser's install prompt
   };
   function maybeShowInstall() {
     if (!isVipPage || !deferred || installBtn || standalone || !document.body) return;
@@ -640,10 +639,123 @@
       (ghost ? 'color:#9ca3af;background:rgba(255,255,255,.06);' : 'color:#fff;background:linear-gradient(135deg,#a855f7,#6366f1);') + FONT;
     b.onclick = fn; box.appendChild(b); return b;
   }
+  var DISCLAIMER_URL = 'https://codemaster2013.github.io/converter/disclaimer.html';   // the full disclaimer page (disclaimer.html in the repo)
+  function addDisclaimer(box) {
+    var d = document.createElement('div');
+    d.style.cssText = 'font-size:13px;line-height:1.5;color:#fde68a;background:rgba(251,191,36,.10);border:1px solid rgba(251,191,36,.35);border-radius:12px;padding:10px 12px;margin-bottom:16px;font-weight:400;';
+    d.appendChild(document.createTextNode('\u26A0\uFE0F ' + t('disclaimerLead') + ' '));
+    var a = document.createElement('a');
+    a.href = DISCLAIMER_URL; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = DISCLAIMER_URL.replace('https://', '');
+    a.style.cssText = 'color:#c4b5fd;text-decoration:underline;word-break:break-all;';
+    d.appendChild(a);
+    var n = document.createElement('div'); n.style.cssText = 'margin-top:6px;font-weight:600;'; n.textContent = t('disclaimerNote'); d.appendChild(n);
+    box.appendChild(d); return d;
+  }
+  function startInstall() {
+    if (!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.finally(function () { deferred = null; removeInstallBtn(); });
+  }
+  /* ---- APK / install disclaimer: shown before EVERY website-controlled install or download action ----
+     Cancel, Esc, the backdrop and the close cross all cancel: nothing starts. "Continue to Download" runs the ORIGINAL action (onContinue,
+     or the browser's install prompt), exactly once. */
+  var SITE_URL = 'https://codemaster2013.github.io/converter/';
+  var REPO_URL = 'https://github.com/codemaster2013/converter';
+  var RELEASES_URL = REPO_URL + '/releases';
+  var dlOpen = false;
+  function dlStyle() {
+    if (document.getElementById('mg-dl-style')) return;
+    var s = document.createElement('style'); s.id = 'mg-dl-style';
+    s.textContent =
+      '.mgdl-ov{position:fixed;inset:0;z-index:100004;background:rgba(0,0,0,.72);display:flex;align-items:flex-end;justify-content:center;padding:12px;overscroll-behavior:contain;' + FONT + '}' +
+      '.mgdl-box{display:flex;flex-direction:column;width:100%;max-width:580px;max-height:90vh;max-height:90dvh;background:#0c1326;color:#e5e7eb;border:1px solid rgba(255,255,255,.12);border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.6);outline:none;overflow:hidden;}' +
+      '.mgdl-head{display:flex;align-items:flex-start;gap:10px;padding:18px 18px 10px;}' +
+      '.mgdl-title{flex:1;margin:0;font-size:17px;line-height:1.35;font-weight:700;}' +
+      '.mgdl-x{all:unset;box-sizing:border-box;cursor:pointer;width:36px;height:36px;line-height:36px;text-align:center;border-radius:10px;color:#9ca3af;background:rgba(255,255,255,.06);flex:none;}' +
+      '.mgdl-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 18px 12px;font-weight:400;font-size:14px;line-height:1.6;color:#cbd5e1;}' +
+      '.mgdl-body h3{margin:16px 0 4px;font-size:14px;font-weight:700;color:#c4b5fd;}' +
+      '.mgdl-body p{margin:6px 0;}' +
+      '.mgdl-body a{color:#c4b5fd;text-decoration:underline;word-break:break-all;}' +
+      '.mgdl-foot{display:flex;gap:10px;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.10);}' +
+      '.mgdl-btn{all:unset;box-sizing:border-box;flex:1;min-height:46px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;padding:10px 12px;border-radius:14px;' + FONT + '}' +
+      '.mgdl-cancel{color:#e5e7eb;background:rgba(255,255,255,.08);}' +
+      '.mgdl-go{color:#fff;background:linear-gradient(135deg,#a855f7,#6366f1);}' +
+      '.mgdl-btn[disabled]{opacity:.6;cursor:default;}' +
+      '.mgdl-btn:focus-visible,.mgdl-x:focus-visible,.mgdl-body a:focus-visible{outline:2px solid #c4b5fd;outline-offset:2px;}' +
+      '@media (min-width:640px){.mgdl-ov{align-items:center;padding:24px}.mgdl-box{max-height:85vh;max-height:85dvh}}' +
+      '@media (max-width:360px){.mgdl-foot{flex-direction:column-reverse}}';
+    document.head.appendChild(s);
+  }
+  function showInstallDisclaimer(onContinue) {
+    if (dlOpen || !document.body) return;            // one dialog at a time: repeated taps cannot stack dialogs or trigger twice
+    dlOpen = true; dlStyle();
+    var prev = document.activeElement, closed = false;
+    function mk(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+    function link(href, label) { var a = mk('a', '', label || href); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; }
+    function para(text, href) { var p = mk('p', '', text); if (href) { p.appendChild(document.createElement('br')); p.appendChild(link(href)); } return p; }
+
+    var ov = mk('div', 'mgdl-ov'); ov.id = 'mg-install-disclaimer';
+    var box = mk('div', 'mgdl-box'); box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.tabIndex = -1;
+    box.setAttribute('aria-labelledby', 'mgdl-title'); box.setAttribute('aria-describedby', 'mgdl-body');
+
+    var head = mk('div', 'mgdl-head');
+    var title = mk('h2', 'mgdl-title', 'MediaGrabber Pro \u2014 APK Download Disclaimer'); title.id = 'mgdl-title';
+    var x = mk('button', 'mgdl-x', '\u2715'); x.type = 'button'; x.setAttribute('aria-label', t('close'));
+    head.appendChild(title); head.appendChild(x);
+
+    var body = mk('div', 'mgdl-body'); body.id = 'mgdl-body'; body.tabIndex = 0;
+    body.appendChild(mk('h3', '', 'Recommended: Use the Official Website'));
+    body.appendChild(para('You can use MediaGrabber Pro directly in your browser without installing an application. The website provides access to its available tools without requiring an APK download.'));
+    body.appendChild(para('Official website:', SITE_URL));
+    body.appendChild(mk('h3', '', 'Downloading the APK'));
+    body.appendChild(para('If you choose to install the Android application, obtain it only from the official GitHub repository\u2019s Releases page or another download location explicitly verified as official by the project owner.'));
+    body.appendChild(para('Official GitHub repository:', REPO_URL));
+    body.appendChild(para('Official Releases page:', RELEASES_URL));
+    body.appendChild(mk('h3', '', 'Important Safety Notice'));
+    body.appendChild(para('An APK downloaded from an unofficial website, third-party platform, modified application package, or unverified source may contain unwanted or harmful software. The project owner cannot guarantee the authenticity, integrity, security, or safety of APK files obtained from sources outside their control.'));
+    body.appendChild(para('Downloading an APK from an official project page does not, by itself, guarantee that the file is free from security vulnerabilities or other risks. Users should verify the source and review the available release information before installing the application.'));
+    body.appendChild(para('The project owner is not responsible for issues arising from unofficial, modified, tampered-with, or independently redistributed APK files, including data loss, device damage, security incidents, or other consequences, to the extent permitted by applicable law.'));
+    body.appendChild(para('Please review this notice before proceeding with the download.'));
+    addDisclaimer(body).style.marginTop = '14px';    // link to the full disclaimer page (disclaimer.html)
+
+    var foot = mk('div', 'mgdl-foot');
+    var cancel = mk('button', 'mgdl-btn mgdl-cancel', t('cancelDownload')); cancel.type = 'button';
+    var go = mk('button', 'mgdl-btn mgdl-go', t('continueDownload')); go.type = 'button';
+    foot.appendChild(cancel); foot.appendChild(go);
+
+    box.appendChild(head); box.appendChild(body); box.appendChild(foot); ov.appendChild(box);
+
+    function finish(proceed) {
+      if (closed) return; closed = true;               // a second click / key press can never run the action twice
+      go.disabled = true; cancel.disabled = true;
+      document.removeEventListener('keydown', onKey, true);
+      ov.remove(); dlOpen = false;
+      try { if (prev && prev.focus && document.contains(prev)) prev.focus(); } catch (e) {}
+      if (proceed) (onContinue || startInstall)();     // the original install / download action, unchanged
+    }
+    function onKey(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); e.stopPropagation(); finish(false); return; }
+      if (e.key !== 'Tab') return;
+      var f = Array.prototype.slice.call(box.querySelectorAll('a[href],button:not([disabled]),[tabindex="0"]'));
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1], a = document.activeElement;
+      if (!box.contains(a) || a === box) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+      else if (e.shiftKey && a === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus(); }
+    }
+    cancel.onclick = function () { finish(false); };
+    x.onclick = function () { finish(false); };
+    go.onclick = function () { finish(true); };
+    ov.addEventListener('click', function (e) { if (e.target === ov) finish(false); });   // tapping outside = cancel
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(ov);
+    box.focus();
+  }
   function showVipInstallNotice() {
     var s2 = sheet('mg-vip-install');
     line(s2.box, '\u{1F451} ' + t('vipOnlyTitle'), 'font-size:16px;font-weight:700;margin-bottom:8px;');
-    line(s2.box, t('vipOnlyBody'), 'font-size:14px;line-height:1.5;color:#cbd5e1;margin-bottom:16px;font-weight:400;');
+    line(s2.box, t('vipOnlyBody'), 'font-size:14px;line-height:1.5;color:#cbd5e1;margin-bottom:12px;font-weight:400;');
+    addDisclaimer(s2.box);
     sbtn(s2.box, t('goVip'), function () { s2.ov.remove(); if (typeof window.launchVipLoader === 'function') window.launchVipLoader(); else window.location.href = 'index (3).html'; });
     sbtn(s2.box, t('close'), function () { s2.ov.remove(); }, true);
   }
@@ -735,7 +847,7 @@
     sbtn(box, '🎨 App icon', function () { s.ov.remove(); if (window.mgAppIcon) window.mgAppIcon.open(); });
     if (showUpdateButtons()) sbtn(box, '↻ ' + t('updateAvail') + ' · ' + t('updateNow'), function () { applyUpdate(); });
     sbtn(box, t('paste'), function () { s.ov.remove(); pasteFromClipboard(); });
-    if (!standalone) sbtn(box, '📲 ' + t('installApp'), function () { s.ov.remove(); if (!isVipPage) { showVipInstallNotice(); return; } if (deferred) window.mgInstallApp(); else toast(isIOS ? t('installHow').replace('Install app', 'Share → Add to Home Screen') : t('installHow')); });
+    if (!standalone) sbtn(box, '📲 ' + t('installApp'), function () { s.ov.remove(); if (!isVipPage) { showVipInstallNotice(); return; } showInstallDisclaimer(function () { if (deferred) startInstall(); else toast(isIOS ? t('installHow').replace('Install app', 'Share → Add to Home Screen') : t('installHow')); }); });
     if (lastResult && canShareFile(new File([lastResult.blob], lastResult.name))) sbtn(box, t('shareLast') + ' (' + lastResult.name + ')', function () { s.ov.remove(); shareLast(); });
     if (typeof window.JSZip !== 'undefined') toggleBtn(box, batch.on, t('batchOff'), t('batchOn'), function () { batch.on = !batch.on; lsSet('mg_batch', batch.on ? '1' : '0'); reopen(); });
 
