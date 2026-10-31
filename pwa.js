@@ -25,7 +25,7 @@
   function platformName() { return /android/i.test(navigator.userAgent) ? 'android' : (isIOS ? 'ios' : 'desktop'); }
 
   /* ---------------- text (English / Hindi / Gujarati) ---------------- */
-  var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', vipOnlyTitle: 'Install from the VIP version', vipOnlyBody: "You can't install the app from the main version. Go to the VIP version to install the app. VIP is free.", goVip: 'Go to VIP', disclaimerLead: 'Before downloading, read this disclaimer:', disclaimerNote: 'We are not responsible if you download or install without reading it.', continueDownload: 'Continue to Download', cancelDownload: 'Cancel', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
+  var EN = { update: '🔄 New version ready', refresh: 'Update', updateNow: 'Update', offlineOk: 'Works offline', offlineOnce: 'Needs internet once', offlineOnceLong: 'Needs internet the first time you use it, then works offline', updateAvail: 'Update available', fetching: 'Fetching files to update…', installing: 'Installing update…', installApp: 'Install app', vipOnlyTitle: 'Install from the VIP version', vipOnlyBody: "You can't install the app from the main version. Go to the VIP version to install the app. VIP is free.", goVip: 'Go to VIP', disclaimerLead: 'Before downloading, read this disclaimer:', disclaimerNote: 'We are not responsible for any consequences if you download or install the app without reading this disclaimer.', continueDownload: 'Continue to Download', cancelDownload: 'Cancel', clearRecent: 'Clear recent files', installHow: 'Open your browser menu and choose “Install app” or “Add to Home screen”.', updating: 'Updating…',
     offlineNow: 'You are offline',
     offline: "📡 You're offline — converters still work. Feedback & VIP need internet.", online: '✓ Back online',
     install: '⬇ Install App', iosTip: '📲 Install MG Pro: tap the Share button, then "Add to Home Screen".', gotIt: 'Got it',
@@ -743,9 +743,18 @@
       else if (e.shiftKey && a === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus(); }
     }
+    // "Continue to Download" stays disabled until the whole disclaimer has been scrolled through
+    var hint = mk('div', '', 'Scroll to the bottom of the disclaimer to enable \u201CContinue to Download\u201D.');
+    hint.style.cssText = 'font-size:12px;color:#fbbf24;padding:0 18px 8px;font-weight:400;'; hint.id = 'mgdl-hint';
+    box.insertBefore(hint, foot);
+    function unlock() { if (!go.disabled || closed) return; go.disabled = false; go.removeAttribute('aria-disabled'); hint.style.display = 'none'; }
+    function checkEnd() { if (body.scrollTop + body.clientHeight >= body.scrollHeight - 4) unlock(); }
+    go.disabled = true; go.setAttribute('aria-disabled', 'true');
+    body.addEventListener('scroll', checkEnd);
+    setTimeout(checkEnd, 0); setTimeout(checkEnd, 300);      // short text that fits without scrolling unlocks immediately
     cancel.onclick = function () { finish(false); };
     x.onclick = function () { finish(false); };
-    go.onclick = function () { finish(true); };
+    go.onclick = function () { if (go.disabled) return; finish(true); };
     ov.addEventListener('click', function (e) { if (e.target === ov) finish(false); });   // tapping outside = cancel
     document.addEventListener('keydown', onKey, true);
     document.body.appendChild(ov);
