@@ -55,12 +55,14 @@ jobs:
                   continue
               s = io.open(path, encoding='utf-8').read()
               if 'mg-maint-guard.js' in s:
-                  print(path, 'already patched'); continue
+                  print(path, 'already patched')
+                  continue
               m = (re.search(r'<meta http-equiv="Content-Security-Policy"[^>]*>', s)
                    or re.search(r'<meta charset="[^"]*">', s)
                    or re.search(r'<head[^>]*>', s))
               if not m:
-                  print(path, 'no anchor, skipped'); continue
+                  print(path, 'no anchor, skipped')
+                  continue
               s = s[:m.end()] + '\n' + GUARD + s[m.end():]
               io.open(path, 'w', encoding='utf-8').write(s)
               print(path, 'patched')
@@ -73,23 +75,27 @@ jobs:
           p = 'pwa.js'
           s = io.open(p, encoding='utf-8').read()
           if 'frozen maintenance screen' in s:
-              print('pwa.js already patched'); raise SystemExit(0)
+              print('pwa.js already patched')
+              raise SystemExit(0)
           old = "  function show(msg, cfg) {\n    wanted = true; lastMsg = msg; lastCfg = cfg;"
-          new = old + """
-
-    /* The frozen maintenance screen is the single visitor-facing experience.
-       Hand off to it instead of painting the legacy overlay, so every page
-       that loads pwa.js (app, VIP/checkout, tools) shows the same screen. */
-    try {
-      var here = String(location.pathname).split('/').pop().toLowerCase();
-      if (here !== 'maintenance.html') {
-        var dir = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1) || '/';
-        location.replace(dir + 'maintenance.html');
-        return;
-      }
-    } catch (e) {}"""
+          lines = [
+              "",
+              "    /* The frozen maintenance screen is the single visitor-facing experience.",
+              "       Hand off to it instead of painting the legacy overlay, so every page",
+              "       that loads pwa.js (app, VIP/checkout, tools) shows the same screen. */",
+              "    try {",
+              "      var here = String(location.pathname).split('/').pop().toLowerCase();",
+              "      if (here !== 'maintenance.html') {",
+              "        var dir = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1) || '/';",
+              "        location.replace(dir + 'maintenance.html');",
+              "        return;",
+              "      }",
+              "    } catch (e) {}",
+          ]
+          new = old + "\n".join(lines)
           if old not in s:
-              print('pwa.js anchor missing'); raise SystemExit(1)
+              print('pwa.js anchor missing')
+              raise SystemExit(1)
           io.open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
           print('pwa.js patched')
           PY
@@ -115,6 +121,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "nothing to commit"
           else
-            git commit -m "feat(maintenance): one-click control + pre-paywall guard [skip ci]"
+            git commit -m "feat(maintenance): one-click control + pre-paywall guard"
             git push origin HEAD:main
           fi
