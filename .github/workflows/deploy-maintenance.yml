@@ -1,7 +1,8 @@
 name: Deploy maintenance control
 
-# Self-hosts the two latin font subsets, patches every entry page with the
-# pre-paywall guard, and points the legacy overlay at the frozen screen.
+# Self-hosts the two latin font subsets and patches every entry page with the
+# pre-paywall guard. The guard owns the maintenance redirect; the legacy overlay
+# must never redirect (a second redirector caused the refresh loop).
 # Idempotent: re-running changes nothing.
 
 on:
@@ -77,36 +78,19 @@ jobs:
               print(path, 'patched')
           PY
 
-      - name: Point the legacy overlay at the frozen screen
+      - name: Ensure the legacy overlay never redirects
         run: |
           python3 - <<'PY'
           import io
           p = 'pwa.js'
           s = io.open(p, encoding='utf-8').read()
-          if 'frozen maintenance screen' in s:
-              print('pwa.js already patched')
-              raise SystemExit(0)
-          old = "  function show(msg, cfg) {\n    wanted = true; lastMsg = msg; lastCfg = cfg;"
-          lines = [
-              "",
-              "    /* The frozen maintenance screen is the single visitor-facing experience.",
-              "       Hand off to it instead of painting the legacy overlay, so every page",
-              "       that loads pwa.js (app, VIP/checkout, tools) shows the same screen. */",
-              "    try {",
-              "      var here = String(location.pathname).split('/').pop().toLowerCase();",
-              "      if (here !== 'maintenance.html') {",
-              "        var dir = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1) || '/';",
-              "        location.replace(dir + 'maintenance.html');",
-              "        return;",
-              "      }",
-              "    } catch (e) {}",
-          ]
-          new = old + "\n".join(lines)
-          if old not in s:
-              print('pwa.js anchor missing')
+          # The pre-paywall guard (mg-maint-guard.js) owns the redirect. A second
+          # redirector in pwa.js raced the guard and produced the refresh loop, so
+          # it must stay removed. This step is idempotent and never re-adds it.
+          if "location.replace(dir + 'maintenance.html')" in s:
+              print('pwa.js still redirects - refusing to continue')
               raise SystemExit(1)
-          io.open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
-          print('pwa.js patched')
+          print('ok: pwa.js does not redirect')
           PY
 
       - name: Verify
@@ -116,8 +100,9 @@ jobs:
             grep -q 'mg-maint-guard.js' "$f" || { echo "MISSING guard in $f"; exit 1; }
             echo "ok: $f"
           done
-          grep -q "CACHE_VERSION = 'v36'" sw.js && echo "ok: sw v36"
-          grep -q 'frozen maintenance screen' pwa.js && echo "ok: pwa handoff"
+          grep -q "CACHE_VERSION = 'v38'" sw.js && echo "ok: sw v38"
+          if grep -q "location.replace(dir + 'maintenance.html')" pwa.js; then echo 'FAIL: pwa.js redirects'; exit 1; fi
+          echo "ok: pwa.js does not redirect"
           test -s maintenance.html && test -s maintenance.config.js && test -s admin.html
           test -s fonts/manrope-latin.woff2 && test -s fonts/jetbrains-mono-latin.woff2
           echo "ok: assets present"
