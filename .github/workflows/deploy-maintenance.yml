@@ -1,8 +1,8 @@
 name: Deploy maintenance control
 
-# One-shot deploy of the maintenance control layer.
-# Assets are fetched from the published artifact store, so this workflow stays
-# small and the large entry pages are patched in the runner.
+# Builds maintenance.html from the FROZEN production design (public URL),
+# self-hosts the fonts, patches every entry page with the pre-paywall guard,
+# and points the legacy overlay at the frozen screen.
 # Idempotent: re-running changes nothing.
 
 on:
@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  BASE: https://static.teamily.ai/sites/f52ba82a-80fc-43b2-b8ba-8e44aadbb60e/documents
+  FROZEN: https://static.teamily.ai/sites/651958d9-9cdd-4f6b-a515-da8ce7ec6c8a/webpages/converter-maintenance-ui
 
 jobs:
   deploy:
@@ -30,17 +30,84 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch maintenance assets
+      - name: Build maintenance.html from the frozen design
         run: |
           set -euo pipefail
           mkdir -p fonts
-          curl -fsSL -o maintenance.html          "$BASE/maintenance/maintenance.html"
-          curl -fsSL -o maintenance.config.js     "$BASE/maintenanceconfig/maintenance.config.js"
-          curl -fsSL -o mg-maint-guard.js         "$BASE/mg-maint-guard/mg-maint-guard.js"
-          curl -fsSL -o admin.html                "$BASE/admin/admin.html"
-          curl -fsSL -o fonts/manrope-latin.woff2 "$BASE/manrope-latin/manrope-latin.woff2"
-          curl -fsSL -o fonts/jetbrains-mono-latin.woff2 "$BASE/jetbrains-mono-latin/jetbrains-mono-latin.woff2"
-          ls -l maintenance.html maintenance.config.js mg-maint-guard.js admin.html fonts/
+          curl -fsSL -o _frozen.html "$FROZEN/index.html"
+          python3 - <<'PY'
+          import io
+          s = io.open('_frozen.html', encoding='utf-8').read()
+          # drop the artifact-only media guard script
+          i = s.find('<script data-tmly-media-guard')
+          if i != -1:
+              j = s.find('</script>', i) + len('</script>')
+              s = s[:i] + s[j:]
+          # self-heal: return visitors to the site when the switch goes back to Live
+          heal = '''
+          <script>
+          (function () {
+            'use strict';
+            var SB_URL  = 'https://vbawjzscjjakqlomqqpr.supabase.co';
+            var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiYXdqenNjampha3Fsb21xcXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0MTM3MDAsImV4cCI6MjEwODk4OTcwMH0.I869HC183sDYPcSZQZmMeFcGkOSb0hz54zWCLGAu0Co';
+            var FLAG = 'mg_maint';
+            var busy = false;
+            function check() {
+              if (busy) { return; }
+              busy = true;
+              fetch(SB_URL + '/rest/v1/site_settings?id=eq.1&select=maintenance', {
+                headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON },
+                cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', mode: 'cors'
+              })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (rows) {
+                  busy = false;
+                  var row = rows && rows[0];
+                  if (!row) { return; }
+                  if (row.maintenance === false) {
+                    try { localStorage.removeItem(FLAG); } catch (e) {}
+                    location.replace('./');
+                  }
+                })
+                .catch(function () { busy = false; });
+            }
+            check();
+            setInterval(function () { if (!document.hidden) { check(); } }, 30000);
+            document.addEventListener('visibilitychange', function () { if (!document.hidden) { check(); } });
+            window.addEventListener('online', check);
+          })();
+          </script>
+          </body>'''
+          assert s.count('</body>') == 1
+          s = s.replace('</body>', heal, 1)
+          io.open('maintenance.html', 'w', encoding='utf-8').write(s)
+          print('maintenance.html bytes:', len(s))
+          PY
+          rm -f _frozen.html
+
+      - name: Self-host the fonts
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess, re
+          UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+          def css(u):
+              return subprocess.run(["curl","-s","-A",UA,u],capture_output=True,text=True).stdout
+          def latin(c):
+              parts = re.split(r'/\*\s*([a-z\-]+)\s*\*/', c)
+              for i in range(1, len(parts), 2):
+                  if parts[i].strip() == 'latin':
+                      m = re.search(r'url\((https://[^)]+\.woff2)\)', parts[i+1])
+                      if m: return m.group(1)
+              return None
+          for fam, out in [("Manrope:wght@400..800","fonts/manrope-latin.woff2"),
+                           ("JetBrains+Mono:wght@400..600","fonts/jetbrains-mono-latin.woff2")]:
+              url = latin(css("https://fonts.googleapis.com/css2?family=%s&display=swap" % fam))
+              assert url, out
+              subprocess.run(["curl","-fsSL","-o",out,url], check=True)
+              print(out, "ok")
+          PY
+          ls -l fonts/
 
       - name: Patch every entry page (guard before app shell and paywall)
         run: |
@@ -121,6 +188,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "nothing to commit"
           else
-            git commit -m "feat(maintenance): one-click control + pre-paywall guard"
+            git commit -m "feat(maintenance): frozen screen + pre-paywall guard"
             git push origin HEAD:main
           fi
