@@ -100,7 +100,7 @@ jobs:
             grep -q 'mg-maint-guard.js' "$f" || { echo "MISSING guard in $f"; exit 1; }
             echo "ok: $f"
           done
-          grep -q "CACHE_VERSION = 'v38'" sw.js && echo "ok: sw v38"
+          grep -q "CACHE_VERSION = 'v39'" sw.js && echo "ok: sw v39"
           if grep -q "location.replace(dir + 'maintenance.html')" pwa.js; then echo 'FAIL: pwa.js redirects'; exit 1; fi
           echo "ok: pwa.js does not redirect"
           test -s maintenance.html && test -s maintenance.config.js && test -s admin.html
