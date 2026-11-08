@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v36';
+const CACHE_VERSION = 'v37';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"
@@ -25,7 +25,7 @@ const BIG_FILES = /traineddata|tessdata|tesseract-core|\.wasm(\.js)?(\?|$)|worke
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CORE_CACHE)
-      .then((cache) => Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url))))
+      .then((cache) => Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url)))
       // No skipWaiting() here: an update waits until the person taps "Update" (see SKIP_WAITING message below)
   );
 });
