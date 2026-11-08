@@ -4,6 +4,24 @@
    This file is the ONLY place the maintenance copy and timestamps live.
    maintenance.html reads it; nothing else needs editing.
 
+   MODE SWITCH (added 2026-11-08)
+   ------------------------------
+   `mode` selects which wording the maintenance screen shows. Two values:
+
+     'maintenance'  -> "Under maintenance"   (DEFAULT — used when nothing else
+                        is said; scope: "Conversion engine & API")
+     'server_down'  -> "Server down error"   (used ONLY when the admin
+                        explicitly selects "Server down"; scope: "fixing website")
+
+   The default is 'maintenance'. The mode can be flipped two ways:
+     1. One-click: admin.html -> "Maintenance" / "Server down" selector
+        (writes site_settings.config.mode in Supabase).
+     2. One line:  set `mode` below and commit, or set the Supabase
+        site_settings.config.mode value to 'server_down' / 'maintenance'.
+
+   Resolution order on the screen: ?mode= / ?state= in the URL  >
+   Supabase config.mode  >  this file's `mode`  >  'maintenance'.
+
    TIMING MODEL (important)
    ------------------------
    `opened_at` is the real incident timestamp (absolute, ISO-8601, UTC).
@@ -16,6 +34,9 @@
    ========================================================================== */
 
 window.MAINTENANCE_OVERRIDE = {
+  /* Which wording to show. 'maintenance' (default) | 'server_down' */
+  mode: 'maintenance',
+
   state: 'maintenance',
   preview: false,
   brand: 'MediaGrabber Pro',
@@ -44,6 +65,27 @@ window.MAINTENANCE_OVERRIDE = {
       eta_noun: 'remaining',
       signoff: '— The Convert Team',
       ref: 'INC-2026-1108-M'
+    },
+
+    /* Explicit "Server down" wording. Selected only when the admin says so. */
+    server_down: {
+      title: 'Server down error — MediaGrabber Pro',
+      badge: 'Server down',
+      headline: 'Server down error',
+      lede: 'MediaGrabber Pro is temporarily unavailable while we fix the website. Nothing is wrong with your account, and no files are at risk. We will be back shortly.',
+      status: 'Server down',
+      scope: 'fixing website',
+
+      /* Incident start — the real timestamp the window opened. */
+      opened_at: '2026-11-08T13:05:00Z',
+
+      /* Expected return window, measured from now (rolling, never expires). */
+      restore_in_minutes: 180,
+
+      meter_label: 'Repair window',
+      eta_noun: 'remaining',
+      signoff: '— The Convert Team',
+      ref: 'INC-2026-1108-D'
     },
 
     security: {
