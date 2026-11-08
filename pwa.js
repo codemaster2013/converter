@@ -21,7 +21,9 @@
         'text-align:center;padding:32px;background:#080b14;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';
       el.innerHTML = '<style>@keyframes mmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}' +
         '@media (prefers-reduced-motion:reduce){#' + ID + ' .mm-i{animation:none!important}}</style>' +
-        '<div class="mm-i" style="font-size:64px;margin-bottom:18px;animation:mmPulse 2s ease infinite">\uD83D\uDD27</div>' +
+        '<div class="mm-i" style="margin-bottom:18px;line-height:0;animation:mmPulse 2s ease infinite">' +
+        '<svg width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="filter:drop-shadow(0 6px 20px rgba(124,58,237,.55))">' +
+        '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>' +
         '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:10px">Under Maintenance</div>' +
         '<div class="mm-t" style="color:#7d86a8;font-size:15px;max-width:300px;line-height:1.6"></div>' +
         '<div style="margin-top:22px;font-size:13px;color:#7d86a8">\u2014 The MediaGrabber Pro Team</div>';
