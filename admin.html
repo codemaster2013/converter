@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#05070F">
+<title>Maintenance control — MediaGrabber Pro</title>
+<style>
+:root{
+  --bg:#05070F; --inset:#141A26; --line:#171D29; --line2:#232C3D;
+  --fg:#F1F4F7; --fg2:#A2ADB9; --fg3:#8A94A2;
+  --amber:#E9A23B; --amber-soft:rgba(233,162,59,.10); --amber-line:rgba(233,162,59,.34);
+  --green:#3FBF7F; --green-soft:rgba(63,191,127,.10); --green-line:rgba(63,191,127,.34);
+  --red:#E06A6A;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);
+  display:flex;flex-direction:column;align-items:center;
+  padding:clamp(20px,5vw,56px) clamp(16px,4vw,32px);
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(58% 42% at 50% 0%,rgba(233,162,59,.055) 0%,rgba(0,0,0,0) 72%);
+}
+.wrap{position:relative;z-index:1;width:100%;max-width:520px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:clamp(22px,4vh,34px)}
+.brand svg{width:24px;height:24px;color:var(--amber);flex:none}
+.brand b{font-size:.9375rem;font-weight:700;letter-spacing:-.012em}
+.brand span{font-family:var(--mono);font-size:.625rem;font-weight:500;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--fg3);padding-left:10px;border-left:1px solid var(--line2)}
+
+.card{background:linear-gradient(180deg,#0C111B 0%,#080C14 100%);
+  border:1px solid var(--line2);border-radius:18px;padding:clamp(20px,4vw,28px)}
+
+/* ---- state banner ---- */
+.state{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;
+  border:1px solid var(--line2);background:rgba(255,255,255,.014);margin-bottom:20px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--fg3)}
+.state.on{border-color:var(--amber-line);background:var(--amber-soft)}
+.state.on .dot{background:var(--amber);box-shadow:0 0 0 4px rgba(233,162,59,.14)}
+.state.off{border-color:var(--green-line);background:var(--green-soft)}
+.state.off .dot{background:var(--green);box-shadow:0 0 0 4px rgba(63,191,127,.14)}
+.state b{font-size:.8125rem;font-weight:700;letter-spacing:.01em}
+.state em{font-family:var(--mono);font-size:.625rem;font-style:normal;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg3);margin-left:auto;white-space:nowrap}
+
+h1{font-size:clamp(1.35rem,4.6vw,1.7rem);font-weight:800;letter-spacing:-.028em;line-height:1.15}
+p.lede{margin-top:9px;font-size:.875rem;line-height:1.6;color:var(--fg2)}
+
+/* ---- the one button ---- */
+.big{
+  width:100%;margin-top:22px;min-height:60px;border:0;border-radius:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font:inherit;font-size:1rem;font-weight:800;letter-spacing:-.01em;
+  transition:transform .1s ease,filter .15s ease,opacity .15s ease;
+}
+.big:active:not(:disabled){transform:scale(.985)}
+.big:disabled{opacity:.5;cursor:not-allowed}
+.big svg{width:19px;height:19px;flex:none}
+.big.take{background:var(--amber);color:#1A1206}
+.big.take:hover:not(:disabled){filter:brightness(1.07)}
+.big.restore{background:var(--green);color:#04170D}
+.big.restore:hover:not(:disabled){filter:brightness(1.07)}
+
+.hint{margin-top:11px;font-size:.75rem;line-height:1.55;color:var(--fg3);text-align:center}
+
+/* ---- details ---- */
+.rows{margin-top:22px;border-top:1px solid var(--line)}
+.row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  padding:10px 2px;border-bottom:1px solid var(--line)}
+.row dt{font-family:var(--mono);font-size:.625rem;font-weight:500;letter-spacing:.135em;
+  text-transform:uppercase;color:var(--fg3);white-space:nowrap}
+.row dd{font-size:.8125rem;font-weight:600;text-align:right;overflow-wrap:anywhere}
+
+/* ---- unlock ---- */
+.field{margin-top:14px}
+.field label{display:block;font-family:var(--mono);font-size:.625rem;font-weight:500;
+  letter-spacing:.135em;text-transform:uppercase;color:var(--fg3);margin-bottom:7px}
+.field input{width:100%;background:var(--inset);border:1px solid var(--line2);border-radius:10px;
+  padding:12px 13px;color:var(--fg);font:inherit;font-size:16px;outline:none}
+.field input:focus{border-color:var(--amber-line);box-shadow:0 0 0 3px var(--amber-soft)}
+.msg{margin-top:14px;font-size:.8125rem;line-height:1.5;min-height:1.2em}
+.msg.ok{color:var(--green)} .msg.warn{color:var(--amber)} .msg.err{color:rgba(224,106,106,1)}
+.hidden{display:none!important}
+.foot{margin-top:20px;font-family:var(--mono);font-size:.625rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg3);text-align:center;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/>
+    </svg>
+    <b>MediaGrabber Pro</b>
+    <span>Maintenance control</span>
+  </div>
+
+  <!-- ================= UNLOCK ================= -->
+  <section class="card" id="lockView">
+    <h1>Admin access</h1>
+    <p class="lede">Sign in once on this device. After that the switch is a single click.</p>
+
+    <div class="field">
+      <label for="em">Admin email</label>
+      <input id="em" type="email" autocomplete="username" value="darshil2796.singh@gmail.com" spellcheck="false">
+    </div>
+    <div class="field">
+      <label for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••">
+    </div>
+
+    <button class="big take" id="unlockBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="4" y="10.5" width="16" height="10" rx="2.2"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/>
+      </svg>
+      Unlock
+    </button>
+    <p class="msg" id="lockMsg"></p>
+  </section>
+
+  <!-- ================= SWITCH ================= -->
+  <section class="card hidden" id="switchView">
+
+    <div class="state" id="stateBanner">
+      <span class="dot" aria-hidden="true"></span>
+      <b id="stateText">Checking…</b>
+      <em id="stateRef">—</em>
+    </div>
+
+    <h1 id="headline">Site is live</h1>
+    <p class="lede" id="subline">Visitors can use MediaGrabber Pro normally.</p>
+
+    <!-- THE one-click control -->
+    <button class="big take" id="flipBtn" type="button" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3v9"/><path d="M6.4 6.4a8 8 0 1 0 11.2 0"/>
+      </svg>
+      <span id="flipLabel">Take site offline</span>
+    </button>
+    <p class="hint" id="flipHint">One click. Visitors see the maintenance screen within seconds.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>Switch</dt><dd id="rSwitch">—</dd></div>
+      <div class="row"><dt>Window opened</dt><dd id="rOpened">—</dd></div>
+      <div class="row"><dt>Expected return</dt><dd id="rReturn">—</dd></div>
+      <div class="row"><dt>Last change</dt><dd id="rChanged">—</dd></div>
+      <div class="row"><dt>Cache</dt><dd id="rCache">—</dd></div>
+    </dl>
+
+    <p class="msg" id="flipMsg"></p>
+  </section>
+
+  <p class="foot">
+    Ref INC-2026-1108-M · MediaGrabber Pro<br>
+    No time limit — the screen is removed only when you switch back.
+  </p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var SB_URL  = 'https://vbawjzscjjakqlomqqpr.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiYXdqenNjampha3Fsb21xcXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0MTM3MDAsImV4cCI6MjEwODk4OTcwMH0.I869HC183sDYPcSZQZmMeFcGkOSb0hz54zWCLGAu0Co';
+  var SKEY = 'mg_admin_session';
+  var TZ = 'Asia/Kolkata';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var session = null;
+  var state = { maintenance: false, updated_at: null };
+  var busy = false;
+
+  /* ---------------- session ---------------- */
+  function saveSession(s) {
+    session = s ? {
+      access_token: s.access_token,
+      refresh_token: s.refresh_token,
+      expires_at: Date.now() + ((s.expires_in || 3600) - 60) * 1000
+    } : null;
+    try {
+      session ? localStorage.setItem(SKEY, JSON.stringify(session))
+              : localStorage.removeItem(SKEY);
+    } catch (e) {}
+  }
+  function loadSession() {
+    try { session = JSON.parse(localStorage.getItem(SKEY) || 'null'); }
+    catch (e) { session = null; }
+  }
+  function authPost(path, body) {
+    return fetch(SB_URL + path, {
+      method: 'POST',
+      headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      credentials: 'omit', referrerPolicy: 'no-referrer'
+    });
+  }
+  function refresh() {
+    if (!session || !session.refresh_token) { return Promise.reject(new Error('auth')); }
+    return authPost('/auth/v1/token?grant_type=refresh_token', { refresh_token: session.refresh_token })
+      .then(function (r) { if (!r.ok) throw new Error('auth'); return r.json(); })
+      .then(saveSession);
+  }
+  function token() {
+    if (session && Date.now() < session.expires_at) { return Promise.resolve(session.access_token); }
+    return refresh().then(function () { return session.access_token; });
+  }
+
+  /* ---------------- helpers ---------------- */
+  function fmt(ts) {
+    if (!ts) { return '—'; }
+    try {
+      return new Intl.DateTimeFormat('en-GB', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ
+      }).format(new Date(ts)).replace(',', ' ·') + ' IST';
+    } catch (e) { return new Date(ts).toUTCString(); }
+  }
+  function say(el, text, kind) {
+    el.textContent = text || '';
+    el.className = 'msg' + (kind ? ' ' + kind : '');
+  }
+
+  /* ---------------- read ---------------- */
+  function readState() {
+    return fetch(SB_URL + '/rest/v1/site_settings?id=eq.1&select=maintenance,updated_at', {
+      headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON },
+      cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer'
+    })
+      .then(function (r) { if (!r.ok) throw new Error('read'); return r.json(); })
+      .then(function (rows) {
+        if (!rows || !rows.length) { throw new Error('norow'); }
+        state = rows[0];
+        render();
+      });
+  }
+
+  /* ---------------- render ---------------- */
+  function render() {
+    var on = state.maintenance === true;
+    var banner = $('stateBanner');
+
+    banner.className = 'state ' + (on ? 'on' : 'off');
+    $('stateText').textContent = on ? 'Maintenance is ON' : 'Site is live';
+    $('stateRef').textContent = on ? 'INC-2026-1108-M' : 'LIVE';
+
+    $('headline').textContent = on ? 'Site is under maintenance' : 'Site is live';
+    $('subline').textContent = on
+      ? 'Visitors are seeing the maintenance screen. Nothing is broken — this is the switch.'
+      : 'Visitors can use MediaGrabber Pro normally.';
+
+    var btn = $('flipBtn');
+    btn.className = 'big ' + (on ? 'restore' : 'take');
+    $('flipLabel').textContent = on ? 'Bring site back online' : 'Take site offline';
+    $('flipHint').textContent = on
+      ? 'One click. The maintenance screen is removed for everyone.'
+      : 'One click. Visitors see the maintenance screen within seconds.';
+    btn.disabled = false;
+
+    $('rSwitch').textContent = on ? 'ON — maintenance' : 'OFF — live';
+    $('rOpened').textContent = on ? fmt(state.updated_at) : '—';
+    $('rReturn').textContent = on ? 'Rolling · ~3 h from now' : '—';
+    $('rChanged').textContent = fmt(state.updated_at);
+    $('rCache').textContent = 'v36';
+  }
+
+  /* ---------------- the one click ---------------- */
+  function flip() {
+    if (busy) { return; }
+    busy = true;
+
+    var on = state.maintenance === true;
+    var next = !on;
+    var btn = $('flipBtn');
+    btn.disabled = true;
+    say($('flipMsg'), next ? 'Taking the site offline…' : 'Bringing the site back online…', 'warn');
+
+    token()
+      .then(function (t) {
+        return fetch(SB_URL + '/rest/v1/site_settings?id=eq.1', {
+          method: 'PATCH',
+          headers: {
+            apikey: SB_ANON,
+            Authorization: 'Bearer ' + t,
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation'
+          },
+          body: JSON.stringify({
+            maintenance: next,
+            updated_at: new Date().toISOString()
+          }),
+          credentials: 'omit', referrerPolicy: 'no-referrer'
+        });
+      })
+      .then(function (r) {
+        if (r.status === 401 || r.status === 403) { throw new Error('auth'); }
+        if (!r.ok) { throw new Error('write'); }
+        return r.json();
+      })
+      .then(function (rows) {
+        if (!rows || !rows.length) { throw new Error('denied'); }
+        state = rows[0];
+        render();
+
+        /* Bump the service-worker cache so returning PWA visitors get the
+           new mode instead of a cached live/error page. */
+        bumpCache();
+
+        say($('flipMsg'),
+          next ? '✓ Maintenance ON — visitors now see the maintenance screen.'
+               : '✓ Maintenance OFF — the site is live for everyone.',
+          next ? 'warn' : 'ok');
+      })
+      .catch(function (e) {
+        var m = {
+          auth: 'Session expired — unlock again.',
+          denied: 'This account is not allowed to change the switch.',
+          write: 'Could not save. Check your connection and try again.'
+        }[e && e.message] || 'Could not save. Check your connection and try again.';
+        say($('flipMsg'), m, 'err');
+        if (e && e.message === 'auth') { lock(); }
+      })
+      .then(function () { busy = false; btn.disabled = false; });
+  }
+
+  /* Ask the service worker to drop every cache and re-install. */
+  function bumpCache() {
+    try {
+      if (!('serviceWorker' in navigator)) { return; }
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (reg) {
+          if (reg.active) { reg.active.postMessage({ type: 'MG_MAINT_FLIP' }); }
+        });
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  /* ---------------- unlock ---------------- */
+  function unlock() {
+    var em = $('em').value.trim();
+    var pw = $('pw').value;
+    if (!em || !pw) { say($('lockMsg'), 'Enter your email and password.', 'err'); return; }
+
+    var btn = $('unlockBtn');
+    btn.disabled = true;
+    say($('lockMsg'), 'Signing in…', 'warn');
+
+    authPost('/auth/v1/token?grant_type=password', { email: em, password: pw })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('bad'); }
+        return r.json();
+      })
+      .then(function (s) {
+        if (!s || !s.access_token) { throw new Error('bad'); }
+        saveSession(s);
+        openSwitch();
+      })
+      .catch(function () {
+        say($('lockMsg'), 'Sign-in failed. Check the email and password.', 'err');
+        btn.disabled = false;
+      });
+  }
+
+  function openSwitch() {
+    $('lockView').classList.add('hidden');
+    $('switchView').classList.remove('hidden');
+    readState().catch(function () {
+      say($('flipMsg'), 'Could not read the current switch state.', 'err');
+    });
+  }
+
+  function lock() {
+    saveSession(null);
+    $('switchView').classList.add('hidden');
+    $('lockView').classList.remove('hidden');
+    $('unlockBtn').disabled = false;
+    say($('lockMsg'), 'Session expired — sign in again.', 'warn');
+  }
+
+  /* ---------------- boot ---------------- */
+  $('unlockBtn').addEventListener('click', unlock);
+  $('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') { unlock(); } });
+  $('flipBtn').addEventListener('click', flip);
+
+  loadSession();
+  if (session && session.refresh_token) {
+    token().then(openSwitch).catch(function () { lock(); });
+  }
+})();
+</script>
+</body>
+</html>
