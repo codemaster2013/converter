@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v37';
+const CACHE_VERSION = 'v38';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"
@@ -25,7 +25,7 @@ const BIG_FILES = /traineddata|tessdata|tesseract-core|\.wasm(\.js)?(\?|$)|worke
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CORE_CACHE)
-      .then((cache) => Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url)))
+      .then((cache) => Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url))))
       // No skipWaiting() here: an update waits until the person taps "Update" (see SKIP_WAITING message below)
   );
 });
@@ -112,13 +112,13 @@ self.addEventListener('fetch', (event) => {
   if (NETWORK_ONLY_HOSTS.some((h) => url.hostname.endsWith(h))) return;
 
   // Pages: network first (always fresh when online), cached copy / offline page when offline
-  if (req.mode === 'navigate') {
+  if (req.mode === 'navigate') { const isMaint = url.pathname.slice(-17) === '/maintenance.html';
     event.respondWith(
       fetch(req)
-        .then((res) => { putInCache(CORE_CACHE, req, res); return res; })
+        .then((res) => { if (!isMaint) putInCache(CORE_CACHE, req, res); return res; })
         .catch(() =>
           caches.match(req, { ignoreSearch: true })
-            .then((hit) => hit || caches.match('./index.html'))
+            .then((hit) => hit || (isMaint ? caches.match('./maintenance.html') : caches.match('./index.html')))
             .then((hit) => hit || caches.match('./offline.html'))
         )
     );

@@ -128,9 +128,9 @@
        that loads pwa.js (app, VIP/checkout, tools) shows the same screen. */
     try {
       var here = String(location.pathname).split('/').pop().toLowerCase();
-      if (here !== 'maintenance.html') {
+      if (false) { /* the guard owns the redirect; never redirect from here */
         var dir = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1) || '/';
-        location.replace(dir + 'maintenance.html');
+        /* no redirect here: the guard owns it (a second redirector caused the loop) */
         return;
       }
     } catch (e) {}

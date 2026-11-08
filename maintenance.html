@@ -936,7 +936,7 @@ window.MAINTENANCE_CONFIG = {
 })();
 </script>
 
-<!-- Self-heal: when the admin switch goes back to Live, return visitors to the site.
+<!-- Switch sync: mirrors the admin switch flag; it NEVER redirects (the guard owns the redirect; a second redirector caused the refresh loop).
      Never shows an error; if the switch is unreachable it simply stays on this page. -->
 <script>
 (function () {
@@ -960,7 +960,7 @@ window.MAINTENANCE_CONFIG = {
         if (!row) { return; }
         if (row.maintenance === false) {
           try { localStorage.removeItem(FLAG); } catch (e) {}
-          location.replace('./');
+          /* NEVER redirect from here: the guard owns the redirect. */
         }
       })
       .catch(function () { busy = false; });
