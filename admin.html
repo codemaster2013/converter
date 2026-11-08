@@ -71,6 +71,21 @@ p.lede{margin-top:9px;font-size:.875rem;line-height:1.6;color:var(--fg2)}
 
 .hint{margin-top:11px;font-size:.75rem;line-height:1.55;color:var(--fg3);text-align:center}
 
+/* ---- wording mode selector ---- */
+.modes{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+.modes__label{font-family:var(--mono);font-size:.625rem;font-weight:500;letter-spacing:.135em;
+  text-transform:uppercase;color:var(--fg3);margin-bottom:9px}
+.seg{display:flex;gap:6px;padding:4px;border:1px solid var(--line2);border-radius:12px;
+  background:rgba(255,255,255,.014)}
+.seg__btn{flex:1;min-height:44px;border:0;border-radius:9px;cursor:pointer;font:inherit;
+  font-size:.8125rem;font-weight:700;letter-spacing:-.005em;color:var(--fg2);
+  background:transparent;transition:background-color .15s ease,color .15s ease}
+.seg__btn:hover:not(:disabled){color:var(--fg)}
+.seg__btn[aria-pressed="true"]{background:var(--inset);color:var(--fg);
+  box-shadow:inset 0 0 0 1px var(--line2)}
+.seg__btn:disabled{opacity:.5;cursor:not-allowed}
+.modes__hint{margin-top:9px;font-size:.75rem;line-height:1.55;color:var(--fg3)}
+
 /* ---- details ---- */
 .rows{margin-top:22px;border-top:1px solid var(--line)}
 .row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
@@ -151,8 +166,19 @@ p.lede{margin-top:9px;font-size:.875rem;line-height:1.6;color:var(--fg2)}
     </button>
     <p class="hint" id="flipHint">One click. Visitors see the maintenance screen within seconds.</p>
 
+    <!-- Wording mode: which copy the maintenance screen shows -->
+    <div class="modes">
+      <p class="modes__label">Screen wording</p>
+      <div class="seg" role="group" aria-label="Maintenance screen wording">
+        <button type="button" class="seg__btn" id="modeMaintenance" data-mode="maintenance" aria-pressed="true">Under maintenance</button>
+        <button type="button" class="seg__btn" id="modeServerDown" data-mode="server_down" aria-pressed="false">Server down error</button>
+      </div>
+      <p class="modes__hint" id="modeHint">Default wording. Used when nothing else is said.</p>
+    </div>
+
     <dl class="rows">
       <div class="row"><dt>Switch</dt><dd id="rSwitch">—</dd></div>
+      <div class="row"><dt>Wording</dt><dd id="rMode">—</dd></div>
       <div class="row"><dt>Window opened</dt><dd id="rOpened">—</dd></div>
       <div class="row"><dt>Expected return</dt><dd id="rReturn">—</dd></div>
       <div class="row"><dt>Last change</dt><dd id="rChanged">—</dd></div>
@@ -179,8 +205,9 @@ p.lede{margin-top:9px;font-size:.875rem;line-height:1.6;color:var(--fg2)}
 
   var $ = function (id) { return document.getElementById(id); };
   var session = null;
-  var state = { maintenance: false, updated_at: null };
+  var state = { maintenance: false, updated_at: null, config: {} };
   var busy = false;
+  var modeBusy = false;
 
   /* ---------------- session ---------------- */
   function saveSession(s) {
@@ -234,7 +261,7 @@ p.lede{margin-top:9px;font-size:.875rem;line-height:1.6;color:var(--fg2)}
 
   /* ---------------- read ---------------- */
   function readState() {
-    return fetch(SB_URL + '/rest/v1/site_settings?id=eq.1&select=maintenance,updated_at', {
+    return fetch(SB_URL + '/rest/v1/site_settings?id=eq.1&select=maintenance,updated_at,config', {
       headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON },
       cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer'
     })
@@ -272,7 +299,86 @@ p.lede{margin-top:9px;font-size:.875rem;line-height:1.6;color:var(--fg2)}
     $('rOpened').textContent = on ? fmt(state.updated_at) : '—';
     $('rReturn').textContent = on ? 'Rolling · ~3 h from now' : '—';
     $('rChanged').textContent = fmt(state.updated_at);
-    $('rCache').textContent = 'v36';
+    $('rCache').textContent = 'v39';
+
+    renderMode();
+  }
+
+  /* ---------------- wording mode ---------------- */
+  function currentMode() {
+    var m = state.config && state.config.mode;
+    return (m === 'server_down') ? 'server_down' : 'maintenance';
+  }
+
+  function renderMode() {
+    var m = currentMode();
+    $('modeMaintenance').setAttribute('aria-pressed', String(m === 'maintenance'));
+    $('modeServerDown').setAttribute('aria-pressed', String(m === 'server_down'));
+    $('rMode').textContent = (m === 'server_down') ? 'Server down error' : 'Under maintenance';
+    $('modeHint').textContent = (m === 'server_down')
+      ? 'Visitors see "Server down error" (scope: fixing website).'
+      : 'Default wording. Used when nothing else is said.';
+  }
+
+  function setMode(mode) {
+    if (modeBusy) { return; }
+    if (mode !== 'maintenance' && mode !== 'server_down') { return; }
+    if (mode === currentMode()) { return; }
+    modeBusy = true;
+    $('modeMaintenance').disabled = true;
+    $('modeServerDown').disabled = true;
+    say($('flipMsg'), 'Saving wording…', 'warn');
+
+    /* Merge into the existing config object so no other key is lost. */
+    var nextConfig = Object.assign({}, state.config || {}, { mode: mode });
+
+    token()
+      .then(function (t) {
+        return fetch(SB_URL + '/rest/v1/site_settings?id=eq.1', {
+          method: 'PATCH',
+          headers: {
+            apikey: SB_ANON,
+            Authorization: 'Bearer ' + t,
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation'
+          },
+          body: JSON.stringify({
+            config: nextConfig,
+            updated_at: new Date().toISOString()
+          }),
+          credentials: 'omit', referrerPolicy: 'no-referrer'
+        });
+      })
+      .then(function (r) {
+        if (r.status === 401 || r.status === 403) { throw new Error('auth'); }
+        if (!r.ok) { throw new Error('write'); }
+        return r.json();
+      })
+      .then(function (rows) {
+        if (!rows || !rows.length) { throw new Error('denied'); }
+        state = rows[0];
+        render();
+        bumpCache();
+        say($('flipMsg'),
+          mode === 'server_down'
+            ? '✓ Wording set to "Server down error".'
+            : '✓ Wording set to "Under maintenance".',
+          'ok');
+      })
+      .catch(function (e) {
+        var m = {
+          auth: 'Session expired — unlock again.',
+          denied: 'This account is not allowed to change the wording.',
+          write: 'Could not save. Check your connection and try again.'
+        }[e && e.message] || 'Could not save. Check your connection and try again.';
+        say($('flipMsg'), m, 'err');
+        if (e && e.message === 'auth') { lock(); }
+      })
+      .then(function () {
+        modeBusy = false;
+        $('modeMaintenance').disabled = false;
+        $('modeServerDown').disabled = false;
+      });
   }
 
   /* ---------------- the one click ---------------- */
@@ -392,6 +498,8 @@ p.lede{margin-top:9px;font-size:.875rem;line-height:1.6;color:var(--fg2)}
   $('unlockBtn').addEventListener('click', unlock);
   $('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') { unlock(); } });
   $('flipBtn').addEventListener('click', flip);
+  $('modeMaintenance').addEventListener('click', function () { setMode('maintenance'); });
+  $('modeServerDown').addEventListener('click', function () { setMode('server_down'); });
 
   loadSession();
   if (session && session.refresh_token) {
