@@ -1,6 +1,7 @@
 # Maintenance control — MediaGrabber Pro
 
-One-click switch between **Live** and **Under maintenance**, plus the visitor-facing
+One-click switch between **Live** and **Under maintenance**, a **wording mode**
+switch (**Under maintenance** / **Server down error**), and the visitor-facing
 maintenance screen. Frozen design — do not redesign.
 
 ## Trigger / revert
@@ -12,8 +13,28 @@ Open **https://codemaster2013.github.io/converter/admin.html**
 2. Press the single button:
    - **Take site offline** → maintenance ON
    - **Bring site back online** → maintenance OFF
+3. Pick the **Screen wording** (see below) — one click, saved instantly.
 
 That is the whole control. One click, no other steps.
+
+## Wording mode (added 2026-11-08)
+
+The maintenance screen has two wordings, selected by `mode`:
+
+| `mode` | Headline | Scope line | When |
+|---|---|---|---|
+| `maintenance` | **Under maintenance** | `Conversion engine & API` | **DEFAULT** — used when nothing else is said |
+| `server_down` | **Server down error** | `fixing website` | Only when the admin explicitly selects "Server down" |
+
+Flip it two ways:
+
+1. **One click** — `admin.html` → *Screen wording* → **Under maintenance** /
+   **Server down error**. Writes `site_settings.config.mode` in Supabase.
+2. **One line** — set `mode` in `maintenance.config.js` and commit, or set the
+   Supabase `site_settings.config.mode` value directly.
+
+Resolution order on the screen: `?mode=` / `?state=` in the URL →
+Supabase `config.mode` → `maintenance.config.js` `mode` → `maintenance`.
 
 ## What a visitor sees
 
@@ -21,7 +42,7 @@ That is the whole control. One click, no other steps.
 |---|---|
 | URL | `/converter/maintenance.html` |
 | HTTP status | **200 OK** (never 4xx/5xx) |
-| Content | Professional status page: "Under maintenance", scope, window opened, expected return, progress meter, incident ref |
+| Content | Professional status page: headline, scope, window opened, expected return, progress meter, incident ref |
 | Error text | **None** — no error, no "something went wrong", no 500/503, no stack trace, no hint of tampering |
 
 The screen is served **before** the Superpass/checkout paywall: `mg-maint-guard.js`
@@ -32,11 +53,11 @@ the checkout block), so a buyer can never reach checkout while the site is down.
 
 | File | Role |
 |---|---|
-| `admin.html` | The one-click control (admin only) |
+| `admin.html` | The one-click control + wording mode selector (admin only) |
 | `maintenance.html` | The visitor-facing maintenance screen (frozen design) |
-| `maintenance.config.js` | Copy + incident timestamps — the only file to edit for wording |
+| `maintenance.config.js` | Copy + incident timestamps + `mode` — the only file to edit for wording |
 | `mg-maint-guard.js` | Pre-paywall guard, loaded in `<head>` of every entry page |
-| `sw.js` | Service worker, `CACHE_VERSION = 'v37'` |
+| `sw.js` | Service worker, `CACHE_VERSION = 'v39'` |
 | `fonts/manrope-latin.woff2`, `fonts/jetbrains-mono-latin.woff2` | Self-hosted fonts |
 
 ## Palette (frozen)
@@ -47,7 +68,7 @@ the checkout block), so a buyer can never reach checkout while the site is down.
 | `--bg-inset` | `#141A26` | Meter track, inputs |
 | `--line` / `--line-strong` | `#171D29` / `#232C3D` | Hairlines, borders |
 | `--fg` / `--fg-2` / `--fg-3` | `#F1F4F7` / `#A2ADB9` / `#8A94A2` | Text (all WCAG AA+) |
-| `--accent` (maintenance) | `#E9A23B` amber | Planned work |
+| `--accent` (maintenance / server_down) | `#E9A23B` amber | Planned work |
 | `--accent` (security) | `#4FB8CC` cyan | Investigation |
 
 Amber/cyan, never red — red reads as failure, and neither state is one.
@@ -77,7 +98,7 @@ page's own fonts.
 
 `sw.js` `CACHE_VERSION` is bumped on a mode change, and the admin page posts
 `MG_MAINT_FLIP` to the active service worker, which purges every cache and
-re-installs — so a returning PWA visitor gets the new mode instead of a cached
+re-installs — so a returning PWA visitor gets the new wording instead of a cached
 live or error page.
 
 ## Reversibility
@@ -93,14 +114,14 @@ additional file, and the guard is a no-op whenever the switch is OFF.
   `false`. The row is publicly readable, so the defaced text was exposed to any
   visitor whose client rendered it.
 - Response: the site was forced **UNDER MAINTENANCE** with no time limit.
-  `mg-maint-guard.js` now carries `FORCE_ON = true`, so every entry page sends
-  visitors to `maintenance.html` regardless of the switch value. `CACHE_VERSION`
-  was bumped to `v37` so returning PWA visitors get the maintenance screen.
+  `mg-maint-guard.js` carried `FORCE_ON = true`, so every entry page sent
+  visitors to `maintenance.html` regardless of the switch value.
 - The maintenance screen does **not** read the switch's `message`/`config`
   fields, so the defaced text is never shown; the frozen copy in
   `maintenance.config.js` is used instead.
-- **To lift maintenance:** set `FORCE_ON = false` in `mg-maint-guard.js` (and
-  restore the switch row), then commit. The switch is the only thing that lifts
-  the screen.
+- **Lifted 2026-11-08:** `FORCE_ON` is back to `false` and the Supabase switch is
+  `maintenance: false`, so the site is **LIVE** again and the guard is a no-op.
+  A stale `mg_maint` localStorage flag is now verified against the switch before
+  it can bounce a visitor, so nobody stays pinned to the screen after the lift.
 - Backup taken before this change: `converter-backup-private` →
-  `backups/converter_backup_v1_2026-11-08.zip` (converter @ `8530c860`).
+  `backups/converter_backup_v1_2026-11-08.zip` (converter @ `91f3ac52`).
