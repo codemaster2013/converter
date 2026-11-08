@@ -35,7 +35,7 @@ window.MAINTENANCE_OVERRIDE = {
       scope: 'Conversion engine & API',
 
       /* Incident start — the real timestamp the window opened. */
-      opened_at: '2026-11-08T10:55:00Z',
+      opened_at: '2026-11-08T13:05:00Z',
 
       /* Expected return window, measured from now (rolling, never expires). */
       restore_in_minutes: 180,
