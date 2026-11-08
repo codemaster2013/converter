@@ -1,0 +1,93 @@
+name: Apply maintenance fix (temporary)
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-maint-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-maint-fix
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout converter
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch and apply the byte-exact patch
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/fix.b64 "https://static.teamily.ai/files/5822d8d2-c42c-43e2-9d2c-3bcad1f06ebe/mgp-fix.patch.b64"
+          base64 -d /tmp/fix.b64 > /tmp/fix.patch
+          echo "patch bytes: $(wc -c < /tmp/fix.patch)"
+          sha256sum /tmp/fix.patch
+          git apply --check --verbose /tmp/fix.patch
+          git apply /tmp/fix.patch
+          echo "--- applied ---"
+          git status --short
+
+      - name: Verify the fix
+        run: |
+          set -euo pipefail
+          node --check mg-maint-guard.js && echo "ok: guard syntax"
+          node --check sw.js && echo "ok: sw syntax"
+          node --check pwa.js && echo "ok: pwa syntax"
+          grep -q "var FORCE_ON = true;" mg-maint-guard.js && echo "ok: FORCE_ON true"
+          grep -q "CACHE_VERSION = 'v38'" sw.js && echo "ok: sw v38"
+          grep -q "if (here === PAGE || here === 'admin.html') { return; }" mg-maint-guard.js && echo "ok: guard skips maintenance"
+          if grep -q "location.replace('./')" maintenance.html; then echo "FAIL: self-heal redirect still present"; exit 1; fi
+          echo "ok: no self-heal redirect"
+          if grep -q "location.replace(dir + 'maintenance.html')" pwa.js; then echo "FAIL: pwa redirect still present"; exit 1; fi
+          echo "ok: no pwa redirect"
+          for f in index.html "index (3).html" 404.html offline.html; do
+            grep -q 'mg-maint-guard.js' "$f" || { echo "MISSING guard in $f"; exit 1; }
+          done
+          echo "ok: guard present in all entry pages"
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name "mgp-maintenance-bot"
+          git config user.email "mgp-maintenance-bot@users.noreply.github.com"
+          git add -A
+          git commit -q -F - <<'MSG'
+          fix(maintenance): instant, loop-free maintenance guard (INCIDENT 2026-11-08)
+
+          Two visitor-facing defects fixed; maintenance stays ON (FORCE_ON = true), no time limit.
+
+          1) SLOW (many minutes before the screen appeared)
+             mg-maint-guard.js decided maintenance ASYNCHRONOUSLY: it waited on a
+             Supabase fetch before redirecting, so a first visit (or one after the
+             flag had been cleared) sat on the live site for as long as the network
+             took. The decision is now SYNCHRONOUS: FORCE_ON -> redirect immediately,
+             before any network call and before the body is parsed; otherwise a
+             locally remembered flag -> redirect immediately. Supabase is consulted
+             only in the background (and only when FORCE_ON is false) to refresh the
+             flag for the next visit.
+
+          2) REFRESH LOOP
+             The maintenance page's own self-heal redirected to './' whenever the
+             switch read maintenance=false (it currently does), while the guard
+             redirected back to maintenance.html -> infinite reload. Removed the
+             redirect from maintenance.html (it now only mirrors the flag) and
+             removed the duplicate redirect from pwa.js. The guard already skips
+             maintenance.html/admin.html.
+
+          3) SERVICE WORKER
+             sw.js had a syntax error (unbalanced parens in the install handler),
+             so the worker never installed and CACHE_VERSION bumps had no effect.
+             Fixed, bumped CACHE_VERSION to v38, and made the maintenance page never
+             be served from cache (and never fall back to a cached live page).
+
+          Frozen design untouched. No time limit. Maintenance is lifted only by the admin.
+          MSG
+          git push origin HEAD:main
+          echo "pushed: $(git rev-parse HEAD)"
