@@ -98,6 +98,13 @@ html[data-state="security"]{
   --accent-line:rgba(79,184,204,.34);
   --ambient:rgba(79,184,204,.055);
 }
+/* "Server down" reuses the amber planned-work accent (frozen palette: never red). */
+html[data-state="server_down"]{
+  --accent:#E9A23B;
+  --accent-soft:rgba(233,162,59,.10);
+  --accent-line:rgba(233,162,59,.34);
+  --ambient:rgba(233,162,59,.055);
+}
 
 /* ============================================================
    3. RESET
@@ -270,6 +277,7 @@ html[data-state="security"] .tile__ring{animation-duration:70s;opacity:.20;}
   transition:color var(--t-base) var(--ease);
 }
 html[data-state="maintenance"] .tile__svg[data-icon="security"],
+html[data-state="server_down"] .tile__svg[data-icon="security"],
 html[data-state="security"] .tile__svg[data-icon="maintenance"]{display:none;}
 .tile__halo{
   position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
@@ -388,6 +396,7 @@ html[data-state="security"] .tile__svg[data-icon="maintenance"]{display:none;}
 /* Copy blocks — exactly one state is rendered at a time */
 .copy{display:none;width:100%;}
 html[data-state="maintenance"] .copy[data-for="maintenance"],
+html[data-state="server_down"] .copy[data-for="server_down"],
 html[data-state="security"] .copy[data-for="security"]{display:block;}
 
 /* ============================================================
@@ -489,6 +498,7 @@ html[data-state="security"] .copy[data-for="security"]{display:block;}
 <style>
   /* No-JS fallback: give the meter a sensible fill and hide the QA switch */
   html[data-state="maintenance"] .copy[data-for="maintenance"] .meter__fill{width:72%}
+  html[data-state="server_down"] .copy[data-for="server_down"] .meter__fill{width:72%}
   html[data-state="security"] .copy[data-for="security"] .meter__fill{width:54%}
   .switch{display:none !important}
 </style>
@@ -521,6 +531,10 @@ html[data-state="security"] .copy[data-for="security"]{display:block;}
       <button type="button" class="switch__btn" data-set="maintenance" aria-pressed="true">
         <span class="switch__glow" aria-hidden="true"></span>
         <span class="switch__txt">Maintenance</span>
+      </button>
+      <button type="button" class="switch__btn" data-set="server_down" aria-pressed="false">
+        <span class="switch__glow" aria-hidden="true"></span>
+        <span class="switch__txt">Server down</span>
       </button>
       <button type="button" class="switch__btn" data-set="security" aria-pressed="false">
         <span class="switch__glow" aria-hidden="true"></span>
@@ -599,7 +613,52 @@ html[data-state="security"] .copy[data-for="security"]{display:block;}
       <p class="signoff" data-field="signoff">— The Convert Team</p>
     </div>
 
-    <!-- ═══════════ SECURITY REVIEW ═══════════ -->
+    <!-- ═══════════════════ SERVER DOWN ═══════════════════ -->
+    <div class="copy" data-for="server_down">
+      <p class="badge" role="status">
+        <span class="badge__dot" aria-hidden="true"></span>
+        <span data-field="badge">Server down</span>
+      </p>
+      <h1 class="hero" data-field="headline">Server down error</h1>
+      <p class="lede" data-field="lede">
+        MediaGrabber Pro is temporarily unavailable while we fix the website.
+        Nothing is wrong with your account, and no files are at risk.
+        We will be back shortly.
+      </p>
+
+      <dl class="facts">
+        <div class="facts__row">
+          <dt>Status</dt>
+          <dd data-field="status">Server down</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Scope</dt>
+          <dd data-field="scope">fixing website</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Window opened</dt>
+          <dd data-time="opened">08 Nov 2026 · 18:35 IST</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Restoration</dt>
+          <dd data-time="restore">08 Nov 2026 · 21:35 IST</dd>
+        </div>
+      </dl>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__label">Repair window</span>
+          <span class="meter__eta" data-eta>~ 48 m remaining</span>
+        </div>
+        <div class="meter__track" data-track role="img" aria-label="Repair window progress">
+          <span class="meter__fill" data-fill></span>
+        </div>
+      </div>
+
+      <p class="signoff" data-field="signoff">— The Convert Team</p>
+    </div>
+
+    <!-- ═══════════════════ SECURITY REVIEW ═══════════════════ -->
     <div class="copy" data-for="security">
       <p class="badge" role="status">
         <span class="badge__dot" aria-hidden="true"></span>
@@ -686,6 +745,20 @@ window.MAINTENANCE_CONFIG = {
       signoff: '— The Convert Team',
       ref: 'INC-2026-1107-M'
     },
+    server_down: {
+      title: 'Server down error — MediaGrabber Pro',
+      badge: 'Server down',
+      headline: 'Server down error',
+      lede: 'MediaGrabber Pro is temporarily unavailable while we fix the website. Nothing is wrong with your account, and no files are at risk. We will be back shortly.',
+      status: 'Server down',
+      scope: 'fixing website',
+      opened_minutes_ago: 122,
+      restore_in_minutes: 48,
+      meter_label: 'Repair window',
+      eta_noun: 'remaining',
+      signoff: '— The Convert Team',
+      ref: 'INC-2026-1108-D'
+    },
     security: {
       title: 'Security review — MediaGrabber Pro',
       badge: 'Security review in progress',
@@ -722,7 +795,7 @@ window.MAINTENANCE_CONFIG = {
   // Read the query string fresh each time — a cached URLSearchParams goes stale
   // after history.replaceState() during a hash navigation.
   function qs(key) {
-    try { return new URLSearchParals(window.location.search).get(key); }
+    try { return new URLSearchParams(window.location.search).get(key); }
     catch (e) { return null; }
   }
 
@@ -853,11 +926,16 @@ window.MAINTENANCE_CONFIG = {
   /* ---------- state source ---------- */
 
   function fromLocation() {
-    var q = qs('state');
+    var q = qs('mode') || qs('state');
     var h = (window.location.hash || '').replace('#', '');
     var want = (q || h || '').toLowerCase();
-    if (want === 'security' || want === 'maintenance') { return want; }
-    return (cfg.state === 'security') ? 'security' : 'maintenance';
+    if (want === 'security' || want === 'maintenance' || want === 'server_down') { return want; }
+    /* Live mode pushed by the switch-sync script (Supabase config.mode). */
+    var live = String(window.MG_MAINT_MODE || '').toLowerCase();
+    if (live === 'server_down' || live === 'security' || live === 'maintenance') { return live; }
+    var m = String(cfg.mode || cfg.state || '').toLowerCase();
+    if (m === 'server_down' || m === 'security') { return m; }
+    return 'maintenance';
   }
 
   function applyFromLocation() {
@@ -927,6 +1005,7 @@ window.MAINTENANCE_CONFIG = {
   el.brand.forEach(function (n) { if (cfg.brand) { n.textContent = cfg.brand; } });
 
   applyFromLocation();
+  window.MG_MAINT_APPLY = applyFromLocation;
   window.addEventListener('hashchange', applyFromLocation);
   window.addEventListener('popstate', applyFromLocation);
 
@@ -944,12 +1023,13 @@ window.MAINTENANCE_CONFIG = {
   var SB_URL  = 'https://vbawjzscjjakqlomqqpr.supabase.co';
   var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiYXdqenNjampha3Fsb21xcXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0MTM3MDAsImV4cCI6MjEwODk4OTcwMH0.I869HC183sDYPcSZQZmMeFcGkOSb0hz54zWCLGAu0Co';
   var FLAG = 'mg_maint';
+  var MODE_FLAG = 'mg_maint_mode';
   var busy = false;
 
   function check() {
     if (busy) { return; }
     busy = true;
-    fetch(SB_URL + '/rest/v1/site_settings?id=eq.1&select=maintenance', {
+    fetch(SB_URL + '/rest/v1/site_settings?id=eq.1&select=maintenance,config', {
       headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON },
       cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', mode: 'cors'
     })
@@ -959,9 +1039,23 @@ window.MAINTENANCE_CONFIG = {
         var row = rows && rows[0];
         if (!row) { return; }
         if (row.maintenance === false) {
-          try { localStorage.removeItem(FLAG); } catch (e) {}
+          try { localStorage.removeItem(FLAG); localStorage.removeItem(MODE_FLAG); } catch (e) {}
           /* NEVER redirect from here: the guard owns the redirect. */
+          return;
         }
+        /* Maintenance is ON: mirror the admin-selected wording mode, unless the
+           URL already pins one explicitly (?mode= / ?state= / #hash). */
+        var m = row.config && row.config.mode;
+        if (m !== 'server_down' && m !== 'maintenance') { return; }
+        var explicit = false;
+        try {
+          var sp = new URLSearchParams(window.location.search);
+          explicit = sp.has('mode') || sp.has('state') || !!window.location.hash;
+        } catch (e) {}
+        if (explicit) { return; }
+        try { localStorage.setItem(MODE_FLAG, m); } catch (e) {}
+        window.MG_MAINT_MODE = m;
+        if (typeof window.MG_MAINT_APPLY === 'function') { window.MG_MAINT_APPLY(); }
       })
       .catch(function () { busy = false; });
   }
