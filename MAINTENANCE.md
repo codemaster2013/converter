@@ -36,7 +36,7 @@ the checkout block), so a buyer can never reach checkout while the site is down.
 | `maintenance.html` | The visitor-facing maintenance screen (frozen design) |
 | `maintenance.config.js` | Copy + incident timestamps — the only file to edit for wording |
 | `mg-maint-guard.js` | Pre-paywall guard, loaded in `<head>` of every entry page |
-| `sw.js` | Service worker, `CACHE_VERSION = 'v36'` |
+| `sw.js` | Service worker, `CACHE_VERSION = 'v37'` |
 | `fonts/manrope-latin.woff2`, `fonts/jetbrains-mono-latin.woff2` | Self-hosted fonts |
 
 ## Palette (frozen)
@@ -85,3 +85,22 @@ live or error page.
 The switch is fully reversible. Nothing is deleted, unpublished or overwritten;
 the live site and its history are untouched. The maintenance screen is an
 additional file, and the guard is a no-op whenever the switch is OFF.
+
+## Incident 2026-11-08 (real incident)
+
+- The Supabase switch row (`site_settings` id=1) was **tampered with**: its
+  `message` field was overwritten with defaced text and `maintenance` was left
+  `false`. The row is publicly readable, so the defaced text was exposed to any
+  visitor whose client rendered it.
+- Response: the site was forced **UNDER MAINTENANCE** with no time limit.
+  `mg-maint-guard.js` now carries `FORCE_ON = true`, so every entry page sends
+  visitors to `maintenance.html` regardless of the switch value. `CACHE_VERSION`
+  was bumped to `v37` so returning PWA visitors get the maintenance screen.
+- The maintenance screen does **not** read the switch's `message`/`config`
+  fields, so the defaced text is never shown; the frozen copy in
+  `maintenance.config.js` is used instead.
+- **To lift maintenance:** set `FORCE_ON = false` in `mg-maint-guard.js` (and
+  restore the switch row), then commit. The switch is the only thing that lifts
+  the screen.
+- Backup taken before this change: `converter-backup-private` →
+  `backups/converter_backup_v1_2026-11-08.zip` (converter @ `8530c860`).
