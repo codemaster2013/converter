@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en" data-state="maintenance">
+<head>
+<meta charset="utf-8">
+<!--
+  DROP-IN STATUS PAGE — MediaGrabber Pro / Converter
+  ------------------------------------------------------------------
+  Ships as: index.html + maintenance.config.js + fonts/  (self-hosted)
+  Zero external requests. Compatible with the site's existing CSP
+  (default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline').
+  Renders correctly with JavaScript disabled (static maintenance state).
+  Edit copy + timestamps in maintenance.config.js — not in this file.
+  ------------------------------------------------------------------
+-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Under maintenance — MediaGrabber Pro</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="description" content="MediaGrabber Pro is temporarily offline for scheduled maintenance. Your files are safe and no action is needed.">
+<meta name="theme-color" content="#05070F">
+<meta name="color-scheme" content="dark">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+/* ============================================================
+   1. FONTS (self-hosted, latin subset, no network dependency)
+   ============================================================ */
+@font-face{
+  font-family:'Manrope';
+  src:url('fonts/manrope-latin.woff2') format('woff2');
+  font-weight:400 800;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'JetBrains Mono';
+  src:url('fonts/jetbrains-mono-latin.woff2') format('woff2');
+  font-weight:400 600;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* ============================================================
+   2. DESIGN TOKENS
+   ============================================================ */
+:root{
+  /* Surfaces — aligned with the product's own #05070F canvas */
+  --bg:#05070F;
+  --bg-inset:#141A26;
+  --line:#171D29;
+  --line-strong:#232C3D;
+
+  /* Foreground — every pair is WCAG AA+ on --bg */
+  --fg:#F1F4F7;          /* 18.9 : 1 */
+  --fg-2:#A2ADB9;        /*  8.6 : 1 */
+  --fg-3:#8A94A2;        /*  6.2 : 1 */
+
+  /* Type */
+  --font-ui:'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --fs-hero:clamp(1.95rem, 6.8vw, 3.15rem);
+  --fs-lede:clamp(0.98rem, 2.3vw, 1.0625rem);
+  --fs-body:0.875rem;
+  --fs-meta:0.625rem;
+
+  /* Space — 4px base */
+  --s-1:4px;  --s-2:8px;  --s-3:12px; --s-4:16px;
+  --s-5:20px; --s-6:24px; --s-8:32px; --s-10:40px;
+
+  /* Radius */
+  --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px; --r-pill:999px;
+
+  /* Elevation — one shadow only (the icon tile) */
+  --shadow-tile:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 48px -22px rgba(0,0,0,.95);
+
+  /* Motion */
+  --ease:cubic-bezier(.4,.14,.2,1);
+  --t-fast:160ms;
+  --t-base:340ms;
+  --t-slow:620ms;
+}
+
+/* State accents — amber = planned work, cyan = investigation.
+   Neither is red: red reads as failure, and neither state is one. */
+html[data-state="maintenance"]{
+  --accent:#E9A23B;
+  --accent-soft:rgba(233,162,59,.10);
+  --accent-line:rgba(233,162,59,.34);
+  --ambient:rgba(233,162,59,.055);
+}
+html[data-state="security"]{
+  --accent:#4FB8CC;
+  --accent-soft:rgba(79,184,204,.10);
+  --accent-line:rgba(79,184,204,.34);
+  --ambient:rgba(79,184,204,.055);
+}
+
+/* ============================================================
+   3. RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  min-height:100dvh;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--font-ui);
+  font-synthesis-weight:none;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  display:flex;
+  flex-direction:column;
+  overflow-x:hidden;
+  position:relative;
+}
+h1,p,dl,dd,dt,span{margin:0;padding:0;}
+dd{margin-inline-start:0;}
+button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0;cursor:pointer;}
+a{color:inherit;}
+svg{display:block;}
+
+:where(a,button,[tabindex]):focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  border-radius:var(--r-sm);
+}
+
+/* Visible only to screen readers */
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* ============================================================
+   4. BACKDROP — ambient light + technical grid
+   ============================================================ */
+.backdrop{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.backdrop__glow{
+  position:absolute;inset:0;
+  background:radial-gradient(58% 42% at 50% 4%, var(--ambient) 0%, rgba(0,0,0,0) 72%);
+  transition:background var(--t-slow) var(--ease);
+}
+.backdrop__grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.026) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.026) 1px, transparent 1px);
+  background-size:76px 76px;
+  -webkit-mask-image:radial-gradient(84% 66% at 50% 34%, #000 0%, rgba(0,0,0,0) 100%);
+  mask-image:radial-gradient(84% 66% at 50% 34%, #000 0%, rgba(0,0,0,0) 100%);
+}
+
+/* ============================================================
+   5. TOP BAR
+   ============================================================ */
+.topbar{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:var(--s-4);
+  padding:0 clamp(14px, 4vw, 40px);
+  min-height:clamp(56px, 7vw, 66px);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;}
+.brand__mark{
+  width:24px;height:24px;flex:none;
+  color:var(--accent);
+  transition:color var(--t-base) var(--ease);
+}
+.brand__mark svg{width:100%;height:100%;}
+.brand__name{
+  font-size:0.9375rem;font-weight:700;
+  letter-spacing:-0.012em;white-space:nowrap;
+}
+.brand__div{width:1px;height:14px;background:var(--line-strong);flex:none;}
+.brand__env{
+  font-family:var(--font-mono);
+  font-size:var(--fs-meta);font-weight:500;
+  letter-spacing:.13em;text-transform:uppercase;
+  color:var(--fg-3);white-space:nowrap;
+}
+
+.topbar__right{display:flex;align-items:center;gap:clamp(10px, 2vw, 18px);min-width:0;}
+.clock{
+  font-family:var(--font-mono);
+  font-size:var(--fs-meta);font-weight:500;
+  letter-spacing:.1em;color:var(--fg-3);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+
+/* Segmented preview switch — hidden in production.
+   Enabled only with ?preview=1 (or config.preview = true). */
+.switch{
+  display:none;
+  align-items:center;gap:2px;padding:3px;
+  border:1px solid var(--line-strong);
+  border-radius:var(--r-pill);
+  background:rgba(255,255,255,.014);
+}
+.switch.is-on{display:flex;}
+.switch__btn{
+  min-height:30px;padding:0 11px;
+  border-radius:var(--r-pill);
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);
+  font-size:0.59375rem;font-weight:500;
+  letter-spacing:.111em;text-transform:uppercase;
+  color:var(--fg-3);white-space:nowrap;
+  transition:color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+.switch__btn:hover{color:var(--fg-2);}
+.switch__btn[aria-pressed="true"]{background:var(--bg-inset);color:var(--fg);}
+.switch__btn[aria-pressed="true"] .switch__glow{
+  background:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.switch__glow{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--line-strong);flex:none;
+  transition:background var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
+}
+
+/* ============================================================
+   6. STAGE / PANEL
+   ============================================================ */
+.stage{
+  position:relative;z-index:1;
+  flex:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(30px, 5.5vh, 72px) clamp(18px, 4vw, 40px) clamp(26px, 4.5vh, 60px);
+}
+.panel{
+  width:100%;max-width:600px;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+  animation:rise var(--t-slow) var(--ease) both;
+}
+@keyframes rise{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* — Icon tile — */
+.tile{
+  position:relative;
+  width:80px;height:80px;flex:none;
+  display:grid;place-items:center;
+  border-radius:22px;
+  background:linear-gradient(180deg, #101725 0%, #0A0E17 100%);
+  border:1px solid var(--line-strong);
+  box-shadow:var(--shadow-tile);
+}
+.tile__ring{
+  position:absolute;inset:-13px;
+  width:calc(100% + 26px);height:calc(100% + 26px);
+  color:var(--accent);opacity:.30;
+  animation:spin 34s linear infinite;
+  transition:opacity var(--t-base) var(--ease);
+}
+html[data-state="security"] .tile__ring{animation-duration:70s;opacity:.20;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.tile__svg{
+  width:35px;height:35px;color:var(--accent);
+  transition:color var(--t-base) var(--ease);
+}
+html[data-state="maintenance"] .tile__svg[data-icon="security"],
+html[data-state="security"] .tile__svg[data-icon="maintenance"]{display:none;}
+.tile__halo{
+  position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(70% 70% at 50% 0%, var(--accent-soft) 0%, rgba(0,0,0,0) 70%);
+  transition:background var(--t-base) var(--ease);
+}
+
+/* — Badge — */
+.badge{
+  margin-top:clamp(16px, 2.4vh, 26px);
+  display:inline-flex;align-items:center;gap:var(--s-2);
+  padding:6px 13px 6px 11px;
+  border-radius:var(--r-pill);
+  border:1px solid var(--accent-line);
+  background:var(--accent-soft);
+  color:var(--accent);
+  font-family:var(--font-mono);
+  font-size:0.59375rem;font-weight:600;
+  letter-spacing:.155em;text-transform:uppercase;
+  white-space:nowrap;
+  transition:color var(--t-base) var(--ease), border-color var(--t-base) var(--ease), background-color var(--t-base) var(--ease);
+}
+.badge__dot{
+  width:5px;height:5px;border-radius:50%;
+  background:currentColor;flex:none;
+  animation:pulse 2.4s var(--ease) infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:.35;transform:scale(.82);}
+}
+
+/* — Headline / lede — */
+.hero{
+  margin-top:clamp(10px, 1.4vh, 16px);
+  font-size:var(--fs-hero);
+  font-weight:800;line-height:1.03;
+  letter-spacing:-0.035em;
+  color:var(--fg);
+  text-wrap:balance;
+}
+.lede{
+  margin-top:clamp(10px, 1.4vh, 16px);
+  max-width:46ch;
+  font-size:var(--fs-lede);font-weight:400;
+  line-height:1.62;letter-spacing:-0.006em;
+  color:var(--fg-2);
+  text-wrap:pretty;
+}
+
+/* — Fact console — */
+.facts{
+  margin-top:clamp(16px, 2.4vh, 28px);
+  width:100%;max-width:452px;
+  text-align:left;
+  border-top:1px solid var(--line);
+}
+.facts__row{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:var(--s-4);
+  padding:9px 2px;
+  border-bottom:1px solid var(--line);
+}
+.facts__row dt{
+  font-family:var(--font-mono);
+  font-size:var(--fs-meta);font-weight:500;
+  letter-spacing:.135em;text-transform:uppercase;
+  color:var(--fg-3); white-space:nowrap;flex:none;
+}
+.facts__row dd{
+  font-size:var(--fs-body);font-weight:600;
+  letter-spacing:-0.005em;color:var(--fg);
+  text-align:right;overflow-wrap:anywhere;
+}
+
+/* — Window meter — */
+.meter{
+  margin-top:clamp(14px, 1.9vh, 22px);
+  width:100%;max-width:452px;
+  text-align:left;
+}
+.meter__head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:var(--s-3);margin-bottom:9px;
+}
+.meter__label{
+  font-family:var(--font-mono);
+  font-size:var(--fs-meta);font-weight:500;
+  letter-spacing:.135em;text-transform:uppercase;
+  color:var(--fg-3);
+}
+.meter__eta{
+  font-family:var(--font-mono);
+  font-size:var(--fs-meta);font-weight:500;
+  letter-spacing:.06em;color:var(--fg-2);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.meter__track{
+  height:3px;border-radius:var(--r-pill);
+  background:var(--bg-inset);overflow:hidden;
+}
+.meter__fill{
+  display:block;height:100%;width:0;
+  border-radius:var(--r-pill);
+  background:var(--accent);
+  transition:width var(--t-slow) var(--ease), background-color var(--t-base) var(--ease);
+}
+
+/* — Sign-off — */
+.signoff{
+  margin-top:clamp(16px, 2.2vh, 28px);
+  font-size:0.8125rem;font-weight:500;
+  letter-spacing:0.004em;color:var(--fg-3);
+}
+
+/* Copy blocks — exactly one state is rendered at a time */
+.copy{display:none;width:100%;}
+html[data-state="maintenance"] .copy[data-for="maintenance"],
+html[data-state="security"] .copy[data-for="security"]{display:block;}
+
+/* ============================================================
+   7. FOOTER
+   ============================================================ */
+.foot{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:var(--s-3) var(--s-5);
+  padding:13px clamp(18px, 4vw, 40px);
+  border-top:1px solid var(--line);
+  font-family:var(--font-mono);
+  font-size:var(--fs-meta);font-weight:500;
+  letter-spacing:.115em;text-transform:uppercase;
+  color:var(--fg-3);
+}
+.foot__ref b{font-weight:600;color:var(--fg-2);letter-spacing:.09em;}
+.foot__link{
+  display:inline-flex;align-items:center;gap:5px;
+  min-height:28px;
+  text-decoration:none;color:var(--fg-2);
+  border-bottom:1px solid var(--line-strong);
+  padding-bottom:1px;
+  transition:color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.foot__link:hover{color:var(--accent);border-color:var(--accent-line);}
+.foot__link svg{width:9px;height:9px;transition:transform var(--t-fast) var(--ease);}
+.foot__link:hover svg{transform:translate(1px,-1px);}
+
+/* ============================================================
+   8. RESPONSIVE
+   ============================================================ */
+@media (max-width:560px){
+  .brand__env,.brand__div{display:none;}
+  .clock{display:none;}
+  .switch__btn{min-height:34px;padding:0 9px;font-size:0.5625rem;letter-spacing:.09em;}
+  .switch__txt{display:none;}
+  .switch__btn[aria-pressed="true"] .switch__txt{display:inline;}
+  .tile{width:76px;height:76px;border-radius:20px;}
+  .tile__svg{width:34px;height:34px;}
+  .facts__row{flex-direction:column;align-items:flex-start;gap:5px;padding:11px 2px;}
+  .facts__row dd{text-align:left;}
+  .foot{justify-content:flex-start;}
+}
+@media (max-width:360px){
+  .hero{letter-spacing:-0.03em;}
+  .facts__row dt{letter-spacing:.1em;}
+}
+
+/* Short viewports: keep the whole status above the fold */
+@media (max-height:720px){
+  .tile{width:60px;height:60px;border-radius:16px;}
+  .tile__svg{width:27px;height:27px;}
+  .tile__ring{inset:-9px;width:calc(100% + 18px);height:calc(100% + 18px);}
+  .badge{margin-top:11px;padding:4px 10px 4px 8px;}
+  .hero{margin-top:6px;font-size:clamp(1.7rem, 5.2vw, 2.35rem);}
+  .lede{margin-top:7px;font-size:0.875rem;line-height:1.5;}
+  .facts{margin-top:11px;}
+  .facts__row{padding:5px 2px;}
+  .meter{margin-top:9px;}
+  .signoff{margin-top:9px;}
+  .stage{padding-top:14px;padding-bottom:10px;}
+  .topbar{min-height:50px;}
+  .foot{padding:8px clamp(18px, 4vw, 40px);}
+}
+
+/* ============================================================
+   9. ACCESSIBILITY & PRINT
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .panel{animation:none;}
+}
+
+@media (forced-colors:active){
+  .tile,.badge,.switch,.foot__link{border:1px solid CanvasText;}
+  .meter__fill{background:Highlight;}
+  .meter__track{border:1px solid CanvasText;}
+}
+
+@media print{
+  .topbar,.foot,.backdrop{display:none;}
+  body{background:#fff;color:#000;}
+  .tile__ring,.tile__halo{display:none;}
+  .hero,.facts__row dd{color:#000;}
+  .lede,.facts__row dt,.signoff{color:#333;}
+  .facts,.facts__row{border-color:#ccc;}
+}
+</style>
+</head>
+<body>
+
+<noscript>
+<style>
+  /* No-JS fallback: give the meter a sensible fill and hide the QA switch */
+  html[data-state="maintenance"] .copy[data-for="maintenance"] .meter__fill{width:72%}
+  html[data-state="security"] .copy[data-for="security"] .meter__fill{width:54%}
+  .switch{display:none !important}
+</style>
+</noscript>
+
+<div class="backdrop" aria-hidden="true">
+  <div class="backdrop__glow"></div>
+  <div class="backdrop__grid"></div>
+</div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand__mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+           stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <path d="M4 8h13l-3-3"/>
+        <path d="M20 16H7l3 3"/>
+      </svg>
+    </span>
+    <span class="brand__name" data-brand>MediaGrabber Pro</span>
+    <span class="brand__div" aria-hidden="true"></span>
+    <span class="brand__env">Service status</span>
+  </div>
+
+  <div class="topbar__right">
+    <span class="clock" data-clock aria-hidden="true">UTC 00:00</span>
+
+    <!-- QA-only state switch. Rendered visible only with ?preview=1 -->
+    <div class="switch" data-switch role="group" aria-label="Preview incident state">
+      <button type="button" class="switch__btn" data-set="maintenance" aria-pressed="true">
+        <span class="switch__glow" aria-hidden="true"></span>
+        <span class="switch__txt">Maintenance</span>
+      </button>
+      <button type="button" class="switch__btn" data-set="security" aria-pressed="false">
+        <span class="switch__glow" aria-hidden="true"></span>
+        <span class="switch__txt">Security</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="stage" id="main">
+  <div class="panel">
+
+    <!-- ═══════════ ICON TILE ═══════════ -->
+    <div class="tile">
+      <span class="tile__halo" aria-hidden="true"></span>
+      <svg class="tile__ring" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="1"
+                stroke-dasharray="2.4 8.4" stroke-linecap="round"/>
+      </svg>
+      <svg class="tile__svg" data-icon="maintenance" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true" focusable="false">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+      <svg class="tile__svg" data-icon="security" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true" focusable="false">
+        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+        <path d="M12 8.2v4"/>
+        <path d="M12 15.9h.01"/>
+      </svg>
+    </div>
+
+    <!-- ═══════════ MAINTENANCE ═══════════ -->
+    <div class="copy" data-for="maintenance">
+      <p class="badge" role="status">
+        <span class="badge__dot" aria-hidden="true"></span>
+        <span data-field="badge">Maintenance in progress</span>
+      </p>
+      <h1 class="hero" data-field="headline">Under maintenance</h1>
+      <p class="lede" data-field="lede">
+        MediaGrabber Pro is offline while we carry out scheduled maintenance on the
+        conversion engine. Nothing is wrong with your account, and no files are at risk.
+        We will be back shortly.
+      </p>
+
+      <dl class="facts">
+        <div class="facts__row">
+          <dt>Status</dt>
+          <dd data-field="status">Scheduled maintenance</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Scope</dt>
+          <dd data-field="scope">Conversion engine &amp; API</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Window opened</dt>
+          <dd data-time="opened">07 Nov 2026 · 19:40 IST</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Restoration</dt>
+          <dd data-time="restore">07 Nov 2026 · 22:30 IST</dd>
+        </div>
+      </dl>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__label">Maintenance window</span>
+          <span class="meter__eta" data-eta>~ 48 m remaining</span>
+        </div>
+        <div class="meter__track" data-track role="img" aria-label="Maintenance window progress">
+          <span class="meter__fill" data-fill></span>
+        </div>
+      </div>
+
+      <p class="signoff" data-field="signoff">— The Convert Team</p>
+    </div>
+
+    <!-- ═══════════ SECURITY REVIEW ═══════════ -->
+    <div class="copy" data-for="security">
+      <p class="badge" role="status">
+        <span class="badge__dot" aria-hidden="true"></span>
+        <span data-field="badge">Security review in progress</span>
+      </p>
+      <h1 class="hero" data-field="headline">Temporarily locked</h1>
+      <p class="lede" data-field="lede">
+        We have taken MediaGrabber Pro offline as a precaution while our response team
+        completes a security review of the upload and conversion pipeline. Your files
+        are secure, nothing has been lost, and no action is needed from you.
+      </p>
+
+      <dl class="facts">
+        <div class="facts__row">
+          <dt>Status</dt>
+          <dd data-field="status">Investigation open</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Scope</dt>
+          <dd data-field="scope">Upload &amp; conversion pipeline</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Detection</dt>
+          <dd data-time="opened">07 Nov 2026 · 20:10 IST</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Next update</dt>
+          <dd data-time="next_update">07 Nov 2026 · 23:00 IST</dd>
+        </div>
+        <div class="facts__row">
+          <dt>Owner</dt>
+          <dd data-field="owner">Quick Response Team</dd>
+        </div>
+      </dl>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__label">Review progress</span>
+          <span class="meter__eta" data-eta>~ 48 m to restore</span>
+        </div>
+        <div class="meter__track" data-track role="img" aria-label="Security review progress">
+          <span class="meter__fill" data-fill></span>
+        </div>
+      </div>
+
+      <p class="signoff" data-field="signoff">— The Convert Team · Quick Response Team</p>
+    </div>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <span class="foot__ref">Ref <b data-ref>—</b></span>
+  <a class="foot__link" href="mailto:singh.darshil2013@gmail.com" data-report>
+    Report a concern
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M3.5 8.5 8.5 3.5"/><path d="M4 3.5h4.5V8"/>
+    </svg>
+  </a>
+</footer>
+
+<!-- Inline defaults: the page is fully functional even if the config file is missing -->
+<script>
+window.MAINTENANCE_CONFIG = {
+  state: 'maintenance',
+  preview: false,
+  brand: 'MediaGrabber Pro',
+  contact_email: 'singh.darshil2013@gmail.com',
+  timezone: 'Asia/Kolkata',
+  healthcheck: { enabled: false, url: '', interval_ms: 60000 },
+  states: {
+    maintenance: {
+      title: 'Under maintenance — MediaGrabber Pro',
+      badge: 'Maintenance in progress',
+      headline: 'Under maintenance',
+      lede: 'MediaGrabber Pro is offline while we carry out scheduled maintenance on the conversion engine. Nothing is wrong with your account, and no files are at risk. We will be back shortly.',
+      status: 'Scheduled maintenance',
+      scope: 'Conversion engine & API',
+      opened_minutes_ago: 122,
+      restore_in_minutes: 48,
+      meter_label: 'Maintenance window',
+      eta_noun: 'remaining',
+      signoff: '— The Convert Team',
+      ref: 'INC-2026-1107-M'
+    },
+    security: {
+      title: 'Security review — MediaGrabber Pro',
+      badge: 'Security review in progress',
+      headline: 'Temporarily locked',
+      lede: 'We have taken MediaGrabber Pro offline as a precaution while our response team completes a security review of the upload and conversion pipeline. Your files are secure, nothing has been lost, and no action is needed from you.',
+      status: 'Investigation open',
+      scope: 'Upload & conversion pipeline',
+      opened_minutes_ago: 92,
+      restore_in_minutes: 48,
+      next_update_in_minutes: 18,
+      meter_label: 'Review progress',
+      eta_noun: 'to restore',
+      owner: 'Quick Response Team',
+      signoff: '— The Convert Team · Quick Response Team',
+      ref: 'INC-2026-1107-S'
+    }
+  }
+};
+</script>
+
+<!-- Optional override file — copy of the block above with your real values -->
+<script src="maintenance.config.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  var DEFAULTS = window.MAINTENANCE_CONFIG || {};
+  var cfg = Object.assign({}, DEFAULTS, window.MAINTENANCE_OVERRIDE || {});
+  var states = Object.assign({}, DEFAULTS.states, cfg.states);
+
+  var root = document.documentElement;
+
+  // Read the query string fresh each time — a cached URLSearchParams goes stale
+  // after history.replaceState() during a hash navigation.
+  function qs(key) {
+    try { return new URLSearchParals(window.location.search).get(key); }
+    catch (e) { return null; }
+  }
+
+  var el = {
+    brand: document.querySelectorAll('[data-brand]'),
+    clock: document.querySelector('[data-clock]'),
+    sw: document.querySelector('[data-switch]'),
+    btns: Array.prototype.slice.call(document.querySelectorAll('.switch__btn')),
+    ref: document.querySelector('[data-ref]'),
+    report: document.querySelector('[data-report]')
+  };
+
+  var current = 'maintenance';
+  var timer = null;
+
+  /* ---------- time helpers ---------- */
+
+  // Resolve a state's timestamp: absolute ISO wins, otherwise relative offsets,
+  // so a config left untouched still reads as a live incident.
+  function resolveTime(s, absKey, minKey) {
+    if (s[absKey]) {
+      var t = new Date(s[absKey]).getTime();
+      if (!isNaN(t)) { return t; }
+    }
+    if (typeof s[minKey] === 'number') {
+      return Date.now() + s[minKey] * 60000;
+    }
+    return null;
+  }
+
+  function fmt(ts) {
+    if (!ts) { return '—'; }
+    try {
+      return new Intl.DateTimeFormat('en-GB', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false,
+        timeZone: cfg.timezone || 'Asia/Kolkata'
+      }).format(new Date(ts)).replace(',', ' ·')
+        + ' ' + tzLabel(cfg.timezone || 'Asia/Kolkata');
+    } catch (e) {
+      return new Date(ts).toUTCString();
+    }
+  }
+
+  function tzLabel(tz) {
+    var map = {
+      'Asia/Kolkata': 'IST',
+      'UTC': 'UTC',
+      'Europe/London': 'GMT',
+      'America/New_York': 'ET'
+    };
+    return map[tz] || tz.split('/').pop().replace(/_/g, ' ');
+  }
+
+  function span(ms) {
+    var m = Math.max(0, Math.round(ms / 60000));
+    var h = Math.floor(m / 60);
+    var mm = m % 60;
+    if (h && mm) { return h + ' h ' + mm + ' m'; }
+    if (h) { return h + ' h'; }
+    return mm + ' m';
+  }
+
+  /* ---------- render ---------- */
+
+  function render(state) {
+    var s = states[state];
+    if (!s) { return; }
+    current = state;
+    root.setAttribute('data-state', state);
+
+    var opened = resolveTime(s, 'opened_at', 'opened_minutes_ago');
+    var restore = resolveTime(s, 'restore_at', 'restore_in_minutes');
+    var nextUp = resolveTime(s, 'next_update_at', 'next_update_in_minutes');
+
+    var block = document.querySelector('.copy[data-for="' + state + '"]');
+
+    block.querySelectorAll('[data-field]').forEach(function (node) {
+      var key = node.getAttribute('data-field');
+      if (typeof s[key] === 'string') { node.textContent = s[key]; }
+    });
+
+    block.querySelectorAll('[data-time]').forEach(function (node) {
+      var key = node.getAttribute('data-time');
+      var ts = key === 'opened' ? opened : key === 'restore' ? restore : nextUp;
+      node.textContent = fmt(ts);
+    });
+
+    var label = block.querySelector('.meter__label');
+    if (label && s.meter_label) { label.textContent = s.meter_label; }
+
+    // Progress + countdown
+    if (opened && restore && restore > opened) {
+      var total = restore - opened;
+      var pct = Math.max(0, Math.min(100, ((Date.now() - opened) / total) * 100));
+      var fill = block.querySelector('[data-fill]');
+      var track = block.querySelector('[data-track]');
+      var eta = block.querySelector('[data-eta]');
+
+      fill.style.width = pct.toFixed(1) + '%';
+      if (track) {
+        track.setAttribute('aria-label', s.meter_label + ' ' + Math.round(pct) + ' percent complete');
+      }
+      if (eta) {
+        var left = restore - Date.now();
+        eta.textContent = left > 0
+          ? '~ ' + span(left) + ' ' + (s.eta_noun || 'remaining')
+          : 'Restoring now';
+      }
+    }
+
+    // Document title
+    if (s.title) { document.title = s.title; }
+
+    // Incident reference
+    if (el.ref && s.ref) { el.ref.textContent = s.ref; }
+
+    // Contact
+    if (el.report && cfg.contact_email) {
+      el.report.setAttribute('href', 'mailto:' + cfg.contact_email);
+    }
+
+    el.btns.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-set') === state));
+    });
+  }
+
+  /* ---------- state source ---------- */
+
+  function fromLocation() {
+    var q = qs('state');
+    var h = (window.location.hash || '').replace('#', '');
+    var want = (q || h || '').toLowerCase();
+    if (want === 'security' || want === 'maintenance') { return want; }
+    return (cfg.state === 'security') ? 'security' : 'maintenance';
+  }
+
+  function applyFromLocation() {
+    render(fromLocation());
+    startClock();
+  }
+
+  /* ---------- clock ---------- */
+
+  function startClock() {
+    function tickClock() {
+      if (!el.clock) { return; }
+      var d = new Date();
+      el.clock.textContent = 'UTC ' +
+        String(d.getUTCHours()).padStart(2, '0') + ':' +
+        String(d.getUTCMinutes()).padStart(2, '0');
+    }
+    tickClock();
+    setInterval(tickClock, 20000);
+
+    // Re-render every 30 s so the countdown and meter stay truthful
+    if (timer) { clearInterval(timer); }
+    timer = setInterval(function () { render(current); }, 30000);
+  }
+
+  /* ---------- preview switch (QA only) ---------- */
+
+  function enablePreview() {
+    if (!el.sw) { return; }
+    el.sw.classList.add('is-on');
+    el.btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var next = b.getAttribute('data-set');
+        history.replaceState(null, '', '?preview=1&state=' + next);
+        render(next);
+      });
+    });
+  }
+
+  /* ---------- optional auto-recovery ---------- */
+
+  function startHealthcheck() {
+    var hc = cfg.healthcheck || {};
+    if (!hc.enabled || !hc.url) { return; }
+    var interval = Math.max(15000, Number(hc.interval_ms) || 60000);
+    var target = hc.url;
+
+    // Guard against a self-loop: if the probe resolves to THIS status page,
+    // every check would "succeed" and bounce the visitor straight back here.
+    try {
+      var here = new URL(window.location.href);
+      var there = new URL(hc.redirect_to || target, window.location.href);
+      if (there.href === here.href || there.pathname === here.pathname) { return; }
+    } catch (e) { return; }
+
+    setInterval(function () {
+      fetch(target, { method: 'GET', cache: 'no-store', mode: 'cors' })
+        .then(function (r) {
+          if (r.ok) { window.location.replace(hc.redirect_to || './'); }
+        })
+        .catch(function () { /* still down — stay on this page */ });
+    }, interval);
+  }
+
+  /* ---------- boot ---------- */
+
+  el.brand.forEach(function (n) { if (cfg.brand) { n.textContent = cfg.brand; } });
+
+  applyFromLocation();
+  window.addEventListener('hashchange', applyFromLocation);
+  window.addEventListener('popstate', applyFromLocation);
+
+  if (cfg.preview === true || qs('preview') === '1') { enablePreview(); }
+
+  startHealthcheck();
+})();
+</script>
+
+<!-- Self-heal: when the admin switch goes back to Live, return visitors to the site.
+     Never shows an error; if the switch is unreachable it simply stays on this page. -->
+<script>
+(function () {
+  'use strict';
+  var SB_URL  = 'https://vbawjzscjjakqlomqqpr.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiYXdqenNjampha3Fsb21xcXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0MTM3MDAsImV4cCI6MjEwODk4OTcwMH0.I869HC183sDYPcSZQZmMeFcGkOSb0hz54zWCLGAu0Co';
+  var FLAG = 'mg_maint';
+  var busy = false;
+
+  function check() {
+    if (busy) { return; }
+    busy = true;
+    fetch(SB_URL + '/rest/v1/site_settings?id=eq.1&select=maintenance', {
+      headers: { apikey: SB_ANON, Authorization: 'Bearer ' + SB_ANON },
+      cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', mode: 'cors'
+    })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (rows) {
+        busy = false;
+        var row = rows && rows[0];
+        if (!row) { return; }
+        if (row.maintenance === false) {
+          try { localStorage.removeItem(FLAG); } catch (e) {}
+          location.replace('./');
+        }
+      })
+      .catch(function () { busy = false; });
+  }
+
+  check();
+  setInterval(function () { if (!document.hidden) { check(); } }, 30000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { check(); } });
+  window.addEventListener('online', check);
+})();
+</script>
+</body>
+</html>
