@@ -1,0 +1,120 @@
+name: Deploy maintenance control
+
+# One-shot deploy of the maintenance control layer.
+# Assets are fetched from the published artifact store, so this workflow stays
+# small and the large entry pages are patched in the runner.
+# Idempotent: re-running changes nothing.
+
+on:
+  push:
+    paths:
+      - '.github/workflows/deploy-maintenance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-maintenance
+  cancel-in-progress: false
+
+env:
+  BASE: https://static.teamily.ai/sites/f52ba82a-80fc-43b2-b8ba-8e44aadbb60e/documents
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout converter
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch maintenance assets
+        run: |
+          set -euo pipefail
+          mkdir -p fonts
+          curl -fsSL -o maintenance.html          "$BASE/maintenance/maintenance.html"
+          curl -fsSL -o maintenance.config.js     "$BASE/maintenanceconfig/maintenance.config.js"
+          curl -fsSL -o mg-maint-guard.js         "$BASE/mg-maint-guard/mg-maint-guard.js"
+          curl -fsSL -o admin.html                "$BASE/admin/admin.html"
+          curl -fsSL -o fonts/manrope-latin.woff2 "$BASE/manrope-latin/manrope-latin.woff2"
+          curl -fsSL -o fonts/jetbrains-mono-latin.woff2 "$BASE/jetbrains-mono-latin/jetbrains-mono-latin.woff2"
+          ls -l maintenance.html maintenance.config.js mg-maint-guard.js admin.html fonts/
+
+      - name: Patch every entry page (guard before app shell and paywall)
+        run: |
+          python3 - <<'PY'
+          import io, re, glob
+
+          GUARD = '<script src="mg-maint-guard.js"></script>\n'
+          SKIP = {'maintenance.html', 'admin.html'}
+
+          for path in sorted(glob.glob('*.html')):
+              if path in SKIP:
+                  continue
+              s = io.open(path, encoding='utf-8').read()
+              if 'mg-maint-guard.js' in s:
+                  print(path, 'already patched'); continue
+              m = (re.search(r'<meta http-equiv="Content-Security-Policy"[^>]*>', s)
+                   or re.search(r'<meta charset="[^"]*">', s)
+                   or re.search(r'<head[^>]*>', s))
+              if not m:
+                  print(path, 'no anchor, skipped'); continue
+              s = s[:m.end()] + '\n' + GUARD + s[m.end():]
+              io.open(path, 'w', encoding='utf-8').write(s)
+              print(path, 'patched')
+          PY
+
+      - name: Point the legacy overlay at the frozen screen
+        run: |
+          python3 - <<'PY'
+          import io
+          p = 'pwa.js'
+          s = io.open(p, encoding='utf-8').read()
+          if 'frozen maintenance screen' in s:
+              print('pwa.js already patched'); raise SystemExit(0)
+          old = "  function show(msg, cfg) {\n    wanted = true; lastMsg = msg; lastCfg = cfg;"
+          new = old + """
+
+    /* The frozen maintenance screen is the single visitor-facing experience.
+       Hand off to it instead of painting the legacy overlay, so every page
+       that loads pwa.js (app, VIP/checkout, tools) shows the same screen. */
+    try {
+      var here = String(location.pathname).split('/').pop().toLowerCase();
+      if (here !== 'maintenance.html') {
+        var dir = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1) || '/';
+        location.replace(dir + 'maintenance.html');
+        return;
+      }
+    } catch (e) {}"""
+          if old not in s:
+              print('pwa.js anchor missing'); raise SystemExit(1)
+          io.open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
+          print('pwa.js patched')
+          PY
+
+      - name: Verify
+        run: |
+          set -e
+          for f in index.html "index (3).html" 404.html offline.html; do
+            grep -q 'mg-maint-guard.js' "$f" || { echo "MISSING guard in $f"; exit 1; }
+            echo "ok: $f"
+          done
+          grep -q "CACHE_VERSION = 'v36'" sw.js && echo "ok: sw v36"
+          grep -q 'frozen maintenance screen' pwa.js && echo "ok: pwa handoff"
+          test -s maintenance.html && test -s maintenance.config.js && test -s admin.html
+          test -s fonts/manrope-latin.woff2 && test -s fonts/jetbrains-mono-latin.woff2
+          echo "ok: assets present"
+
+      - name: Commit
+        run: |
+          git config user.name "mgp-maintenance-bot"
+          git config user.email "mgp-maintenance-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -m "feat(maintenance): one-click control + pre-paywall guard [skip ci]"
+            git push origin HEAD:main
+          fi
