@@ -28,6 +28,12 @@
   var FLAG = 'mg_maint';
   var PAGE = 'maintenance.html';
 
+  /* INCIDENT 2026-11-08: the Supabase switch row was tampered with (its message
+     field was defaced and maintenance was left OFF). Until the admin restores
+     the switch, force the maintenance screen ON for every visitor. Set this
+     back to false to return to switch-driven control. */
+  var FORCE_ON = true;
+
   /* Never guard the maintenance page itself — it has its own self-heal. */
   var here = String(location.pathname).split('/').pop().toLowerCase();
   if (here === PAGE) { return; }
@@ -62,7 +68,7 @@
       .then(function (rows) {
         var row = rows && rows[0];
         if (!row) { return; }                       /* unknown -> do nothing */
-        if (row.maintenance === true) {
+        if (row.maintenance === true || FORCE_ON) {
           try { localStorage.setItem(FLAG, '1'); } catch (e) {}
           go();
         } else if (row.maintenance === false) {
