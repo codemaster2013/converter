@@ -1,3 +1,66 @@
+/* ===== MAINTENANCE MODE (visitor side) =====
+   Reads ONE public on/off switch (+ optional message) from Supabase and shows the "Under Maintenance" screen when it is ON.
+   Privacy: no cookies, no user id, no analytics, no referrer; nothing about the visitor is sent or stored.
+   (Only the last on/off answer is kept on the device so the screen can appear instantly.) */
+(function () {
+  'use strict';
+  var C = {
+    url: 'https://vbawjzscjjakqlomqqpr.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiYXdqenNjampha3Fsb21xcXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0MTM3MDAsImV4cCI6MjEwODk4OTcwMH0.I869HC183sDYPcSZQZmMeFcGkOSb0hz54zWCLGAu0Co'
+  };
+  var CACHE_KEY = 'mg_maint', ID = 'mg-maint-overlay', POLL_MS = 30000;
+  var DEFAULT_MSG = 'MediaGrabber Pro is currently down for maintenance. Check back soon!';
+
+  function show(msg) {
+    var el = document.getElementById(ID);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = ID;
+      el.setAttribute('role', 'alert');
+      el.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+        'text-align:center;padding:32px;background:#080b14;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';
+      el.innerHTML = '<style>@keyframes mmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}' +
+        '@media (prefers-reduced-motion:reduce){#' + ID + ' .mm-i{animation:none!important}}</style>' +
+        '<div class="mm-i" style="font-size:64px;margin-bottom:18px;animation:mmPulse 2s ease infinite">\uD83D\uDD27</div>' +
+        '<div style="font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:10px">Under Maintenance</div>' +
+        '<div class="mm-t" style="color:#7d86a8;font-size:15px;max-width:300px;line-height:1.6"></div>' +
+        '<div style="margin-top:22px;font-size:13px;color:#7d86a8">\u2014 The MediaGrabber Pro Team</div>';
+      document.documentElement.appendChild(el);
+      document.documentElement.style.overflow = 'hidden';
+    }
+    el.querySelector('.mm-t').textContent = (msg && String(msg).trim()) || DEFAULT_MSG;
+  }
+
+  function hide() {
+    var el = document.getElementById(ID);
+    if (el) el.parentNode.removeChild(el);
+    document.documentElement.style.overflow = '';
+  }
+
+  function remember(on) { try { localStorage.setItem(CACHE_KEY, on ? '1' : '0'); } catch (e) {} }
+
+  function check() {
+    fetch(C.url + '/rest/v1/site_settings?id=eq.1&select=maintenance,message', {
+      headers: { apikey: C.anonKey, Authorization: 'Bearer ' + C.anonKey },
+      cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', mode: 'cors'
+    })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (rows) {
+        var row = rows && rows[0];
+        if (row && row.maintenance === true) { remember(true); show(row.message); }
+        else { remember(false); hide(); }
+      })
+      .catch(function () { hide(); });   // offline / Supabase unreachable → never lock people out
+  }
+
+  var was = false; try { was = localStorage.getItem(CACHE_KEY) === '1'; } catch (e) {}
+  if (was) show();
+  check();
+  setInterval(function () { if (!document.hidden) check(); }, POLL_MS);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
+})();
+/* ===== END MAINTENANCE MODE ===== */
+
 /* MediaGrabber Pro – PWA bootstrap
    A) PWA-ONLY (installed app): lighter animations, no zoom/selection/bounce, theme colour, desktop title bar, haptics, notifications.
    B) ALL VISITORS: service worker + update notice, offline bar, smart install button + install count, iOS tip,

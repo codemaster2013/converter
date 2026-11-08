@@ -1,6 +1,6 @@
 /* MediaGrabber Pro – service worker
    Bump CACHE_VERSION whenever you change any file, so users get the update. */
-const CACHE_VERSION = 'v29';
+const CACHE_VERSION = 'v30';
 const CORE_CACHE = 'mgpro-core-' + CACHE_VERSION;
 const RUNTIME_CACHE = 'mgpro-runtime-' + CACHE_VERSION;
 const SHARE_CACHE = 'mgpro-share';          // files received through "Share to MG Pro"
@@ -17,7 +17,7 @@ const CORE_ASSETS = [
 ];
 
 // Live data: never cache (feedback / VIP checks etc.)
-const NETWORK_ONLY_HOSTS = ['firebaseio.com', 'firebasedatabase.app', 'google-analytics.com', 'googletagmanager.com'];
+const NETWORK_ONLY_HOSTS = ['firebaseio.com', 'firebasedatabase.app', 'supabase.co', 'google-analytics.com', 'googletagmanager.com'];
 
 // Large, rarely-changing files (OCR engine/language data): cache-first so they are downloaded only once
 const BIG_FILES = /traineddata|tessdata|tesseract-core|\.wasm(\.js)?(\?|$)|worker\.min\.js|\/lib-[^/]*$/i;
