@@ -123,6 +123,17 @@
 
   function show(msg, cfg) {
     wanted = true; lastMsg = msg; lastCfg = cfg;
+    /* The frozen maintenance screen is the single visitor-facing experience.
+       Hand off to it instead of painting the legacy overlay, so every page
+       that loads pwa.js (app, VIP/checkout, tools) shows the same screen. */
+    try {
+      var here = String(location.pathname).split('/').pop().toLowerCase();
+      if (here !== 'maintenance.html') {
+        var dir = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1) || '/';
+        location.replace(dir + 'maintenance.html');
+        return;
+      }
+    } catch (e) {}
     if (!document.getElementById('mg-maint-css')) {
       var st = document.createElement('style'); st.id = 'mg-maint-css';
       st.textContent = 'html.mg-maint-on body{display:none!important}';   // the page itself is hidden too, so removing the screen can never reveal it
