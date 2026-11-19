@@ -123,6 +123,35 @@
   /* ---- 0. LIVE OVERRIDE: the site is declared live in code ---------------- */
   if (LIVE_OVERRIDE) {
     try { localStorage.removeItem(FLAG); localStorage.removeItem(MODE_FLAG); } catch (e) {}
+
+    /* This guard loads BEFORE pwa.js, which carries its own inlined copy of the
+       maintenance module: that copy polls site_settings and paints the overlay
+       whenever maintenance === true. The Supabase row is stale ON and the anon
+       key cannot PATCH it, so the overlay kept coming back. Neutralise exactly
+       that one request: every read of site_settings is answered as OFF. Any
+       other fetch passes through untouched. */
+    try {
+      var realFetch = window.fetch;
+      if (typeof realFetch === 'function') {
+        window.fetch = function (input, init) {
+          var u = '';
+          try { u = (typeof input === 'string') ? input : (input && input.url) || ''; } catch (e) {}
+          if (u && u.indexOf('/rest/v1/site_settings') !== -1) {
+            var body = JSON.stringify([{
+              maintenance: false,
+              message: '',
+              config: { mode: 'maintenance' }
+            }]);
+            return Promise.resolve(new Response(body, {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            }));
+          }
+          return realFetch.apply(window, arguments);
+        };
+      }
+    } catch (e) { /* no fetch to patch -> nothing to do */ }
+
     return;
   }
 
