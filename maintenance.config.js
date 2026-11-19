@@ -118,3 +118,29 @@ window.MAINTENANCE_OVERRIDE = {
     }
   }
 };
+
+/* ---------------------------------------------------------------------------
+   LIVE OVERRIDE — redirect back to the app (added 2026-11-19, second pass)
+   ---------------------------------------------------------------------------
+   maintenance.html loads this file, so the redirect lives here: one small file
+   instead of editing the 38 KB page. While `live_override` is true, anyone who
+   still lands on the maintenance screen (stale bookmark, old service worker,
+   or the stale Supabase switch) is sent straight back to the app and the
+   remembered flags are cleared.
+
+   This cannot loop: mg-maint-guard.js never runs on maintenance.html, and with
+   LIVE_OVERRIDE = true it returns immediately on every other page.
+
+   To deliberately declare an incident again: set `live_override: false` above
+   AND set FORCE_ON = true in mg-maint-guard.js (or turn the Supabase switch on).
+   --------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+  var cfg = window.MAINTENANCE_OVERRIDE || {};
+  if (cfg.live_override !== true) { return; }
+  try {
+    localStorage.removeItem('mg_maint');
+    localStorage.removeItem('mg_maint_mode');
+  } catch (e) {}
+  try { window.location.replace('./'); } catch (e) {}
+})();
