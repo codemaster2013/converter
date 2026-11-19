@@ -57,7 +57,9 @@ the checkout block), so a buyer can never reach checkout while the site is down.
 | `maintenance.html` | The visitor-facing maintenance screen (frozen design) |
 | `maintenance.config.js` | Copy + incident timestamps + `mode` — the only file to edit for wording |
 | `mg-maint-guard.js` | Pre-paywall guard, loaded in `<head>` of every entry page |
-| `sw.js` | Service worker, `CACHE_VERSION = 'v41'` |
+| `pwa.js` | PWA bootstrap — **also carries an inlined copy of the maintenance module** |
+| `mg-maint.js` | The same maintenance module as a standalone file (not loaded by index.html) |
+| `sw.js` | Service worker, `CACHE_VERSION = 'v42'` |
 | `fonts/manrope-latin.woff2`, `fonts/jetbrains-mono-latin.woff2` | Self-hosted fonts |
 
 ## Palette (frozen)
@@ -165,3 +167,73 @@ additional file, and the guard is a no-op whenever the switch is OFF.
 - Frozen design untouched — nothing was redesigned.
 - Backup taken before this change: `converter-backup-private` →
   `backups/converter_backup_v1_2026-11-19.zip` (15,439,420 bytes, + `.sha256`).
+
+## Incident 2026-11-19 — CORRECTION (third pass: the screen was STILL live)
+
+The "LIFTED" entries above were **wrong**. After they were written the live site
+still showed the maintenance screen. Verified in a real browser:
+
+    overlay: true, htmlClass: "mg-maint-on", bodyDisplay: "none",
+    localStorage mg_maint: "1", title: "Under Maintenance"
+
+### Why the earlier checks missed it
+
+- A plain `curl` of `/` returns the **app HTML** (200, 238,409 bytes, baseline
+  hash). The maintenance screen is drawn **client-side**, so a curl can never
+  see it. The "site healthy" verdict was based on curl only — **wrong**.
+- The guard's `FORCE_ON = false` was correct, but `FORCE_ON = false` only means
+  "the guard does not redirect"; it does **not** mean the site is live.
+
+### The three real sources of the screen
+
+1. **`pwa.js`** — loaded by `index.html`. It carries an **inlined copy** of the
+   maintenance module that polls `site_settings` every 30 s and paints
+   `#mg-maint-overlay` whenever `maintenance === true`. **This was the actual
+   cause.**
+2. **`mg-maint.js`** — the same module in a standalone file. `index.html` does
+   **not** load it, but keep it in sync anyway.
+3. **`mg-maint-guard.js`** — redirects visitors to `maintenance.html`.
+
+### Root cause
+
+The Supabase `site_settings` row reads `maintenance: true`. The **anon key
+cannot PATCH it** (HTTP 401 / `42501`), and `admin.html` needs the owner's
+email + password, so the switch cannot be turned off from here. As long as it
+read `true`, every module kept re-painting the screen.
+
+### Fix (code-level, no credentials needed)
+
+- `mg-maint-guard.js`: `LIVE_OVERRIDE = true`. Because the guard loads **before**
+  `pwa.js`, it now answers **every** `/rest/v1/site_settings` read as
+  `maintenance: false` (all other fetches pass through untouched). This
+  neutralises the `pwa.js` overlay without editing that 92 KB file.
+- `mg-maint.js`: `LIVE_OVERRIDE = true` — clears `mg_maint` / `mg_maint_cfg`,
+  calls `hide()`, returns before any polling or painting.
+- `maintenance.config.js`: `live_override: true` plus a redirect back to `./`
+  from `maintenance.html`, so anyone still landing on the old screen (stale
+  bookmark, old service worker) returns to the app. Cannot loop: the guard
+  never runs on `maintenance.html`.
+- `sw.js`: `CACHE_VERSION` `v41` → `v42`.
+- Frozen design untouched — nothing was redesigned.
+
+### Verified after deploy
+
+- All five entry pages: HTTP 200, 0 redirects, 0 maintenance markers.
+- Root: 238,409 bytes, SHA-256 `081f706d…41ecb6` (baseline).
+- Browser at 1280×900 **and** 390×844: `overlay: false`,
+  `htmlClass: ""`, `bodyDisplay: "block"`.
+- Stale-flag test (`mg_maint=1` seeded): screen does **not** appear, flag
+  cleared, navigation count 1 (no refresh loop).
+
+### To deliberately declare an incident again
+
+Set `LIVE_OVERRIDE = false` in `mg-maint-guard.js` **and** `mg-maint.js`,
+set `live_override: false` in `maintenance.config.js`, then set `FORCE_ON = true`
+(or fix the Supabase switch so it can be written).
+
+### Health-check rule (now enforced in the hourly trigger)
+
+A plain curl is **not** sufficient. Every hourly check must also verify the
+overlay/browser state, the guard flags, the config mode and the Supabase switch.
+**A showing maintenance or server-down screen is a FAILED/UNSAFE check**, not a
+healthy one.
