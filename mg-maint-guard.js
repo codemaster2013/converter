@@ -47,11 +47,14 @@
   var MODE_FLAG = 'mg_maint_mode';
   var PAGE = 'maintenance.html';
 
-  /* INCIDENT 2026-11-08: the Supabase switch row was tampered with (its message
-     field was defaced and maintenance was left OFF). The incident is now over
-     and the site is LIVE, so the forced override is OFF. Set this back to true
-     only to force the maintenance screen ON for every visitor, instantly. */
-  var FORCE_ON = false;
+  /* INCIDENT 2026-11-19: darshil2796.singh explicitly asked for the "Server down
+     error" screen ("Server down show"). The forced override is ON, so every
+     visitor is sent to maintenance.html with the server_down wording mode.
+     Set this back to false only to lift the screen and go live again. */
+  var FORCE_ON = true;
+
+  /* Wording mode carried to the screen while FORCE_ON is set. */
+  var FORCE_MODE = 'server_down';
 
   /* Never guard the maintenance page itself (it has its own self-heal) and never
      guard the admin console. This is what stops the refresh loop. */
@@ -107,7 +110,7 @@
   }
 
   /* ---- 1. INSTANT: forced on (incident state) ----------------------------- */
-  if (FORCE_ON) { go(); return; }
+  if (FORCE_ON) { go(FORCE_MODE); return; }
 
   /* ---- 2. Remembered on: verify before bouncing --------------------------- */
   var remembered = false;
