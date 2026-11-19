@@ -57,7 +57,7 @@ the checkout block), so a buyer can never reach checkout while the site is down.
 | `maintenance.html` | The visitor-facing maintenance screen (frozen design) |
 | `maintenance.config.js` | Copy + incident timestamps + `mode` — the only file to edit for wording |
 | `mg-maint-guard.js` | Pre-paywall guard, loaded in `<head>` of every entry page |
-| `sw.js` | Service worker, `CACHE_VERSION = 'v40'` |
+| `sw.js` | Service worker, `CACHE_VERSION = 'v41'` |
 | `fonts/manrope-latin.woff2`, `fonts/jetbrains-mono-latin.woff2` | Self-hosted fonts |
 
 ## Palette (frozen)
@@ -148,3 +148,20 @@ additional file, and the guard is a no-op whenever the switch is OFF.
   `backups/converter_backup_v1_2026-11-19.zip` (15,439,420 bytes, + `.sha256`).
 - **To lift:** set `FORCE_ON = false` in `mg-maint-guard.js` (and `mode` back to
   `maintenance` if the default wording is wanted), then commit.
+
+## Incident 2026-11-19 — LIFTED (site back live)
+
+- darshil2796.singh asked to put the site back live and remove the "Server down
+  error" screen. The screen is **removed**; the normal converter app is served.
+- `mg-maint-guard.js`: `FORCE_ON = false`, `FORCE_MODE = null` — the guard is a
+  no-op and every entry page loads the app directly.
+- `maintenance.config.js`: `mode` and `state` back to the default `maintenance`,
+  so the `server_down` wording is no longer active.
+- `sw.js` `CACHE_VERSION` bumped `v40` → `v41` so returning PWA visitors get the
+  live app instead of a cached maintenance screen.
+- The Supabase `site_settings` row already reads `maintenance: false`, so the
+  guard's stale-flag self-heal clears any leftover `mg_maint` flag on the next
+  visit and keeps the visitor on the live site.
+- Frozen design untouched — nothing was redesigned.
+- Backup taken before this change: `converter-backup-private` →
+  `backups/converter_backup_v1_2026-11-19.zip` (15,439,420 bytes, + `.sha256`).
