@@ -10,6 +10,21 @@
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiYXdqenNjampha3Fsb21xcXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0MTM3MDAsImV4cCI6MjEwODk4OTcwMH0.I869HC183sDYPcSZQZmMeFcGkOSb0hz54zWCLGAu0Co'
   };
   var CACHE_KEY = 'mg_maint', CFG_KEY = 'mg_maint_cfg', ID = 'mg-maint-overlay', POLL_MS = 30000;
+
+  /* LIVE OVERRIDE (added 2026-11-19, second pass)
+     ------------------------------------------------------------------------
+     THIS is the module that actually paints the maintenance screen: it polls
+     site_settings every 30s and shows the overlay whenever maintenance===true.
+     The Supabase row was left at maintenance:true after the incident was closed
+     and the anon key cannot PATCH it (401 / RLS), so this overlay kept coming
+     back even with the guard's FORCE_ON=false.
+
+     While LIVE_OVERRIDE is true the site is LIVE: the remembered flag is
+     cleared, no overlay is ever painted, and the switch is not polled at all.
+
+     To deliberately declare an incident again: set this to false AND turn the
+     Supabase switch on (or set FORCE_ON = true in mg-maint-guard.js). */
+  var LIVE_OVERRIDE = true;
   /* ---- screen renderer (shared look: validates every setting, so a bad value can never break the page) ---- */
   var MGV = (function () {
     var FONTS = {
@@ -184,6 +199,17 @@
       if (wanted && !document.getElementById(ID)) show(lastMsg, lastCfg);
     }).observe(document.documentElement, { childList: true });
   } catch (e) {}
+
+  /* LIVE OVERRIDE: the site is declared live in code — never paint the screen,
+     never poll the switch, and clear any remembered maintenance state. */
+  if (LIVE_OVERRIDE) {
+    try {
+      localStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem(CFG_KEY);
+    } catch (e) {}
+    hide();
+    return;
+  }
 
   var was = false; try { was = localStorage.getItem(CACHE_KEY) === '1'; } catch (e) {}
   if (was) {
