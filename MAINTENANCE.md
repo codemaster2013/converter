@@ -57,7 +57,7 @@ the checkout block), so a buyer can never reach checkout while the site is down.
 | `maintenance.html` | The visitor-facing maintenance screen (frozen design) |
 | `maintenance.config.js` | Copy + incident timestamps + `mode` — the only file to edit for wording |
 | `mg-maint-guard.js` | Pre-paywall guard, loaded in `<head>` of every entry page |
-| `sw.js` | Service worker, `CACHE_VERSION = 'v39'` |
+| `sw.js` | Service worker, `CACHE_VERSION = 'v40'` |
 | `fonts/manrope-latin.woff2`, `fonts/jetbrains-mono-latin.woff2` | Self-hosted fonts |
 
 ## Palette (frozen)
@@ -125,3 +125,26 @@ additional file, and the guard is a no-op whenever the switch is OFF.
   it can bounce a visitor, so nobody stays pinned to the screen after the lift.
 - Backup taken before this change: `converter-backup-private` →
   `backups/converter_backup_v1_2026-11-08.zip` (converter @ `91f3ac52`).
+
+## Incident 2026-11-19 (Server down screen requested)
+
+- darshil2796.singh explicitly asked for the **"Server down error"** wording
+  ("Server down show"), so the site is showing that screen, not the default
+  "Under maintenance" copy.
+- `maintenance.config.js`: `mode` and `state` set to `server_down`; the
+  `server_down` block carries the real incident start
+  (`opened_at: 2026-11-19T06:40:00Z`) and ref `INC-2026-1119-D`.
+- `mg-maint-guard.js`: `FORCE_ON = true` with `FORCE_MODE = 'server_down'`, so
+  every entry page redirects instantly to `maintenance.html?mode=server_down`
+  with no network call on the critical path.
+- The Supabase `site_settings` row is **read-only for the anon key** (PATCH
+  returns HTTP 401 / `42501 permission denied`), so the switch could not be
+  written from here; `FORCE_ON` is the authoritative switch and does not depend
+  on Supabase. The row still reads `maintenance: false`.
+- `sw.js` `CACHE_VERSION` bumped `v39` → `v40` so returning PWA visitors get the
+  new screen instead of a cached live page.
+- Frozen design reused as-is — no redesign.
+- Backup taken before this change: `converter-backup-private` →
+  `backups/converter_backup_v1_2026-11-19.zip` (15,439,420 bytes, + `.sha256`).
+- **To lift:** set `FORCE_ON = false` in `mg-maint-guard.js` (and `mode` back to
+  `maintenance` if the default wording is wanted), then commit.
