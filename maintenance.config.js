@@ -34,6 +34,18 @@
    ========================================================================== */
 
 window.MAINTENANCE_OVERRIDE = {
+  /* LIVE OVERRIDE (added 2026-11-19, second pass)
+     ------------------------------------------------------------------------
+     The site is declared LIVE in code. The Supabase site_settings row was left
+     at maintenance:true after the incident was closed and the anon key cannot
+     PATCH it (401 / RLS), so the switch alone kept pinning every visitor to
+     this screen. While `live_override` is true, maintenance.html sends the
+     visitor straight back to the app and clears the remembered flags.
+
+     To deliberately declare an incident again: set this to false AND set
+     FORCE_ON = true in mg-maint-guard.js (or turn the Supabase switch on). */
+  live_override: true,
+
   /* Which wording to show. 'maintenance' (default) | 'server_down' */
   mode: 'maintenance',
 

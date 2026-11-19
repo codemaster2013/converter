@@ -49,12 +49,23 @@
 
   /* INCIDENT 2026-11-19 CLOSED: darshil2796.singh asked to put the site back
      live and remove the "Server down error" screen. The forced override is OFF,
-     so the guard is a no-op and every visitor reaches the normal converter app.
-     The Supabase switch remains the only thing that can turn the screen back on. */
+     so the guard is a no-op and every visitor reaches the normal converter app. */
   var FORCE_ON = false;
 
   /* No forced wording mode while FORCE_ON is false. */
   var FORCE_MODE = null;
+
+  /* LIVE_OVERRIDE (added 2026-11-19, second pass)
+     ------------------------------------------------------------------------
+     The Supabase site_settings row was left at maintenance:true after the
+     incident was closed, and the anon key cannot PATCH it (401 / RLS), so the
+     switch alone kept sending every visitor to maintenance.html. This constant
+     is the code-level authority: while it is true the site is LIVE, the
+     remembered flags are cleared, and the switch is never consulted.
+
+     To deliberately declare an incident again, set this to false AND turn the
+     Supabase switch on (or set FORCE_ON above). */
+  var LIVE_OVERRIDE = true;
 
   /* Never guard the maintenance page itself (it has its own self-heal) and never
      guard the admin console. This is what stops the refresh loop. */
@@ -107,6 +118,12 @@
   function modeOf(row) {
     var m = row && row.config && row.config.mode;
     return (m === 'server_down' || m === 'maintenance') ? m : null;
+  }
+
+  /* ---- 0. LIVE OVERRIDE: the site is declared live in code ---------------- */
+  if (LIVE_OVERRIDE) {
+    try { localStorage.removeItem(FLAG); localStorage.removeItem(MODE_FLAG); } catch (e) {}
+    return;
   }
 
   /* ---- 1. INSTANT: forced on (incident state) ----------------------------- */
