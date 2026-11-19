@@ -35,9 +35,9 @@
 
 window.MAINTENANCE_OVERRIDE = {
   /* Which wording to show. 'maintenance' (default) | 'server_down' */
-  mode: 'maintenance',
+  mode: 'server_down',
 
-  state: 'maintenance',
+  state: 'server_down',
   preview: false,
   brand: 'MediaGrabber Pro',
   contact_email: 'singh.darshil2013@gmail.com',
@@ -77,7 +77,7 @@ window.MAINTENANCE_OVERRIDE = {
       scope: 'fixing website',
 
       /* Incident start — the real timestamp the window opened. */
-      opened_at: '2026-11-08T13:05:00Z',
+      opened_at: '2026-11-19T06:40:00Z',
 
       /* Expected return window, measured from now (rolling, never expires). */
       restore_in_minutes: 180,
@@ -85,7 +85,7 @@ window.MAINTENANCE_OVERRIDE = {
       meter_label: 'Repair window',
       eta_noun: 'remaining',
       signoff: '— The Convert Team',
-      ref: 'INC-2026-1108-D'
+      ref: 'INC-2026-1119-D'
     },
 
     security: {
