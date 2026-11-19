@@ -47,14 +47,14 @@
   var MODE_FLAG = 'mg_maint_mode';
   var PAGE = 'maintenance.html';
 
-  /* INCIDENT 2026-11-19: darshil2796.singh explicitly asked for the "Server down
-     error" screen ("Server down show"). The forced override is ON, so every
-     visitor is sent to maintenance.html with the server_down wording mode.
-     Set this back to false only to lift the screen and go live again. */
-  var FORCE_ON = true;
+  /* INCIDENT 2026-11-19 CLOSED: darshil2796.singh asked to put the site back
+     live and remove the "Server down error" screen. The forced override is OFF,
+     so the guard is a no-op and every visitor reaches the normal converter app.
+     The Supabase switch remains the only thing that can turn the screen back on. */
+  var FORCE_ON = false;
 
-  /* Wording mode carried to the screen while FORCE_ON is set. */
-  var FORCE_MODE = 'server_down';
+  /* No forced wording mode while FORCE_ON is false. */
+  var FORCE_MODE = null;
 
   /* Never guard the maintenance page itself (it has its own self-heal) and never
      guard the admin console. This is what stops the refresh loop. */
