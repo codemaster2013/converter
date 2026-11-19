@@ -35,9 +35,9 @@
 
 window.MAINTENANCE_OVERRIDE = {
   /* Which wording to show. 'maintenance' (default) | 'server_down' */
-  mode: 'server_down',
+  mode: 'maintenance',
 
-  state: 'server_down',
+  state: 'maintenance',
   preview: false,
   brand: 'MediaGrabber Pro',
   contact_email: 'singh.darshil2013@gmail.com',
